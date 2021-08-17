@@ -1,0 +1,19 @@
+{
+  "name": "react-static-images",
+  "version": "0.0.1",
+  "description": "Ultra fast image processing for react",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/henryhobhouse/react-static-images.git"
+  },
+  "author": "Henry Hobhouse",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/henryhobhouse/react-static-images/issues"
+  },
+  "homepage": "https://github.com/henryhobhouse/react-static-images#readme"
+}
