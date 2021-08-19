@@ -1,0 +1,37 @@
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "sourceMap": true,
+    "declaration": true,
+    "lib": [
+      "DOM",
+      "ESNEXT"
+    ],
+    "allowJs": false,
+    "skipLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "module": "commonjs",
+    "noImplicitAny": false,
+    "jsx": "preserve",
+    "moduleResolution": "node",
+    "isolatedModules": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "resolveJsonModule": true,
+    "noEmit": false,
+    "outDir": "./dist",
+    "typeRoots": ["./types"],
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+  ],
+  "exclude": [
+    "build", 
+    "node_modules", 
+    "**/**.test.tsx", 
+    "**/**.test.ts"
+  ]
+}
