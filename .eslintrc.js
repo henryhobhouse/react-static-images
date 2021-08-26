@@ -52,4 +52,12 @@ module.exports = {
     ],
     'no-console': 'error',
   },
+  overrides: [
+    {
+      files: ['*.js'],
+      rules: {
+        'import/no-commonjs': 0,
+      },
+    },
+  ],
 };
