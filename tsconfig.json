@@ -3,10 +3,7 @@
     "target": "ES6",
     "sourceMap": true,
     "declaration": true,
-    "lib": [
-      "DOM",
-      "ESNEXT"
-    ],
+    "lib": ["DOM", "ESNEXT"],
     "allowJs": false,
     "skipLibCheck": true,
     "strict": true,
@@ -22,16 +19,8 @@
     "resolveJsonModule": true,
     "noEmit": false,
     "outDir": "./dist",
-    "typeRoots": ["./types"],
+    "typeRoots": ["./types"]
   },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-  ],
-  "exclude": [
-    "build", 
-    "node_modules", 
-    "**/**.test.tsx", 
-    "**/**.test.ts"
-  ]
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "exclude": ["dist", "node_modules", "**/**.test.tsx", "**/**.test.ts"]
 }
