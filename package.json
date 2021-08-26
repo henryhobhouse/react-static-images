@@ -2,9 +2,11 @@
   "name": "react-static-images",
   "version": "0.0.1",
   "description": "Ultra fast image processing for react",
-  "main": "dist/index.ts",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "build-ci": "yarn build && cp dist/* .",
     "lint": "eslint '**/*.{js,ts,tsx}' --quiet --fix "
   },
   "repository": {
@@ -17,9 +19,7 @@
     "url": "https://github.com/henryhobhouse/react-static-images/issues"
   },
   "homepage": "https://github.com/henryhobhouse/react-static-images#readme",
-  "dependencies": {
-    "typescript": "^4.3.5"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.29.3",
     "@typescript-eslint/parser": "^4.29.3",
@@ -29,6 +29,7 @@
     "eslint-import-resolver-typescript": "^2.4.0",
     "eslint-plugin-import": "^2.24.2",
     "eslint-plugin-prettier": "^3.4.1",
-    "prettier": "^2.3.2"
+    "prettier": "^2.3.2",
+    "typescript": "^4.3.5"
   }
 }
