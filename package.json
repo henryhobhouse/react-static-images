@@ -4,7 +4,7 @@
   "description": "Ultra fast image processing for react",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --collectCoverage",
     "build": "tsc",
     "build-ci": "yarn build && cp dist/* .",
     "lint": "eslint '**/*.{js,ts,tsx}' --quiet --fix "

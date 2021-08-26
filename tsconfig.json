@@ -18,8 +18,7 @@
     "noUnusedParameters": true,
     "resolveJsonModule": true,
     "noEmit": false,
-    "outDir": "./dist",
-    "typeRoots": ["./types"]
+    "outDir": "./dist"
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["dist", "node_modules", "**/**.test.tsx", "**/**.test.ts"]

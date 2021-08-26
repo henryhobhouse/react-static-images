@@ -1,5 +1,7 @@
+/** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
 module.exports = {
   collectCoverageFrom: ['src/**/*.{ts,tsx}'],
+
   coverageDirectory: './coverage',
   coveragePathIgnorePatterns: [
     '/node_modules/',
@@ -20,13 +22,8 @@ module.exports = {
     '.+\\.(css|styl|less|sass|scss)$': 'identity-obj-proxy',
     '^src(.*)$': '<rootDir>/src$1',
   },
-  testPathIgnorePatterns: ['node_modules/', 'coverage/lcov-report', 'e2e/'],
-  testRegex:
-    '(/__tests__/(?!(testUtils|__data__)).*|\\.(test|spec))\\.(jsx?|tsx?)$',
-  timers: 'fake',
-  transform: {
-    '^.+\\.[jt]sx?$': 'ts-jest',
-    '^.+\\.css$': 'identity-obj-proxy',
-  },
+  preset: 'ts-jest',
+  testEnvironment: 'node',
+  testPathIgnorePatterns: ['node_modules/', 'coverage/lcov-report'],
   verbose: true,
 };
