@@ -4,7 +4,7 @@
   "description": "Ultra fast image processing for react",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "build": "tsc",
     "build-ci": "yarn build && cp dist/* .",
     "lint": "eslint '**/*.{js,ts,tsx}' --quiet --fix "
@@ -19,8 +19,12 @@
     "url": "https://github.com/henryhobhouse/react-static-images/issues"
   },
   "homepage": "https://github.com/henryhobhouse/react-static-images#readme",
-  "dependencies": {},
+  "dependencies": {
+    "winston": "^3.3.3"
+  },
   "devDependencies": {
+    "@types/jest": "^27.0.1",
+    "@types/node": "^16.7.2",
     "@typescript-eslint/eslint-plugin": "^4.29.3",
     "@typescript-eslint/parser": "^4.29.3",
     "eslint": "^7.32.0",
@@ -28,8 +32,15 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-import-resolver-typescript": "^2.4.0",
     "eslint-plugin-import": "^2.24.2",
+    "eslint-plugin-json-format": "^2.0.1",
     "eslint-plugin-prettier": "^3.4.1",
+    "eslint-plugin-promise": "^5.1.0",
+    "eslint-plugin-sort-keys-fix": "^1.1.2",
+    "eslint-plugin-unicorn": "^35.0.0",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^27.0.6",
     "prettier": "^2.3.2",
+    "ts-jest": "^27.0.5",
     "typescript": "^4.3.5"
   }
 }
