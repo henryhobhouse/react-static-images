@@ -1,6 +1,7 @@
 module.exports = {
   env: {
     browser: true,
+    'jest/globals': true,
     node: true,
   },
   extends: [
@@ -29,7 +30,7 @@ module.exports = {
     ecmaVersion: 2021,
     sourceType: 'module',
   },
-  plugins: ['@typescript-eslint', 'json-format', 'sort-keys-fix'],
+  plugins: ['@typescript-eslint', 'json-format', 'sort-keys-fix', 'jest'],
   rules: {
     '@typescript-eslint/array-type': [
       'warn',
