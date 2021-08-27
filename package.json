@@ -2,12 +2,15 @@
   "name": "react-static-images",
   "version": "0.0.1",
   "description": "Ultra fast image processing for react",
-  "main": "index.js",
+  "main": "bin/index.js",
   "scripts": {
     "test": "jest --collectCoverage",
     "build": "tsc",
     "build-ci": "yarn build && cp -a dist/. .",
-    "lint": "eslint '**/*.{js,ts,tsx}' --quiet --fix "
+    "lint": "eslint '**/*.{js,ts,tsx}' --quiet --fix"
+  },
+  "bin": {
+    "react-static-images": "./bin/index.js"
   },
   "repository": {
     "type": "git",
@@ -18,8 +21,13 @@
   "bugs": {
     "url": "https://github.com/henryhobhouse/react-static-images/issues"
   },
+  "keywords": [
+    "cli",
+    "react-static-images"
+  ],
   "homepage": "https://github.com/henryhobhouse/react-static-images#readme",
   "dependencies": {
+    "esm": "^3.2.25",
     "winston": "^3.3.3"
   },
   "devDependencies": {
