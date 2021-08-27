@@ -71,6 +71,7 @@ module.exports = {
     ],
     'import/prefer-default-export': 0,
     'no-console': 'error',
+    'no-undef': 0,
     'no-use-before-define': 0,
     'padding-line-between-statements': [
       'error',

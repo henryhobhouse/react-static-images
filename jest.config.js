@@ -1,7 +1,6 @@
 /** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
 module.exports = {
   collectCoverageFrom: ['src/**/*.{ts,tsx}'],
-
   coverageDirectory: './coverage',
   coveragePathIgnorePatterns: [
     '/node_modules/',
