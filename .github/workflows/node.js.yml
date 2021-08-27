@@ -34,6 +34,6 @@ jobs:
       - run: yarn test
       - run: yarn run build-ci
 
-      - name: Uninstall Yarn
+      - name: Clean up - uninstall Yarn
         if: always()
         run: npm uninstall -g yarn

@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest --collectCoverage",
     "build": "tsc",
-    "build-ci": "yarn build && cp dist/* .",
+    "build-ci": "yarn build && cp -a dist/. .",
     "lint": "eslint '**/*.{js,ts,tsx}' --quiet --fix "
   },
   "repository": {
