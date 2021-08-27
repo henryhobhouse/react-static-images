@@ -1,23 +1,21 @@
-import { existsSync, readFileSync, writeFileSync } from 'fs';
+import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'fs';
 import path from 'path';
 
 import { logger } from './logger';
 
 const globalConsole = console;
 
-const pollAssertion = async <T = unknown>(
-  assertion: () => T,
-  checkSuccess: (argument: T) => void,
+const waitFor = async (
+  assertion: VoidFunction,
   pollInterval = 10,
   timeOut = 3000,
 ) => {
   let timeRun = 0;
 
   return new Promise((resolve, reject) => {
-    function checkCondition() {
+    async function checkCondition() {
       try {
-        const result = assertion();
-        checkSuccess(result);
+        await assertion();
         resolve(true);
       } catch (error) {
         if (timeRun <= timeOut) {
@@ -51,6 +49,7 @@ describe('logger', () => {
   afterAll(() => {
     // eslint-disable-next-line no-global-assign
     console = globalConsole;
+    waitFor(() => unlinkSync(pathToErrorLogFile));
   });
 
   beforeEach(() => {
@@ -96,17 +95,14 @@ describe('logger', () => {
       expect.stringContaining('\u001B[31merror'),
     );
     // need to clear error from log file to not corrupt other tests
-    await pollAssertion(
-      () => writeFileSync(pathToErrorLogFile, ''),
-      () => true,
-    );
+    await waitFor(() => writeFileSync(pathToErrorLogFile, ''));
   });
 
   it('will create an empty error log file on instantiation', async () => {
-    await pollAssertion<boolean>(
-      () => existsSync(pathToErrorLogFile),
-      (fileExists) => expect(fileExists).toBeTruthy(),
-    );
+    await waitFor(() => {
+      const fileExists = existsSync(pathToErrorLogFile);
+      expect(fileExists).toBeTruthy();
+    });
 
     const errorLogFileContent = readFileSync(pathToErrorLogFile).toString();
     expect(errorLogFileContent).toBe('');
@@ -117,11 +113,10 @@ describe('logger', () => {
 
     logger.error(errorMessage);
 
-    await pollAssertion<string>(
-      () => readFileSync(pathToErrorLogFile).toString(),
-      (errorLogFileContents) =>
-        expect(errorLogFileContents).toContain(`error: ${errorMessage}`),
-    );
+    await waitFor(() => {
+      const errorLogFileContents = readFileSync(pathToErrorLogFile).toString();
+      expect(errorLogFileContents).toContain(`error: ${errorMessage}`);
+    });
   });
 
   it('will not save log error to file if requested', async () => {
@@ -129,10 +124,10 @@ describe('logger', () => {
 
     logger.log({ level: 'error', message: errorMessage, noFileSave: true });
 
-    await pollAssertion<string>(
-      () => readFileSync(pathToErrorLogFile).toString(),
-      (errorLogFileContents) => expect(errorLogFileContents).toContain(''),
-    );
+    await waitFor(() => {
+      const errorLogFileContents = readFileSync(pathToErrorLogFile).toString();
+      expect(errorLogFileContents).toContain('');
+    });
   });
 
   it('will not log to terminal stdout if requested', async () => {

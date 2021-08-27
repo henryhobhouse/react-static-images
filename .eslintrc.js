@@ -35,7 +35,7 @@ module.exports = {
     '@typescript-eslint/array-type': [
       'warn',
       {
-        default: 'generic',
+        default: 'array-simple',
       },
     ],
     '@typescript-eslint/consistent-type-assertions': [
@@ -57,6 +57,7 @@ module.exports = {
       },
     ],
     'import/newline-after-import': ['error', { count: 1 }],
+    'import/no-default-export': 1,
     'import/no-nodejs-modules': 0,
     'import/order': [
       'error',
