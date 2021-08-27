@@ -25,7 +25,15 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-      - run: npm install
-      - run: npm lint
-      - run: npm test
-      - run: npm run build-ci --if-present
+
+      - name: Install Yarn
+        run: npm install -g yarn
+
+      - run: yarn install
+      - run: yarn lint
+      - run: yarn test
+      - run: yarn run build-ci --if-present
+
+      - name: Uninstall Yarn
+        if: always()
+        run: npm uninstall -g yarn
