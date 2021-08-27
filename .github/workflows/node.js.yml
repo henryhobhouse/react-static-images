@@ -32,7 +32,7 @@ jobs:
       - run: yarn install
       - run: yarn lint
       - run: yarn test
-      - run: yarn run build-ci --if-present
+      - run: yarn run build-ci
 
       - name: Uninstall Yarn
         if: always()
