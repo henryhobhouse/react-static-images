@@ -56,10 +56,6 @@ describe('logger', () => {
     jest.clearAllMocks();
   });
 
-  it('will be defined', () => {
-    expect(logger).toBeDefined();
-  });
-
   it('will log out standard messages with a blue info prefix', () => {
     const logMessage = 'hello world';
     logger.info(logMessage);
