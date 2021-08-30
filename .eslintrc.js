@@ -58,6 +58,7 @@ module.exports = {
       },
     ],
     'import/newline-after-import': ['error', { count: 1 }],
+    'import/no-cycle': 2,
     'import/no-default-export': 1,
     'import/no-nodejs-modules': 0,
     'import/order': [

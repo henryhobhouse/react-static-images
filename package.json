@@ -7,6 +7,7 @@
     "test": "jest --collectCoverage",
     "build": "tsc",
     "build-ci": "yarn build && cp -a dist/. .",
+    "check-types": "tsc --noEmit",
     "lint": "eslint '**/*.{js,ts,tsx}' --quiet --fix"
   },
   "bin": {

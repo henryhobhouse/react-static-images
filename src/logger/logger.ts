@@ -1,6 +1,4 @@
-import { existsSync, unlinkSync } from 'fs';
-
-import { format, createLogger, transports, Logger } from 'winston';
+import { format, createLogger, transports } from 'winston';
 
 const defaultErrorLogFileName = 'static-image-error.log';
 const stringLineBreakRegex = /(\r\n|\n|\r)/gm;
@@ -43,51 +41,35 @@ const noLogPrivateToFile = format((info) => {
   return info;
 });
 
-let instance: Logger;
-
-const getInstance = () => {
-  if (!instance) {
-    const errorLogFilePath = `${process.cwd()}/${defaultErrorLogFileName}`;
-
-    // if there is a error log file, delete it, to ensure only new errors are saved.
-    if (existsSync(errorLogFilePath)) {
-      unlinkSync(errorLogFilePath);
-    }
-
-    instance = createLogger({
-      level: 'success',
-      levels: customLogLevels,
-      transports: [
-        new transports.Console({
-          format: combine(noLogPrivateToConsole(), cliFormat),
+// logger instance via the module pattern (node caching the import so will only be instantiated once)
+const loggerSingleton = createLogger({
+  level: 'success',
+  levels: customLogLevels,
+  transports: [
+    new transports.Console({
+      format: combine(noLogPrivateToConsole(), cliFormat),
+    }),
+    //
+    // - Write all logs with level `error` to `errorLogFileName` prop or fallback
+    //
+    new transports.File({
+      filename: defaultErrorLogFileName,
+      format: combine(
+        noLogPrivateToFile(),
+        timestamp({
+          format: 'DD-MM-YYYY HH:mm:ss',
         }),
-        //
-        // - Write all logs with level `error` to `errorLogFileName` prop or fallback
-        //
-        new transports.File({
-          filename: defaultErrorLogFileName,
-          format: combine(
-            noLogPrivateToFile(),
-            timestamp({
-              format: 'DD-MM-YYYY HH:mm:ss',
-            }),
-            printf(
-              (info) =>
-                `${info.timestamp} ${info.level}: ${info.message.replace(
-                  stringLineBreakRegex,
-                  '',
-                )}`,
-            ),
-          ),
-          level: 'error',
-        }),
-      ],
-    });
-  }
-
-  return instance;
-};
-
-const loggerSingleton = getInstance();
+        printf(
+          (info) =>
+            `${info.timestamp} ${info.level}: ${info.message.replace(
+              stringLineBreakRegex,
+              '',
+            )}`,
+        ),
+      ),
+      level: 'error',
+    }),
+  ],
+});
 
 export const logger = loggerSingleton;

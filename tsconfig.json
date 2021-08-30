@@ -10,7 +10,7 @@
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
     "module": "commonjs",
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "jsx": "preserve",
     "moduleResolution": "node",
     "isolatedModules": false,

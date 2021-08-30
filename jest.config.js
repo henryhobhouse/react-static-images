@@ -11,6 +11,9 @@ module.exports = {
   globals: {
     __PATH_PREFIX__: '',
     'ts-jest': {
+      diagnostics: {
+        warnOnly: true,
+      },
       tsconfig: {
         jsx: 'react',
       },

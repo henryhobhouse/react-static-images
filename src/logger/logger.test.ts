@@ -1,35 +1,11 @@
 import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'fs';
 import path from 'path';
 
+import { waitFor } from '../../lib/test-utils/wait-for';
+
 import { logger } from './logger';
 
 const globalConsole = console;
-
-const waitFor = async (
-  assertion: VoidFunction,
-  pollInterval = 10,
-  timeOut = 3000,
-) => {
-  let timeRun = 0;
-
-  return new Promise((resolve, reject) => {
-    async function checkCondition() {
-      try {
-        await assertion();
-        resolve(true);
-      } catch (error) {
-        if (timeRun <= timeOut) {
-          timeRun += pollInterval;
-          setTimeout(checkCondition, pollInterval);
-        } else {
-          reject(error);
-        }
-      }
-    }
-
-    checkCondition();
-  });
-};
 
 const pathToErrorLogFile = path.resolve(
   process.cwd(),
