@@ -1,7 +1,7 @@
-import { imageFormat } from './image-config';
-import type { ImageConfig } from './image-config';
+import { imageFormat } from './constants';
+import type { ImageConfig } from './static-image-config';
 
-export const defaultImageConfig: ImageConfig = {
+export const defaultConfig: ImageConfig = {
   imageFormats: [imageFormat.png, imageFormat.jpeg],
   imagesBaseDirectory: process.cwd(),
   optimisedImageColourQuality: 100,
