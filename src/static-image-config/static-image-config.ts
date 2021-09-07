@@ -6,9 +6,11 @@ import { validateUserConfig } from './config-validation';
 import { imageFormat, userConfigFileName } from './constants';
 import { defaultConfig } from './default-config';
 
+export type ImageFormat = keyof typeof imageFormat;
+
 export interface ImageConfig {
   /* options of 'jpeg' and 'png' (optional, default both) */
-  imageFormats: Array<keyof typeof imageFormat>;
+  imageFormats: ImageFormat[];
   /* width of thumbnail in px whilst retaining ration of original image */
   thumbnailSize: number;
   /* additional images of size (width in px) created if smaller than original for the browser to use in smaller viewports */
@@ -33,7 +35,7 @@ const createConfig = () => {
     return {
       ...defaultConfig,
       ...userConfig,
-    };
+    } as ImageConfig;
   }
 
   return defaultConfig;
