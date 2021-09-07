@@ -36,7 +36,7 @@ describe('getImagesMetaData', () => {
     const pngFileName = 'django_in_park.png';
     const result = await getImageMetaData();
     expect(mockGetUniqueFileNameByPath).toBeCalledTimes(1);
-    expect(result).toEqual([
+    expect(result.imageFilesMetaData).toEqual([
       {
         fileName: pngFileName,
         path: expect.stringContaining(`${demoContentDirectory}/${pngFileName}`),
@@ -58,7 +58,7 @@ describe('getImagesMetaData', () => {
     });
     const result = await getImageMetaData();
     expect(mockGetUniqueFileNameByPath).toHaveBeenCalledTimes(3);
-    expect(result).toEqual(
+    expect(result.imageFilesMetaData).toEqual(
       expect.arrayContaining([
         {
           fileName: jpgFileNames[0],
@@ -96,7 +96,7 @@ describe('getImagesMetaData', () => {
     });
     const result = await getImageMetaData();
     expect(mockGetUniqueFileNameByPath).toBeCalledTimes(1);
-    expect(result).toEqual([
+    expect(result.imageFilesMetaData).toEqual([
       {
         fileName: tiffFileName,
         path: expect.stringContaining(
@@ -116,7 +116,7 @@ describe('getImagesMetaData', () => {
     });
     const result = await getImageMetaData();
     expect(mockGetUniqueFileNameByPath).toBeCalledTimes(1);
-    expect(result).toEqual([
+    expect(result.imageFilesMetaData).toEqual([
       {
         fileName: avifFileName,
         path: expect.stringContaining(
@@ -136,7 +136,7 @@ describe('getImagesMetaData', () => {
     });
     const result = await getImageMetaData();
     expect(mockGetUniqueFileNameByPath).toBeCalledTimes(1);
-    expect(result).toEqual([
+    expect(result.imageFilesMetaData).toEqual([
       {
         fileName: webpFileName,
         path: expect.stringContaining(
@@ -161,7 +161,7 @@ describe('getImagesMetaData', () => {
     });
     const result = await getImageMetaData();
     expect(mockGetUniqueFileNameByPath).toBeCalledTimes(7);
-    expect(result).toEqual(
+    expect(result.imageFilesMetaData).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
           fileName: expect.stringContaining('.'),
@@ -194,7 +194,7 @@ describe('getImagesMetaData', () => {
     });
     const result = await getImageMetaData();
     expect(mockGetUniqueFileNameByPath).toBeCalledTimes(3);
-    expect(result).toEqual(
+    expect(result.imageFilesMetaData).toEqual(
       expect.arrayContaining([
         {
           fileName: nestedDirectoryImageFileNames[2],
@@ -240,7 +240,7 @@ describe('getImagesMetaData', () => {
     });
     const result = await getImageMetaData();
     expect(mockGetUniqueFileNameByPath).toBeCalledTimes(0);
-    expect(result).toEqual([]);
+    expect(result.imageFilesMetaData).toEqual([]);
   });
 
   it('will throw and error if no image types are in the configuration', async () => {

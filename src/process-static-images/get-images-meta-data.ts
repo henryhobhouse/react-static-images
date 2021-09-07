@@ -117,5 +117,5 @@ export const getImageMetaData = async () => {
 
   await recursiveSearchForImages(imagesBaseDirectory);
 
-  return imageFilesMetaData;
+  return { imageFilesMetaData };
 };
