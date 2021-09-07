@@ -43,4 +43,4 @@ const createConfig = () => {
 
 const configSingleton = createConfig();
 
-export const staticImageConfig = configSingleton;
+export const getStaticImageConfig = () => configSingleton;

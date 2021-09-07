@@ -41,22 +41,28 @@ describe('Static image config', () => {
   });
 
   it('returns the default config when no user config file present', async () => {
-    const { staticImageConfig } = await import(relativePathToStaticImageConfig);
-    expect(staticImageConfig).toEqual(defaultConfig);
+    const { getStaticImageConfig } = await import(
+      relativePathToStaticImageConfig
+    );
+    expect(getStaticImageConfig()).toEqual(defaultConfig);
   });
 
   // I cannot find a way to reset require/import cache of fs as imported into the tested module (not this test module)
   // as such we can only run one test with a user config file present at this stage.
   it.skip('returns a user config is present', async () => {
     writeFileSync(configFilePath, mockConfigModule(mockFullConfig));
-    const { staticImageConfig } = await import(relativePathToStaticImageConfig);
-    expect(staticImageConfig).toEqual(mockFullConfig);
+    const { getStaticImageConfig } = await import(
+      relativePathToStaticImageConfig
+    );
+    expect(getStaticImageConfig()).toEqual(mockFullConfig);
   });
 
   it('returns a merged config if only partial user config is present', async () => {
     writeFileSync(configFilePath, mockConfigModule(mockPartialConfig));
-    const { staticImageConfig } = await import(relativePathToStaticImageConfig);
-    expect(staticImageConfig).toEqual({
+    const { getStaticImageConfig } = await import(
+      relativePathToStaticImageConfig
+    );
+    expect(getStaticImageConfig()).toEqual({
       ...defaultConfig,
       ...mockPartialConfig,
     });
