@@ -29,14 +29,12 @@ describe('Image fingerprinting', () => {
       expect(testPath1FileName).not.toBe(testPath2FileName);
     });
 
-    it('will create a different hash with different file name but same path', () => {
+    it('will postfix the file name to the end of the unique filename separated from the has with a hyphen', () => {
       const testPath = '/foo/bar';
-      const testFileName1 = 'baz-luhrmann.jpg';
-      const testFileName2 = 'django.jpg';
+      const testFileName = 'baz-luhrmann.jpg';
 
-      const testPath1Hash = getUniqueFileNameByPath(testPath, testFileName1);
-      const testPath2Hash = getUniqueFileNameByPath(testPath, testFileName2);
-      expect(testPath1Hash).not.toBe(testPath2Hash);
+      const testPath1Hash = getUniqueFileNameByPath(testPath, testFileName);
+      expect(testPath1Hash.endsWith(`-${testFileName}`)).toBeTruthy();
     });
   });
 });
