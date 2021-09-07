@@ -28,11 +28,14 @@
   ],
   "homepage": "https://github.com/henryhobhouse/react-static-images#readme",
   "dependencies": {
+    "cli-progress": "^3.9.0",
+    "colors": "^1.4.0",
     "esm": "^3.2.25",
     "shorthash2": "^1.0.3",
     "winston": "^3.3.3"
   },
   "devDependencies": {
+    "@types/cli-progress": "^3.9.2",
     "@types/jest": "^27.0.1",
     "@types/node": "^16.7.2",
     "@typescript-eslint/eslint-plugin": "^4.29.3",
