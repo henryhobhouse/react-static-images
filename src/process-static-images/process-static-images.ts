@@ -1,3 +1,4 @@
+import { cliProgressBar } from '../cli-progress';
 import { logger } from '../logger';
 
 import { getImageMetaData } from './get-images-meta-data';
@@ -17,6 +18,13 @@ export const processStaticImages = async () => {
   }
 
   logger.info(`${totalImagesToProcess} total unprocessed images`);
+
+  const progressBar = cliProgressBar.instantiateInstance();
+
+  // Start progress bar
+  progressBar.start(totalImagesToProcess, 0, {
+    speed: 'N/A',
+  });
 
   // create thumbnails and required image sizes
   // caching - ensure that we don't process images that we already

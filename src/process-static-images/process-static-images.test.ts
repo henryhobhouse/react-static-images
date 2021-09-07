@@ -2,6 +2,10 @@ const mockInfoLogger = jest.fn();
 const mockGetImageMetaData = jest
   .fn()
   .mockImplementation(() => ({ imageFilesMetaData: [] }));
+const mockProgressBarStart = jest.fn();
+const mockProgressBar = jest.fn().mockReturnValue({
+  start: mockProgressBarStart,
+});
 
 import { processStaticImages } from './process-static-images';
 
@@ -13,6 +17,12 @@ jest.mock('../logger', () => ({
 
 jest.mock('./get-images-meta-data', () => ({
   getImageMetaData: mockGetImageMetaData,
+}));
+
+jest.mock('../cli-progress', () => ({
+  cliProgressBar: {
+    instantiateInstance: mockProgressBar,
+  },
 }));
 
 describe('processStaticImages', () => {
@@ -44,5 +54,15 @@ describe('processStaticImages', () => {
     expect(mockInfoLogger.mock.calls[1][0]).toBe(
       `${mockImageMetaDatas.length} total unprocessed images`,
     );
+  });
+
+  it('will instantiate and start a progress bar', async () => {
+    const mockImageMetaDatas = [{}, {}];
+    mockGetImageMetaData.mockImplementationOnce(() => ({
+      imageFilesMetaData: mockImageMetaDatas,
+    }));
+    await processStaticImages();
+    expect(mockProgressBar).toBeCalledWith();
+    expect(mockProgressBarStart).toBeCalledWith(2, 0, { speed: 'N/A' });
   });
 });
