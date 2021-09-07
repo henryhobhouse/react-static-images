@@ -1,5 +1,5 @@
 describe('processStaticImages', () => {
-  it('does something', () => {
-    return true;
+  it.skip('does something', () => {
+    return;
   });
 });
