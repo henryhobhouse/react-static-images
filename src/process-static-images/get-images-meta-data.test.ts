@@ -2,9 +2,16 @@ import path from 'path';
 
 import { imageFormat } from '../static-image-config/constants';
 
+const firstChildDirectory = 'child_directory';
+const secondChildDirectory = 'nested_child_directory';
 const demoContentPath = '/test/demo-content-folder';
 const demoContentDirectory = path.join(process.cwd(), demoContentPath);
+const demoApplicationPublicDirectory = path.join(
+  demoContentDirectory,
+  firstChildDirectory,
+);
 const mockConfig = jest.fn().mockReturnValue({
+  applicationPublicDirectory: '',
   imageFormats: [imageFormat.png],
   imagesBaseDirectory: demoContentDirectory,
 });
@@ -23,9 +30,6 @@ jest.mock('../static-image-config', () => ({
 jest.mock('../utils/image-fingerprinting', () => ({
   getUniqueFileNameByPath: mockGetUniqueFileNameByPath,
 }));
-
-const firstChildDirectory = 'child_directory';
-const secondChildDirectory = 'nested_child_directory';
 
 describe('getImagesMetaData', () => {
   afterEach(() => {
@@ -53,6 +57,7 @@ describe('getImagesMetaData', () => {
       'django_partying.JPG',
     ];
     mockConfig.mockReturnValueOnce({
+      applicationPublicDirectory: '',
       imageFormats: [imageFormat.jpeg],
       imagesBaseDirectory: demoContentDirectory,
     });
@@ -91,6 +96,7 @@ describe('getImagesMetaData', () => {
   it('will retrieve all TIFF images from chosen content directory', async () => {
     const tiffFileName = 'django-with-toy.tiff';
     mockConfig.mockReturnValueOnce({
+      applicationPublicDirectory: '',
       imageFormats: [imageFormat.tiff],
       imagesBaseDirectory: demoContentDirectory,
     });
@@ -111,6 +117,7 @@ describe('getImagesMetaData', () => {
   it('will retrieve all AVIF images from chosen content directory', async () => {
     const avifFileName = 'django_at_beach.avif';
     mockConfig.mockReturnValueOnce({
+      applicationPublicDirectory: '',
       imageFormats: [imageFormat.avif],
       imagesBaseDirectory: demoContentDirectory,
     });
@@ -131,6 +138,7 @@ describe('getImagesMetaData', () => {
   it('will retrieve all WEBP images from chosen content directory', async () => {
     const webpFileName = 'puppy_asleep_with_toy.webp';
     mockConfig.mockReturnValueOnce({
+      applicationPublicDirectory: '',
       imageFormats: [imageFormat.webp],
       imagesBaseDirectory: demoContentDirectory,
     });
@@ -150,6 +158,7 @@ describe('getImagesMetaData', () => {
 
   it('will retrieve multiple file image meta data types from chosen content directory', async () => {
     mockConfig.mockReturnValueOnce({
+      applicationPublicDirectory: '',
       imageFormats: [
         imageFormat.webp,
         imageFormat.jpeg,
@@ -180,6 +189,7 @@ describe('getImagesMetaData', () => {
       'django_at_beach.avif',
     ];
     mockConfig.mockReturnValueOnce({
+      applicationPublicDirectory: '',
       imageFormats: [
         imageFormat.webp,
         imageFormat.jpeg,
@@ -226,6 +236,7 @@ describe('getImagesMetaData', () => {
 
   it('will gracefully handle if no images found in chosen directory', async () => {
     mockConfig.mockReturnValueOnce({
+      applicationPublicDirectory: '',
       imageFormats: [
         imageFormat.webp,
         imageFormat.jpeg,
@@ -245,6 +256,7 @@ describe('getImagesMetaData', () => {
 
   it('will throw and error if no image types are in the configuration', async () => {
     mockConfig.mockReturnValueOnce({
+      applicationPublicDirectory: '',
       imageFormats: [],
       imagesBaseDirectory: demoContentDirectory,
     });
@@ -257,5 +269,26 @@ describe('getImagesMetaData', () => {
           'There needs to be at least one accepted image format',
         ),
       );
+  });
+
+  it('will ignore the application public directory as set in config to avoid duplicate optimisations', async () => {
+    const jpgFileNameInRoot = 'django.jpg';
+    mockConfig.mockReturnValueOnce({
+      applicationPublicDirectory: demoApplicationPublicDirectory,
+      imageFormats: [imageFormat.jpeg],
+      imagesBaseDirectory: demoContentDirectory,
+    });
+    const result = await getImageMetaData();
+    // expect(mockGetUniqueFileNameByPath).toBeCalledTimes(1);
+    expect(result.imageFilesMetaData).toEqual([
+      {
+        fileName: jpgFileNameInRoot,
+        path: expect.stringContaining(
+          `${demoContentDirectory}/${jpgFileNameInRoot}`,
+        ),
+        type: imageFormat.jpeg,
+        uniqueImageFileName: `[hash]-${jpgFileNameInRoot}`,
+      },
+    ]);
   });
 });

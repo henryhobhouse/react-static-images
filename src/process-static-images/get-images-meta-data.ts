@@ -1,11 +1,12 @@
 import { promises } from 'fs';
+import path from 'path';
 
 import { getStaticImageConfig } from '../static-image-config';
 import { imageFormat } from '../static-image-config/constants';
 import { ImageFormat } from '../static-image-config/static-image-config';
 import { getUniqueFileNameByPath } from '../utils/image-fingerprinting';
 
-interface ImageMeta {
+export interface ImageMeta {
   path: string;
   uniqueImageFileName: string;
   fileName: string;
@@ -55,7 +56,13 @@ const createImageFormatTypeMatcher = (fileTypes: ImageFormat[]) => {
  * * image type
  */
 export const getImageMetaData = async () => {
-  const { imageFormats, imagesBaseDirectory } = getStaticImageConfig();
+  const { imageFormats, imagesBaseDirectory, applicationPublicDirectory } =
+    getStaticImageConfig();
+  const applicationPublicDirectoryPath = path.resolve(
+    process.cwd(),
+    applicationPublicDirectory,
+  );
+
   const imageFilesMetaData: ImageMeta[] = [];
 
   // if no accepted image file types throw error as should always expect at least one
@@ -109,7 +116,12 @@ export const getImageMetaData = async () => {
     await Promise.all(
       dirents.map(async (dirent) => {
         const filePath = `${directoryPath}/${dirent.name}`;
+
+        // return if reviewing public directory to avoid re-processing images
+        if (applicationPublicDirectoryPath === filePath) return;
+
         const isDirectory = dirent.isDirectory();
+
         if (isDirectory) await recursiveSearchForImages(filePath);
       }),
     );

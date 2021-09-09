@@ -9,18 +9,20 @@ import { defaultConfig } from './default-config';
 export type ImageFormat = keyof typeof imageFormat;
 
 export interface ImageConfig {
-  /* options of 'jpeg' and 'png' (optional, default both) */
+  /* options of 'jpeg' and 'png' (default both) */
   imageFormats: ImageFormat[];
-  /* width of thumbnail in px whilst retaining ration of original image */
+  /* width of thumbnail in px whilst retaining ration of original image (default 20(px) */
   thumbnailSize: number;
-  /* additional images of size (width in px) created if smaller than original for the browser to use in smaller viewports */
+  /* additional images of size (width in px) created if smaller than original for the browser to use in smaller viewports (default [640, 750, 828, 1080, 1200, 1920, 2048, 3840]) */
   optimisedImageSizes: number[];
-  /* use the lowest number of colours needed to achieve given quality (optional, default 100) */
+  /* use the lowest number of colours needed to achieve given quality (default 100) */
   optimisedImageColourQuality: number;
-  /* zlib compression level, 0-9 (optional, default 9) */
+  /* zlib compression level, 0-9 (default 9) */
   optimisedImageCompressionLevel: number;
-  /* location of directory to recursively search for images to be optimised */
+  /* location of directory to recursively search for images to be optimised. (default current working directory) */
   imagesBaseDirectory: string;
+  /* location of directory that allows public assets for your web app. ('/public') */
+  applicationPublicDirectory: string;
 }
 
 const configFilePath = path.resolve(process.cwd(), userConfigFileName);

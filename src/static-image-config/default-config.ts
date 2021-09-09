@@ -1,7 +1,10 @@
 import { imageFormat } from './constants';
 import type { ImageConfig } from './static-image-config';
 
+const currentWorkingDirectory = process.cwd();
+
 export const defaultConfig: ImageConfig = {
+  applicationPublicDirectory: '/public',
   imageFormats: [
     imageFormat.png,
     imageFormat.jpeg,
@@ -9,7 +12,7 @@ export const defaultConfig: ImageConfig = {
     imageFormat.tiff,
     imageFormat.webp,
   ],
-  imagesBaseDirectory: process.cwd(),
+  imagesBaseDirectory: currentWorkingDirectory,
   optimisedImageColourQuality: 100,
   optimisedImageCompressionLevel: 9,
   optimisedImageSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
