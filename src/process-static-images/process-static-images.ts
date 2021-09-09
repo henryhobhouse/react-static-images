@@ -27,6 +27,6 @@ export const processStaticImages = async () => {
   });
 
   // create thumbnails and required image sizes
-  // caching - ensure that we don't process images that we already
   // browser caching - adding hash fingerprint to file name
+  // caching - ensure that we don't process images that we already
 };
