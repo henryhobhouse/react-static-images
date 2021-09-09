@@ -27,6 +27,7 @@ jest.mock('../static-image-config', () => ({
   getStaticImageConfig: mockConfig,
 }));
 
+// have the mock simple prefix '[hash]-' before file name to easily identify and test if function has been run
 jest.mock('../utils/image-fingerprinting', () => ({
   getUniqueFileNameByPath: mockGetUniqueFileNameByPath,
 }));
@@ -279,7 +280,7 @@ describe('getImagesMetaData', () => {
       imagesBaseDirectory: demoContentDirectory,
     });
     const result = await getImageMetaData();
-    // expect(mockGetUniqueFileNameByPath).toBeCalledTimes(1);
+    expect(mockGetUniqueFileNameByPath).toBeCalledTimes(1);
     expect(result.imageFilesMetaData).toEqual([
       {
         fileName: jpgFileNameInRoot,
