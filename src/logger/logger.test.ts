@@ -1,7 +1,7 @@
 import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'fs';
 import path from 'path';
 
-import { waitFor } from '../../lib/test-utils/wait-for';
+import { waitFor } from '../../test/utils/wait-for';
 
 import { logger } from './logger';
 
