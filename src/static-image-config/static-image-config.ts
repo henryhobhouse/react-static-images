@@ -23,6 +23,8 @@ export interface ImageConfig {
   imagesBaseDirectory: string;
   /* location of directory that allows public assets for your web app. ('/public') */
   applicationPublicDirectory: string;
+  /* location of directory to data that might not be added directory to 'applicationPublicDirectory' like (base64) thumbnails or image meta data */
+  staticImageMetaDirectory: string;
 }
 
 const configFilePath = path.resolve(process.cwd(), userConfigFileName);
