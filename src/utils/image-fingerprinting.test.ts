@@ -1,13 +1,25 @@
-import { getUniqueFileNameByPath } from './image-fingerprinting';
+import {
+  createUniqueFileNameFromPath,
+  getFileContentShortHashByPath,
+} from './image-fingerprinting';
+
+const mockFileBuffer = Buffer.from('foo bar');
+
+jest.mock('fs', () => ({
+  promises: {
+    readFile: jest
+      .fn()
+      .mockImplementation(() => Promise.resolve(mockFileBuffer)),
+  },
+}));
 
 describe('Image fingerprinting', () => {
   describe('getUniqueFileNameByPath', () => {
     it('will consistently create the same unique hash from file path and file name', () => {
       const testPath = '/foo/bar';
       const testFileName = 'baz-luhrmann.jpg';
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      for (const _ of Array.from({ length: 10 })) {
-        expect(getUniqueFileNameByPath(testPath, testFileName)).toBe(
+      for (const _ of Array.from({ length: 20 })) {
+        expect(createUniqueFileNameFromPath(testPath, testFileName)).toBe(
           `Zr2gHx-${testFileName}`,
         );
       }
@@ -18,11 +30,11 @@ describe('Image fingerprinting', () => {
       const testPath2 = '/foo/burr';
       const testFileName = 'baz-luhrmann.jpg';
 
-      const testPath1FileName = getUniqueFileNameByPath(
+      const testPath1FileName = createUniqueFileNameFromPath(
         testPath1,
         testFileName,
       );
-      const testPath2FileName = getUniqueFileNameByPath(
+      const testPath2FileName = createUniqueFileNameFromPath(
         testPath2,
         testFileName,
       );
@@ -33,8 +45,20 @@ describe('Image fingerprinting', () => {
       const testPath = '/foo/bar';
       const testFileName = 'baz-luhrmann.jpg';
 
-      const testPath1Hash = getUniqueFileNameByPath(testPath, testFileName);
+      const testPath1Hash = createUniqueFileNameFromPath(
+        testPath,
+        testFileName,
+      );
       expect(testPath1Hash.endsWith(`-${testFileName}`)).toBeTruthy();
+    });
+  });
+
+  describe('getFileShortHash', () => {
+    it('will consistently return a unique short hash based on file contents', async () => {
+      for (const _ of Array.from({ length: 20 })) {
+        const shortHash = await getFileContentShortHashByPath('');
+        expect(shortHash).toBe('N3PeplF');
+      }
     });
   });
 });
