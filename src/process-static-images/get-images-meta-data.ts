@@ -8,7 +8,7 @@ import { createUniqueFileNameFromPath } from '../utils/image-fingerprinting';
 
 export interface ImageFileSystemMetaData {
   path: string;
-  uniqueImageFileName: string;
+  uniqueImageName: string;
   fileName: string;
   type: ImageFormat;
 }
@@ -93,7 +93,7 @@ export const getImageMetaData = async () => {
 
         // To avoid collisions with images of same name but different paths we take a simple
         // hash of the path as a prefix to ensure a unique name when copied to the web app public directory.
-        const uniqueImageFileName = createUniqueFileNameFromPath(
+        const uniqueImageName = createUniqueFileNameFromPath(
           imageFilePath,
           imageDirent.name.replace(`.${imageFormatType}`, ''),
         );
@@ -107,7 +107,7 @@ export const getImageMetaData = async () => {
             fileName: imageDirent.name,
             path: imageFilePath,
             type: fileType as ImageFormat,
-            uniqueImageFileName,
+            uniqueImageName,
           };
           imageFilesMetaData.push(imageMeta);
         }

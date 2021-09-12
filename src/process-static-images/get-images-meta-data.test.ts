@@ -46,7 +46,7 @@ describe('getImagesMetaData', () => {
         fileName: pngFileName,
         path: expect.stringContaining(`${demoContentDirectory}/${pngFileName}`),
         type: imageFormat.png,
-        uniqueImageFileName: `[hash]-${pngFileName.replace(
+        uniqueImageName: `[hash]-${pngFileName.replace(
           /.(png|jpg|avif|tiff|jpeg|webp)/i,
           '',
         )}`,
@@ -75,7 +75,7 @@ describe('getImagesMetaData', () => {
             `${demoContentDirectory}/${jpgFileNames[0]}`,
           ),
           type: imageFormat.jpeg,
-          uniqueImageFileName: `[hash]-${jpgFileNames[0].replace(
+          uniqueImageName: `[hash]-${jpgFileNames[0].replace(
             /.(png|jpg|avif|tiff|jpeg|webp)/i,
             '',
           )}`,
@@ -86,7 +86,7 @@ describe('getImagesMetaData', () => {
             `${demoContentDirectory}/${firstChildDirectory}/${jpgFileNames[1]}`,
           ),
           type: imageFormat.jpeg,
-          uniqueImageFileName: `[hash]-${jpgFileNames[1].replace(
+          uniqueImageName: `[hash]-${jpgFileNames[1].replace(
             /.(png|jpg|avif|tiff|jpeg|webp)/i,
             '',
           )}`,
@@ -97,7 +97,7 @@ describe('getImagesMetaData', () => {
             `${demoContentDirectory}/${firstChildDirectory}/${secondChildDirectory}/${jpgFileNames[2]}`,
           ),
           type: imageFormat.jpeg,
-          uniqueImageFileName: `[hash]-${jpgFileNames[2].replace(
+          uniqueImageName: `[hash]-${jpgFileNames[2].replace(
             /.(png|jpg|avif|tiff|jpeg|webp)/i,
             '',
           )}`,
@@ -122,7 +122,7 @@ describe('getImagesMetaData', () => {
           `${demoContentDirectory}/${firstChildDirectory}/${secondChildDirectory}/${tiffFileName}`,
         ),
         type: imageFormat.tiff,
-        uniqueImageFileName: `[hash]-${tiffFileName.replace(
+        uniqueImageName: `[hash]-${tiffFileName.replace(
           /.(png|jpg|avif|tiff|jpeg|webp)/i,
           '',
         )}`,
@@ -146,7 +146,7 @@ describe('getImagesMetaData', () => {
           `${demoContentDirectory}/${firstChildDirectory}/${secondChildDirectory}/${avifFileName}`,
         ),
         type: imageFormat.avif,
-        uniqueImageFileName: `[hash]-${avifFileName.replace(
+        uniqueImageName: `[hash]-${avifFileName.replace(
           /.(png|jpg|avif|tiff|jpeg|webp)/i,
           '',
         )}`,
@@ -170,7 +170,7 @@ describe('getImagesMetaData', () => {
           `${demoContentDirectory}/${firstChildDirectory}/${webpFileName}`,
         ),
         type: imageFormat.webp,
-        uniqueImageFileName: `[hash]-${webpFileName.replace(
+        uniqueImageName: `[hash]-${webpFileName.replace(
           /.(png|jpg|avif|tiff|jpeg|webp)/i,
           '',
         )}`,
@@ -198,7 +198,7 @@ describe('getImagesMetaData', () => {
           fileName: expect.stringContaining('.'),
           path: expect.stringContaining(demoContentDirectory),
           type: expect.stringContaining(''),
-          uniqueImageFileName: expect.stringContaining('[hash]-'),
+          uniqueImageName: expect.stringContaining('[hash]-'),
         }),
       ]),
     );
@@ -234,7 +234,7 @@ describe('getImagesMetaData', () => {
             `${demoContentDirectory}/${firstChildDirectory}/${secondChildDirectory}/${nestedDirectoryImageFileNames[2]}`,
           ),
           type: imageFormat.avif,
-          uniqueImageFileName: `[hash]-${nestedDirectoryImageFileNames[2].replace(
+          uniqueImageName: `[hash]-${nestedDirectoryImageFileNames[2].replace(
             /.(png|jpg|avif|tiff|jpeg|webp)/i,
             '',
           )}`,
@@ -245,7 +245,7 @@ describe('getImagesMetaData', () => {
             `${demoContentDirectory}/${firstChildDirectory}/${secondChildDirectory}/${nestedDirectoryImageFileNames[0]}`,
           ),
           type: imageFormat.tiff,
-          uniqueImageFileName: `[hash]-${nestedDirectoryImageFileNames[0].replace(
+          uniqueImageName: `[hash]-${nestedDirectoryImageFileNames[0].replace(
             /.(png|jpg|avif|tiff|jpeg|webp)/i,
             '',
           )}`,
@@ -256,7 +256,7 @@ describe('getImagesMetaData', () => {
             `${demoContentDirectory}/${firstChildDirectory}/${secondChildDirectory}/${nestedDirectoryImageFileNames[1]}`,
           ),
           type: imageFormat.jpeg,
-          uniqueImageFileName: `[hash]-${nestedDirectoryImageFileNames[1].replace(
+          uniqueImageName: `[hash]-${nestedDirectoryImageFileNames[1].replace(
             /.(png|jpg|avif|tiff|jpeg|webp)/i,
             '',
           )}`,
@@ -318,7 +318,7 @@ describe('getImagesMetaData', () => {
           `${demoContentDirectory}/${jpgFileNameInRoot}`,
         ),
         type: imageFormat.jpeg,
-        uniqueImageFileName: `[hash]-${jpgFileNameInRoot.replace(
+        uniqueImageName: `[hash]-${jpgFileNameInRoot.replace(
           /.(png|jpg|avif|tiff|jpeg|webp)/i,
           '',
         )}`,
