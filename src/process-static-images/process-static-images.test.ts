@@ -15,8 +15,8 @@ jest.mock('../logger', () => ({
   },
 }));
 
-jest.mock('./get-images-meta-data', () => ({
-  getImageMetaData: mockGetImageMetaData,
+jest.mock('./image-files-meta-data', () => ({
+  getImageFilesMetaData: mockGetImageMetaData,
 }));
 
 jest.mock('../cli-progress', () => ({

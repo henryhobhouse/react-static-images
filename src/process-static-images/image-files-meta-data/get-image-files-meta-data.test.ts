@@ -1,34 +1,48 @@
 import path from 'path';
 
-import { imageFormat } from '../static-image-config/constants';
+// eslint-disable-next-line import/order
+import { testDirectoryPath } from '../../../test/constants';
+
+const demoContentPath = 'demo-content-folder';
+const demoContentDirectory = path.join(testDirectoryPath, demoContentPath);
+
+const mockConfig = jest.fn().mockReturnValue({
+  applicationPublicDirectory: '',
+  imageFormats: ['png'],
+  imagesBaseDirectory: demoContentDirectory,
+});
+
+import { imageFormat } from '../../static-image-config';
 
 const firstChildDirectory = 'child_directory';
 const secondChildDirectory = 'nested_child_directory';
-const demoContentPath = '/test/demo-content-folder';
-const demoContentDirectory = path.join(process.cwd(), demoContentPath);
+
 const demoApplicationPublicDirectory = path.join(
   demoContentDirectory,
   firstChildDirectory,
 );
-const mockConfig = jest.fn().mockReturnValue({
-  applicationPublicDirectory: '',
-  imageFormats: [imageFormat.png],
-  imagesBaseDirectory: demoContentDirectory,
-});
+
 const mockGetUniqueFileNameByPath = jest
   .fn()
   .mockImplementation((_, fileName: string) => {
     return `[hash]-${fileName}`;
   });
 
-import { getImageMetaData } from './get-images-meta-data';
+import { getImageFilesMetaData } from './get-image-files-meta-data';
 
-jest.mock('../static-image-config', () => ({
-  getStaticImageConfig: mockConfig,
-}));
+jest.mock('../../static-image-config', () => {
+  const staticImageConfigExports = jest.requireActual(
+    '../../static-image-config',
+  );
+
+  return {
+    ...staticImageConfigExports,
+    getStaticImageConfig: mockConfig,
+  };
+});
 
 // have the mock simple prefix '[hash]-' before file name to easily identify and test if function has been run
-jest.mock('../utils/image-fingerprinting', () => ({
+jest.mock('../../utils/image-fingerprinting', () => ({
   createUniqueFileNameFromPath: mockGetUniqueFileNameByPath,
 }));
 
@@ -39,7 +53,7 @@ describe('getImagesMetaData', () => {
 
   it('will retrieve all PNG images from chosen content directory', async () => {
     const pngFileName = 'django_in_park.png';
-    const result = await getImageMetaData();
+    const result = await getImageFilesMetaData();
     expect(mockGetUniqueFileNameByPath).toBeCalledTimes(1);
     expect(result.imageFilesMetaData).toEqual([
       {
@@ -65,7 +79,7 @@ describe('getImagesMetaData', () => {
       imageFormats: [imageFormat.jpeg],
       imagesBaseDirectory: demoContentDirectory,
     });
-    const result = await getImageMetaData();
+    const result = await getImageFilesMetaData();
     expect(mockGetUniqueFileNameByPath).toHaveBeenCalledTimes(3);
     expect(result.imageFilesMetaData).toEqual(
       expect.arrayContaining([
@@ -113,7 +127,7 @@ describe('getImagesMetaData', () => {
       imageFormats: [imageFormat.tiff],
       imagesBaseDirectory: demoContentDirectory,
     });
-    const result = await getImageMetaData();
+    const result = await getImageFilesMetaData();
     expect(mockGetUniqueFileNameByPath).toBeCalledTimes(1);
     expect(result.imageFilesMetaData).toEqual([
       {
@@ -137,7 +151,7 @@ describe('getImagesMetaData', () => {
       imageFormats: [imageFormat.avif],
       imagesBaseDirectory: demoContentDirectory,
     });
-    const result = await getImageMetaData();
+    const result = await getImageFilesMetaData();
     expect(mockGetUniqueFileNameByPath).toBeCalledTimes(1);
     expect(result.imageFilesMetaData).toEqual([
       {
@@ -161,7 +175,7 @@ describe('getImagesMetaData', () => {
       imageFormats: [imageFormat.webp],
       imagesBaseDirectory: demoContentDirectory,
     });
-    const result = await getImageMetaData();
+    const result = await getImageFilesMetaData();
     expect(mockGetUniqueFileNameByPath).toBeCalledTimes(1);
     expect(result.imageFilesMetaData).toEqual([
       {
@@ -190,7 +204,7 @@ describe('getImagesMetaData', () => {
       ],
       imagesBaseDirectory: demoContentDirectory,
     });
-    const result = await getImageMetaData();
+    const result = await getImageFilesMetaData();
     expect(mockGetUniqueFileNameByPath).toBeCalledTimes(7);
     expect(result.imageFilesMetaData).toEqual(
       expect.arrayContaining([
@@ -224,7 +238,7 @@ describe('getImagesMetaData', () => {
         `/${firstChildDirectory}/${secondChildDirectory}`,
       ),
     });
-    const result = await getImageMetaData();
+    const result = await getImageFilesMetaData();
     expect(mockGetUniqueFileNameByPath).toBeCalledTimes(3);
     expect(result.imageFilesMetaData).toEqual(
       expect.arrayContaining([
@@ -280,7 +294,7 @@ describe('getImagesMetaData', () => {
         '/no_image_directory',
       ),
     });
-    const result = await getImageMetaData();
+    const result = await getImageFilesMetaData();
     expect(mockGetUniqueFileNameByPath).toBeCalledTimes(0);
     expect(result.imageFilesMetaData).toEqual([]);
   });
@@ -291,7 +305,7 @@ describe('getImagesMetaData', () => {
       imageFormats: [],
       imagesBaseDirectory: demoContentDirectory,
     });
-    await getImageMetaData()
+    await getImageFilesMetaData()
       .then(() => {
         throw new Error('expected getImageMetaData to throw error');
       })
@@ -309,7 +323,7 @@ describe('getImagesMetaData', () => {
       imageFormats: [imageFormat.jpeg],
       imagesBaseDirectory: demoContentDirectory,
     });
-    const result = await getImageMetaData();
+    const result = await getImageFilesMetaData();
     expect(mockGetUniqueFileNameByPath).toBeCalledTimes(1);
     expect(result.imageFilesMetaData).toEqual([
       {

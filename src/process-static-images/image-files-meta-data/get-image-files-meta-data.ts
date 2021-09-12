@@ -1,10 +1,12 @@
 import { promises } from 'fs';
 import path from 'path';
 
-import { getStaticImageConfig } from '../static-image-config';
-import { imageFormat } from '../static-image-config/constants';
-import { ImageFormat } from '../static-image-config/static-image-config';
-import { createUniqueFileNameFromPath } from '../utils/image-fingerprinting';
+import {
+  getStaticImageConfig,
+  imageFormat,
+  ImageFormat,
+} from '../../static-image-config';
+import { createUniqueFileNameFromPath } from '../../utils/image-fingerprinting';
 
 export interface ImageFileSystemMetaData {
   path: string;
@@ -55,7 +57,7 @@ const createImageFormatTypeMatcher = (fileTypes: ImageFormat[]) => {
  * * image path
  * * image type
  */
-export const getImageMetaData = async () => {
+export const getImageFilesMetaData = async () => {
   const { imageFormats, imagesBaseDirectory, applicationPublicDirectory } =
     getStaticImageConfig();
   const applicationPublicDirectoryPath = path.resolve(

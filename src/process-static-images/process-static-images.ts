@@ -1,12 +1,12 @@
 import { cliProgressBar } from '../cli-progress';
 import { logger } from '../logger';
 
-import { getImageMetaData } from './get-images-meta-data';
+import { getImageFilesMetaData } from './image-files-meta-data';
 
 export const processStaticImages = async () => {
   logger.info('Processing static images');
 
-  const { imageFilesMetaData } = await getImageMetaData();
+  const { imageFilesMetaData } = await getImageFilesMetaData();
 
   const totalImagesToProcess = imageFilesMetaData.length;
 
