@@ -4,9 +4,9 @@ import path from 'path';
 import { getStaticImageConfig } from '../static-image-config';
 import { imageFormat } from '../static-image-config/constants';
 import { ImageFormat } from '../static-image-config/static-image-config';
-import { getUniqueFileNameByPath } from '../utils/image-fingerprinting';
+import { createUniqueFileNameFromPath } from '../utils/image-fingerprinting';
 
-export interface ImageMeta {
+export interface ImageFileSystemMetaData {
   path: string;
   uniqueImageFileName: string;
   fileName: string;
@@ -63,7 +63,7 @@ export const getImageMetaData = async () => {
     applicationPublicDirectory,
   );
 
-  const imageFilesMetaData: ImageMeta[] = [];
+  const imageFilesMetaData: ImageFileSystemMetaData[] = [];
 
   // if no accepted image file types throw error as should always expect at least one
   if (imageFormats.length === 0)
@@ -93,9 +93,9 @@ export const getImageMetaData = async () => {
 
         // To avoid collisions with images of same name but different paths we take a simple
         // hash of the path as a prefix to ensure a unique name when copied to the web app public directory.
-        const uniqueImageFileName = getUniqueFileNameByPath(
+        const uniqueImageFileName = createUniqueFileNameFromPath(
           imageFilePath,
-          imageDirent.name,
+          imageDirent.name.replace(`.${imageFormatType}`, ''),
         );
 
         const fileType = /jpg/i.test(imageFormatType)
