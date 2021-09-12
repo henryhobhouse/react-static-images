@@ -6,6 +6,7 @@ module.exports = {
     '/node_modules/',
     '__tests__',
     'index.ts',
+    'constants.ts',
     'coverage/lcov-report',
   ],
   globals: {

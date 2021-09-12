@@ -53,8 +53,10 @@ module.exports = {
       'error',
       {
         args: 'after-used',
+        argsIgnorePattern: '^_',
         ignoreRestSiblings: true,
         vars: 'all',
+        varsIgnorePattern: '^_',
       },
     ],
     'import/newline-after-import': ['error', { count: 1 }],
