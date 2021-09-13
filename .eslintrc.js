@@ -89,6 +89,12 @@ module.exports = {
       'asc',
       { caseSensitive: true, natural: false },
     ],
+    'unicorn/catch-error-name': [
+      'error',
+      {
+        name: 'exception',
+      },
+    ],
     'unicorn/no-array-reduce': [
       'error',
       {
