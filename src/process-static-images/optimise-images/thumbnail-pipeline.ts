@@ -1,7 +1,8 @@
 import { promises } from 'fs';
 
 import type { Sharp } from 'sharp';
-import VError from 'verror';
+
+import { thrownExceptionToError } from '../../utils/thrown-exception';
 
 interface Props {
   pipeline: Sharp;
@@ -26,7 +27,10 @@ export const thumbnailPipeline = async ({
       'base64',
     )}`;
     await promises.writeFile(thumbnailFilePath, thumbnailBase64);
-  } catch (error) {
-    throw new VError(error, `Error processing image thumbnail pipeline`);
+  } catch (exception) {
+    thrownExceptionToError(
+      exception,
+      `Error processing image thumbnail pipeline`,
+    );
   }
 };
