@@ -25,6 +25,8 @@ export interface ImageConfig {
   applicationPublicDirectory: string;
   /* location of directory to data that might not be added directory to 'applicationPublicDirectory' like (base64) thumbnails or image meta data */
   staticImageMetaDirectory: string;
+  /* any directories that should be ignored by the library when searching for images to process */
+  excludedDirectories: string[];
 }
 
 const configFilePath = path.resolve(process.cwd(), userConfigFileName);

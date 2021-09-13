@@ -4,6 +4,7 @@ import path from 'path';
 import { getStaticImageConfig, imageFormat } from '../../static-image-config';
 import type { ImageFormat } from '../../static-image-config';
 import { createUniqueFileNameFromPath } from '../../utils/image-fingerprinting';
+import { baseExcludedDirectories } from '../constants';
 
 export interface ImageFileSystemMetaData {
   path: string;
@@ -11,6 +12,8 @@ export interface ImageFileSystemMetaData {
   fileName: string;
   type: ImageFormat;
 }
+
+const currentWorkingDirectory = process.cwd();
 
 /**
  * Programmatically builds regex matcher for image types based on array of accepted image types
@@ -55,12 +58,13 @@ const createImageFormatTypeMatcher = (fileTypes: ImageFormat[]) => {
  * * image type
  */
 export const getImageFilesMetaData = async () => {
-  const { imageFormats, imagesBaseDirectory, applicationPublicDirectory } =
+  const { imageFormats, imagesBaseDirectory, excludedDirectories } =
     getStaticImageConfig();
-  const applicationPublicDirectoryPath = path.resolve(
-    process.cwd(),
-    applicationPublicDirectory,
-  );
+
+  const allExcludedDirectories = [
+    ...baseExcludedDirectories,
+    ...excludedDirectories,
+  ];
 
   const imageFilesMetaData: ImageFileSystemMetaData[] = [];
 
@@ -116,8 +120,13 @@ export const getImageFilesMetaData = async () => {
       dirents.map(async (dirent) => {
         const filePath = `${directoryPath}/${dirent.name}`;
 
-        // return if reviewing public directory to avoid re-processing images
-        if (applicationPublicDirectoryPath === filePath) return;
+        // return if reviewing an excluded directory to avoid re-processing images or images the user doesn't want processing
+        for (const excludedDirectory of allExcludedDirectories) {
+          if (
+            filePath === path.join(currentWorkingDirectory, excludedDirectory)
+          )
+            return;
+        }
 
         const isDirectory = dirent.isDirectory();
 
