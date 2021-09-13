@@ -4,11 +4,11 @@ import type { ImageConfig } from './static-image-config';
 const currentWorkingDirectory = process.cwd();
 
 export const defaultConfig: ImageConfig = {
-  applicationPublicDirectory: '/public',
+  applicationPublicDirectory: 'public',
+  excludedDirectories: [],
   imageFormats: [
     imageFormat.png,
     imageFormat.jpeg,
-    imageFormat.avif,
     imageFormat.tiff,
     imageFormat.webp,
   ],
