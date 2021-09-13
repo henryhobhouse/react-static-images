@@ -38,7 +38,7 @@ const createImageFormatTypeMatcher = (fileTypes: ImageFormat[]) => {
   // create regex matcher object to look for any of the image types at end of file name prefixed with
   // a period i.e. `.png` or `.webp`
   const imageFormatTypeMatcher = new RegExp(
-    `(?<=.)(${buildFileTypesString()})$`,
+    `(?<=[.])(${buildFileTypesString()})$`,
     'i',
   );
 
