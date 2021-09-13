@@ -4,7 +4,6 @@ import colors from 'colors';
 const defaultCliConfig: Options = {
   barCompleteChar: '\u2588',
   barIncompleteChar: '\u2591',
-  etaBuffer: 300,
   format: `|${colors.magenta(
     '{bar}',
   )}| {percentage}% || {value}/{total} Images processed || ETA: {eta}s`,
