@@ -1,4 +1,5 @@
 const mockFsPromisesWriteFile = jest.fn();
+const mockThrownExceptionToError = jest.fn();
 
 import { thumbnailPipeline } from './thumbnail-pipeline';
 
@@ -19,6 +20,10 @@ jest.mock('fs', () => ({
   promises: {
     writeFile: mockFsPromisesWriteFile,
   },
+}));
+
+jest.mock('../../utils/thrown-exception', () => ({
+  thrownExceptionToError: mockThrownExceptionToError,
 }));
 
 const mockThumbnailSize = 20;
@@ -62,20 +67,21 @@ describe('thumbnailPipeline', () => {
     );
   });
 
-  it('will rethrow any error with human readable prefix', async () => {
+  it('will call "thrownExceptionToError" on error', async () => {
     const testErrorMessage = 'oppsies';
     mockPipelineResize.mockImplementationOnce(() => {
       throw new Error(testErrorMessage);
     });
 
-    await expect(() =>
-      thumbnailPipeline({
-        pipeline: mockPipeline as any,
-        thumbnailFilePath: '',
-        thumbnailSize: mockThumbnailSize,
-      }),
-    ).rejects.toThrowError(
-      `Error processing image thumbnail pipeline: ${testErrorMessage}`,
+    await thumbnailPipeline({
+      pipeline: mockPipeline as any,
+      thumbnailFilePath: '',
+      thumbnailSize: mockThumbnailSize,
+    });
+
+    expect(mockThrownExceptionToError).toBeCalledWith(
+      new Error(testErrorMessage),
+      'Error processing image thumbnail pipeline',
     );
   });
 });
