@@ -2,10 +2,10 @@
   "name": "react-static-images",
   "version": "0.0.1",
   "description": "Ultra fast image processing for react",
-  "main": "bin/index.js",
+  "main": "index.js",
   "scripts": {
     "test": "jest --collectCoverage",
-    "build": "tsc",
+    "build": "rm -rf dist && tsc",
     "build-ci": "yarn build && cp -a dist/. .",
     "check-types": "tsc --noEmit",
     "lint": "eslint '**/*.{js,ts,tsx}' --quiet --fix"
