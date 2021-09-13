@@ -1,5 +1,4 @@
-/* eslint-disable import/no-namespace */
-import * as cliProgressModule from 'cli-progress';
+import { SingleBar } from 'cli-progress';
 
 describe('CLI Progress', () => {
   afterEach(() => {
@@ -12,9 +11,7 @@ describe('CLI Progress', () => {
     const progressInstance = cliProgressBar.instantiateInstance();
 
     // eslint-disable-next-line prettier/prettier
-    expect(
-      progressInstance instanceof cliProgressModule.SingleBar,
-    ).toBeTruthy();
+    expect(progressInstance instanceof SingleBar).toBeTruthy();
   });
 
   it('allows you to retrieve a previously instantaited instance', async () => {
