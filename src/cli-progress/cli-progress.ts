@@ -1,7 +1,7 @@
 import { SingleBar, Options } from 'cli-progress';
 import colors from 'colors';
 
-const defaultCliConfig = {
+const defaultCliConfig: Options = {
   barCompleteChar: '\u2588',
   barIncompleteChar: '\u2591',
   etaBuffer: 300,
