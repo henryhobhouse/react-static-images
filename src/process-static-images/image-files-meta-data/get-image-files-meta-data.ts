@@ -1,8 +1,8 @@
 import { promises } from 'fs';
 import path from 'path';
 
-import { getStaticImageConfig, imageFormat } from '../../static-image-config';
 import type { ImageFormat } from '../../static-image-config';
+import { getStaticImageConfig, imageFormat } from '../../static-image-config';
 import { createUniqueFileNameFromPath } from '../../utils/image-fingerprinting';
 import { baseExcludedDirectories } from '../constants';
 

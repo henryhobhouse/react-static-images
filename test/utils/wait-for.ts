@@ -10,12 +10,12 @@ export const waitFor = async (
       try {
         await assertion();
         resolve(true);
-      } catch (error) {
+      } catch (exception) {
         if (timeRun <= timeOut) {
           timeRun += pollInterval;
           setTimeout(checkCondition, pollInterval);
         } else {
-          reject(error);
+          reject(exception);
         }
       }
     }

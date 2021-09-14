@@ -1,4 +1,5 @@
-import { SingleBar, Options } from 'cli-progress';
+import type { Options } from 'cli-progress';
+import { SingleBar } from 'cli-progress';
 import colors from 'colors';
 
 const defaultCliConfig: Options = {
