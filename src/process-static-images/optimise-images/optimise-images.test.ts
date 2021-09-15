@@ -192,7 +192,10 @@ describe('optimiseImages', () => {
 
     expect(mockThumbnailPipeline).toBeCalledWith({
       pipeline: mockPipelineCloneReturnValue,
-      thumbnailFilePath: `${mockThumbnailDirectoryPath}/${testUniqueName}.base64`,
+      thumbnailFilePath: path.join(
+        mockThumbnailDirectoryPath,
+        `${testUniqueName}.base64`,
+      ),
       thumbnailSize: mockStaticImageConfig.thumbnailSize,
     });
   });
@@ -244,7 +247,11 @@ describe('optimiseImages', () => {
     });
 
     expect(mockOptimiseImageBySizePipeline).toBeCalledWith({
-      imageSizeFilePath: `${mockRootPublicImageDirectory}/${imageSize}/${mockHash}${testUniqueName}.${fileType}`,
+      imageSizeFilePath: path.join(
+        mockRootPublicImageDirectory,
+        imageSize.toString(),
+        `${mockHash}${testUniqueName}.${fileType}`,
+      ),
       optimisedImageColourQuality: colourQuality,
       optimisedImageCompressionLevel: compressionLevel,
       optimisedImageSize: imageSize,

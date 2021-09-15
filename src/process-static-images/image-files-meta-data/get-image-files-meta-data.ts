@@ -85,7 +85,7 @@ export const getImageFilesMetaData = async () => {
 
     if (imageDirents.length > 0) {
       for (const imageDirent of imageDirents) {
-        const imageFilePath = `${directoryPath}/${imageDirent.name}`;
+        const imageFilePath = path.join(directoryPath, imageDirent.name);
         const imageFormatRegExMatchArray =
           imageDirent.name.match(imageFileTypeRegex);
 
@@ -118,7 +118,7 @@ export const getImageFilesMetaData = async () => {
     }
     await Promise.all(
       dirents.map(async (dirent) => {
-        const filePath = `${directoryPath}/${dirent.name}`;
+        const filePath = path.join(directoryPath, dirent.name);
 
         // return if reviewing an excluded directory to avoid re-processing images or images the user doesn't want processing
         for (const excludedDirectory of allExcludedDirectories) {
