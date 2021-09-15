@@ -11,6 +11,9 @@ TODO:
 - Cache Invalidation
 - Webpack Loader to update image props in JSX at build time
 - MDX plugin to update MAST at build time (for MDX webpack loader only)
+- Manual publish to NPM
+- Add versioning (likely via lerna)
+- Update github actions config to auto publish on merge to main branch
 - Consideration of runtime updates (no need to eject webpack config in CRA).
   This would require adding image meta data to global scope so would have to be
   an non default option as this isn't ideal if there are significant number of
