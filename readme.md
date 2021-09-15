@@ -47,6 +47,7 @@ DONE:
   excludedDirectories: string[];
 ```
 
+- Added CLI for requesting image processing by user
 - Optional conversion of all 'png', 'jpeg', 'webp', 'tiff' and 'avif' file types
 - Conversion includes creation of base64 thumbnail (that will eventually be
   included in the JS bundle for instant load) and optional file sizes as
@@ -62,4 +63,4 @@ DONE:
 Side Note:
 
 - Repo has full unit test coverage and manually tested on a repo with over 6000
-  images with zero issues in processing of images
+  images with zero issues.
