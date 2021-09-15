@@ -14,6 +14,7 @@ TODO:
 - Manual publish to NPM
 - Add versioning (likely via lerna)
 - Update github actions config to auto publish on merge to main branch
+- Documentation (readme/wikis)
 - Consideration of runtime updates (no need to eject webpack config in CRA).
   This would require adding image meta data to global scope so would have to be
   an non default option as this isn't ideal if there are significant number of
@@ -47,7 +48,9 @@ DONE:
   excludedDirectories: string[];
 ```
 
-- Added CLI for requesting image processing by user
+- Added CLI for requesting image processing by user; including progress updates
+- Verbose error handling (chained error message with VError) with errors logged
+  to file for helpful debugging.
 - Optional conversion of all 'png', 'jpeg', 'webp', 'tiff' and 'avif' file types
 - Conversion includes creation of base64 thumbnail (that will eventually be
   included in the JS bundle for instant load) and optional file sizes as
