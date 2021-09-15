@@ -61,10 +61,7 @@ export const optimiseImages = async ({ imagesFileSystemMetaData }: Props) => {
         );
 
         // create thumbnail for image
-        const thumbnailFilePath = path.join(
-          thumbnailDirectoryPath,
-          `${imageFsMeta.uniqueImageName}.base64`,
-        );
+        const thumbnailFilePath = `${thumbnailDirectoryPath}${path.sep}${imageFsMeta.uniqueImageName}.base64`;
 
         await thumbnailPipeline({
           pipeline: pipeline.clone(),
