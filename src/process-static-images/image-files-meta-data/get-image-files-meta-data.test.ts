@@ -60,7 +60,9 @@ describe('getImagesMetaData', () => {
     expect(result.imageFilesMetaData).toEqual([
       {
         fileName: pngFileName,
-        path: expect.stringContaining(`${demoContentDirectory}/${pngFileName}`),
+        path: expect.stringContaining(
+          path.join(demoContentDirectory, pngFileName),
+        ),
         type: imageFormat.png,
         uniqueImageName: `[hash]-${pngFileName.replace(
           /.(png|jpg|avif|tiff|jpeg|webp)/i,
@@ -87,7 +89,7 @@ describe('getImagesMetaData', () => {
         {
           fileName: jpgFileNames[0],
           path: expect.stringContaining(
-            `${demoContentDirectory}/${jpgFileNames[0]}`,
+            path.join(demoContentDirectory, jpgFileNames[0]),
           ),
           type: imageFormat.jpeg,
           uniqueImageName: `[hash]-${jpgFileNames[0].replace(
@@ -98,7 +100,11 @@ describe('getImagesMetaData', () => {
         {
           fileName: jpgFileNames[1],
           path: expect.stringContaining(
-            `${demoContentDirectory}/${firstChildDirectory}/${jpgFileNames[1]}`,
+            path.join(
+              demoContentDirectory,
+              firstChildDirectory,
+              jpgFileNames[1],
+            ),
           ),
           type: imageFormat.jpeg,
           uniqueImageName: `[hash]-${jpgFileNames[1].replace(
@@ -109,7 +115,12 @@ describe('getImagesMetaData', () => {
         {
           fileName: jpgFileNames[2],
           path: expect.stringContaining(
-            `${demoContentDirectory}/${firstChildDirectory}/${secondChildDirectory}/${jpgFileNames[2]}`,
+            path.join(
+              demoContentDirectory,
+              firstChildDirectory,
+              secondChildDirectory,
+              jpgFileNames[2],
+            ),
           ),
           type: imageFormat.jpeg,
           uniqueImageName: `[hash]-${jpgFileNames[2].replace(
@@ -133,7 +144,12 @@ describe('getImagesMetaData', () => {
       {
         fileName: tiffFileName,
         path: expect.stringContaining(
-          `${demoContentDirectory}/${firstChildDirectory}/${secondChildDirectory}/${tiffFileName}`,
+          path.join(
+            demoContentDirectory,
+            firstChildDirectory,
+            secondChildDirectory,
+            tiffFileName,
+          ),
         ),
         type: imageFormat.tiff,
         uniqueImageName: `[hash]-${tiffFileName.replace(
@@ -156,7 +172,12 @@ describe('getImagesMetaData', () => {
       {
         fileName: avifFileName,
         path: expect.stringContaining(
-          `${demoContentDirectory}/${firstChildDirectory}/${secondChildDirectory}/${avifFileName}`,
+          path.join(
+            demoContentDirectory,
+            firstChildDirectory,
+            secondChildDirectory,
+            avifFileName,
+          ),
         ),
         type: imageFormat.avif,
         uniqueImageName: `[hash]-${avifFileName.replace(
@@ -179,7 +200,7 @@ describe('getImagesMetaData', () => {
       {
         fileName: webpFileName,
         path: expect.stringContaining(
-          `${demoContentDirectory}/${firstChildDirectory}/${webpFileName}`,
+          path.join(demoContentDirectory, firstChildDirectory, webpFileName),
         ),
         type: imageFormat.webp,
         uniqueImageName: `[hash]-${webpFileName.replace(
@@ -232,7 +253,8 @@ describe('getImagesMetaData', () => {
       ],
       imagesBaseDirectory: path.join(
         demoContentDirectory,
-        `/${firstChildDirectory}/${secondChildDirectory}`,
+        firstChildDirectory,
+        secondChildDirectory,
       ),
     });
     const result = await getImageFilesMetaData();
@@ -242,7 +264,12 @@ describe('getImagesMetaData', () => {
         {
           fileName: nestedDirectoryImageFileNames[2],
           path: expect.stringContaining(
-            `${demoContentDirectory}/${firstChildDirectory}/${secondChildDirectory}/${nestedDirectoryImageFileNames[2]}`,
+            path.join(
+              demoContentDirectory,
+              firstChildDirectory,
+              secondChildDirectory,
+              nestedDirectoryImageFileNames[2],
+            ),
           ),
           type: imageFormat.avif,
           uniqueImageName: `[hash]-${nestedDirectoryImageFileNames[2].replace(
@@ -253,7 +280,12 @@ describe('getImagesMetaData', () => {
         {
           fileName: nestedDirectoryImageFileNames[0],
           path: expect.stringContaining(
-            `${demoContentDirectory}/${firstChildDirectory}/${secondChildDirectory}/${nestedDirectoryImageFileNames[0]}`,
+            path.join(
+              demoContentDirectory,
+              firstChildDirectory,
+              secondChildDirectory,
+              nestedDirectoryImageFileNames[0],
+            ),
           ),
           type: imageFormat.tiff,
           uniqueImageName: `[hash]-${nestedDirectoryImageFileNames[0].replace(
@@ -264,7 +296,12 @@ describe('getImagesMetaData', () => {
         {
           fileName: nestedDirectoryImageFileNames[1],
           path: expect.stringContaining(
-            `${demoContentDirectory}/${firstChildDirectory}/${secondChildDirectory}/${nestedDirectoryImageFileNames[1]}`,
+            path.join(
+              demoContentDirectory,
+              firstChildDirectory,
+              secondChildDirectory,
+              nestedDirectoryImageFileNames[1],
+            ),
           ),
           type: imageFormat.jpeg,
           uniqueImageName: `[hash]-${nestedDirectoryImageFileNames[1].replace(
@@ -288,7 +325,7 @@ describe('getImagesMetaData', () => {
       ],
       imagesBaseDirectory: path.join(
         demoContentDirectory,
-        '/no_image_directory',
+        'no_image_directory',
       ),
     });
     const result = await getImageFilesMetaData();
@@ -316,7 +353,9 @@ describe('getImagesMetaData', () => {
     const jpgFileNameInRoot = 'django.jpg';
     mockConfig.mockReturnValueOnce({
       ...mockStaticConfigOptions,
-      excludedDirectories: [`test/${demoContentPath}/${firstChildDirectory}`],
+      excludedDirectories: [
+        path.join('test', demoContentPath, firstChildDirectory),
+      ],
       imageFormats: [imageFormat.jpeg],
     });
     const result = await getImageFilesMetaData();
@@ -325,7 +364,7 @@ describe('getImagesMetaData', () => {
       {
         fileName: jpgFileNameInRoot,
         path: expect.stringContaining(
-          `${demoContentDirectory}/${jpgFileNameInRoot}`,
+          path.join(demoContentDirectory, jpgFileNameInRoot),
         ),
         type: imageFormat.jpeg,
         uniqueImageName: `[hash]-${jpgFileNameInRoot.replace(
