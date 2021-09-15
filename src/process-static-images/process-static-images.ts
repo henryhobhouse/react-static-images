@@ -55,4 +55,5 @@ export const processStaticImages = async () => {
 
   // caching - ensure that we don't process images that we already - basic
   // caching - ensure that we don't process images that we already - dev env
+  // add option to use webp images as well
 };
