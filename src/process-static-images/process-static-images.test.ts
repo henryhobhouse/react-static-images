@@ -14,7 +14,7 @@ const mockOptimiseImages = jest
   .mockImplementation(() => Promise.resolve());
 const mockThrownExceptionToLoggerAsError = jest.fn();
 
-import { VError } from 'verror';
+import VError from 'verror';
 
 import type { ImageFileSystemMetaData } from './image-files-meta-data';
 import { processStaticImages } from './process-static-images';
