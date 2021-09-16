@@ -13,7 +13,12 @@ const mockStaticConfigOptions = {
   imagesBaseDirectory: demoContentDirectory,
 };
 
+const mockProcessImageMetaData = { foo: 'bar' };
 const mockConfig = jest.fn().mockReturnValue(mockStaticConfigOptions);
+const mockGetProcessedImageMetaData = jest
+  .fn()
+  .mockReturnValue(mockProcessImageMetaData);
+const mockValidateImageCache = jest.fn().mockReturnValue(false);
 
 import { imageFormat } from '../../static-image-config';
 
@@ -38,6 +43,14 @@ jest.mock('../../static-image-config', () => {
     getStaticImageConfig: mockConfig,
   };
 });
+
+jest.mock('../../caching', () => ({
+  getProcessedImageMetaData: mockGetProcessedImageMetaData,
+}));
+
+jest.mock('./validate-image-cache', () => ({
+  validateImageCache: mockValidateImageCache,
+}));
 
 jest.mock('../constants', () => ({
   baseExcludedDirectories: [],
@@ -371,5 +384,27 @@ describe('getImagesMetaData', () => {
         )}`,
       },
     ]);
+  });
+
+  it('will not return any meta data if each image has valid cache', async () => {
+    mockValidateImageCache.mockReturnValue(true);
+    mockConfig.mockReturnValueOnce({
+      ...mockStaticConfigOptions,
+      imageFormats: [
+        imageFormat.webp,
+        imageFormat.jpeg,
+        imageFormat.png,
+        imageFormat.avif,
+        imageFormat.tiff,
+      ],
+    });
+    const result = await getImageFilesMetaData();
+    expect(mockValidateImageCache).toBeCalledTimes(7);
+    expect(mockValidateImageCache.mock.calls[0]).toEqual([
+      path.join(demoContentDirectory, 'django.jpg'),
+      '[hash]-django',
+      mockProcessImageMetaData,
+    ]);
+    expect(result).toEqual({ imageFilesMetaData: [] });
   });
 });
