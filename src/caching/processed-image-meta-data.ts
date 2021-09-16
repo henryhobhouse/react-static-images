@@ -1,5 +1,5 @@
-import { existsSync, readFileSync, writeFileSync } from 'fs';
-
+import { existsSync, readFileSync, writeFileSync, unlinkSync } from 'fs';
+import { thrownExceptionToLoggerAsError } from '../utils/thrown-exception';
 import { processedImageMetaDataFilePath } from './constants';
 
 interface ProcessedImageMetaDataCacheAttributes {
@@ -8,11 +8,34 @@ interface ProcessedImageMetaDataCacheAttributes {
   imageHash: string;
 }
 
+type ProcessedImageMetaData = Record<
+  string,
+  ProcessedImageMetaDataCacheAttributes
+>;
+
 interface UpsertImageProcessingPrincipleCacheProps {
   /* cache key for each image - using image unique name */
   imageCacheKey: string;
   imageAttributes: ProcessedImageMetaDataCacheAttributes;
 }
+
+const getParsedDataByFilePath = <T = unknown>(path: string, fallback: T) => {
+  if (existsSync(path)) {
+    try {
+      const fileContentString = readFileSync(path).toString();
+
+      return JSON.parse(fileContentString) as T;
+    } catch (exception) {
+      thrownExceptionToLoggerAsError(
+        exception,
+        `Unable to parse "${path}". Removing as likely corrupted`,
+      );
+      unlinkSync(path);
+    }
+  }
+
+  return fallback;
+};
 
 /*
  * insert or update processed image meta data cache
@@ -21,20 +44,27 @@ export const upsertProcessedImageMetaData = ({
   imageCacheKey,
   imageAttributes,
 }: UpsertImageProcessingPrincipleCacheProps) => {
-  // if image size file doesn't exist yet create it
-  if (!existsSync(processedImageMetaDataFilePath)) {
-    writeFileSync(processedImageMetaDataFilePath, '{}');
-  }
+  const processedImageMetaData =
+    getParsedDataByFilePath<ProcessedImageMetaData>(
+      processedImageMetaDataFilePath,
+      {},
+    );
 
-  const imageMetaDataString = readFileSync(
-    processedImageMetaDataFilePath,
-  ).toString();
+  processedImageMetaData[imageCacheKey] = imageAttributes;
 
-  const imageMetaData = JSON.parse(imageMetaDataString);
-
-  imageMetaData[imageCacheKey] = imageAttributes;
-
-  const prettifiedMetaDataString = JSON.stringify(imageMetaData, undefined, 2);
+  const prettifiedMetaDataString = JSON.stringify(
+    processedImageMetaData,
+    undefined,
+    2,
+  );
 
   writeFileSync(processedImageMetaDataFilePath, prettifiedMetaDataString);
+};
+
+export const getProcessedImageMetaData = () => {
+  const processedImageMetaData = getParsedDataByFilePath<
+    ProcessedImageMetaData | undefined
+  >(processedImageMetaDataFilePath, undefined);
+
+  return processedImageMetaData;
 };
