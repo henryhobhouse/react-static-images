@@ -13,7 +13,6 @@ module.exports = {
     'esnext',
     'plugin:promise/recommended',
     'plugin:unicorn/recommended',
-    'prettier',
     'plugin:prettier/recommended',
   ],
   overrides: [
@@ -24,13 +23,21 @@ module.exports = {
         'unicorn/prefer-module': 0,
       },
     },
+    {
+      files: ['*.test.ts', '*.test.tsx'],
+      plugins: ['@typescript-eslint', 'jest'],
+    },
+    {
+      files: ['*.test.js'],
+      plugins: ['jest'],
+    },
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 2021,
     sourceType: 'module',
   },
-  plugins: ['@typescript-eslint', 'json-format', 'sort-keys-fix', 'jest'],
+  plugins: ['@typescript-eslint', 'json-format', 'sort-keys-fix'],
   rules: {
     '@typescript-eslint/array-type': [
       'warn',
