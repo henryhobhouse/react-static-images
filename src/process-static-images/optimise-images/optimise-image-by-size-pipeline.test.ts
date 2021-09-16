@@ -16,9 +16,7 @@ const testOptimisedImageColourQuality = 80;
 const testImageSizeFilePath = 'baz/foo/bar';
 
 describe('optimiseImageBySizePipeline', () => {
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
+  afterEach(jest.clearAllMocks);
 
   it('will request to resize image to thumbnail width', () => {
     optimiseImageBySizePipeline({

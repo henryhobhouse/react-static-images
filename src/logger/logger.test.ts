@@ -28,9 +28,7 @@ describe('logger', () => {
     waitFor(() => unlinkSync(pathToErrorLogFile));
   });
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+  beforeEach(jest.clearAllMocks);
 
   it('will log out standard messages with a blue info prefix', () => {
     const logMessage = 'hello world';

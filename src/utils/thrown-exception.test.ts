@@ -48,9 +48,7 @@ describe('thrown exception', () => {
   });
 
   describe('thrownExceptionToLogError', () => {
-    afterEach(() => {
-      jest.clearAllMocks();
-    });
+    afterEach(jest.clearAllMocks);
 
     it('will log an Error object gracefully if passed as exception', () => {
       const errorMessage = 'fooBar';

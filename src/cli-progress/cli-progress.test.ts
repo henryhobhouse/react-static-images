@@ -1,9 +1,7 @@
 import { SingleBar } from 'cli-progress';
 
 describe('CLI Progress', () => {
-  afterEach(() => {
-    jest.resetModules();
-  });
+  afterEach(jest.resetModules);
 
   it('allows you to instantiate a cli progress instance', async () => {
     const { cliProgressBar } = await import('./cli-progress');

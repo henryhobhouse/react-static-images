@@ -46,9 +46,7 @@ jest.mock('./optimise-images', () => ({
 }));
 
 describe('processStaticImages', () => {
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
+  afterEach(jest.clearAllMocks);
 
   it('will request to get all images meta data with no arguements', async () => {
     await processStaticImages();

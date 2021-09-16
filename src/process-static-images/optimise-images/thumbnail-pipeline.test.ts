@@ -29,9 +29,7 @@ jest.mock('../../utils/thrown-exception', () => ({
 const mockThumbnailSize = 20;
 
 describe('thumbnailPipeline', () => {
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
+  afterEach(jest.clearAllMocks);
 
   it('will request to resize image to thumbnail width', () => {
     thumbnailPipeline({

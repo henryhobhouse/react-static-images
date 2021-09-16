@@ -49,9 +49,7 @@ jest.mock('../../utils/image-fingerprinting', () => ({
 }));
 
 describe('getImagesMetaData', () => {
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
+  afterEach(jest.clearAllMocks);
 
   it('will retrieve all PNG images from chosen content directory', async () => {
     const pngFileName = 'django_in_park.png';
