@@ -10,7 +10,7 @@ import { defaultConfig } from './default-config';
 export type ImageFormat = keyof typeof imageFormat;
 
 export interface ImageConfig {
-  /* options of 'jpeg' and 'png' (default both) */
+  /* options of 'jpeg', 'png', 'webp', 'tiff' and 'avif' (default all other than 'avif') */
   imageFormats: ImageFormat[];
   /* width of thumbnail in px whilst retaining ration of original image (default 20(px) */
   thumbnailSize: number;
