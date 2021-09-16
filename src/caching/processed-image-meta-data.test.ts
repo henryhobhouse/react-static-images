@@ -18,8 +18,8 @@ import {
 jest.mock('fs', () => ({
   existsSync: mockExistsSync,
   readFileSync: mockReadFileSync,
-  writeFileSync: mockWriteFileSync,
   unlinkSync: mockUnlinkSync,
+  writeFileSync: mockWriteFileSync,
 }));
 
 jest.mock('./constants', () => ({

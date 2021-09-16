@@ -1,5 +1,7 @@
 import { existsSync, readFileSync, writeFileSync, unlinkSync } from 'fs';
+
 import { thrownExceptionToLoggerAsError } from '../utils/thrown-exception';
+
 import { processedImageMetaDataFilePath } from './constants';
 
 interface ProcessedImageMetaDataCacheAttributes {
@@ -8,7 +10,7 @@ interface ProcessedImageMetaDataCacheAttributes {
   imageHash: string;
 }
 
-type ProcessedImageMetaData = Record<
+export type ProcessedImageMetaData = Record<
   string,
   ProcessedImageMetaDataCacheAttributes
 >;
@@ -19,7 +21,7 @@ interface UpsertImageProcessingPrincipleCacheProps {
   imageAttributes: ProcessedImageMetaDataCacheAttributes;
 }
 
-const getParsedDataByFilePath = <T = unknown>(path: string, fallback: T) => {
+const getParsedDataByFilePath = <T = unknown>(path: string, fallback?: T) => {
   if (existsSync(path)) {
     try {
       const fileContentString = readFileSync(path).toString();
@@ -34,7 +36,7 @@ const getParsedDataByFilePath = <T = unknown>(path: string, fallback: T) => {
     }
   }
 
-  return fallback;
+  return fallback as T;
 };
 
 /*
@@ -64,7 +66,7 @@ export const upsertProcessedImageMetaData = ({
 export const getProcessedImageMetaData = () => {
   const processedImageMetaData = getParsedDataByFilePath<
     ProcessedImageMetaData | undefined
-  >(processedImageMetaDataFilePath, undefined);
+  >(processedImageMetaDataFilePath);
 
   return processedImageMetaData;
 };
