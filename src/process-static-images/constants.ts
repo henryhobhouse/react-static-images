@@ -1,11 +1,10 @@
 import path from 'path';
 
+import { currentWorkingDirectory } from '../constants';
 import { getStaticImageConfig } from '../static-image-config';
 
 const { applicationPublicDirectory, thumbnailSize, staticImageMetaDirectory } =
   getStaticImageConfig();
-
-const currentWorkingDirectory = process.cwd();
 
 const optimisedImagesPublicDirectoryRoot = '/static-images';
 

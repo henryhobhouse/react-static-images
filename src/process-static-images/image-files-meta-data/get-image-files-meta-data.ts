@@ -1,7 +1,7 @@
 import { promises } from 'fs';
 import path from 'path';
 
-import { processedImageMetaDataCache } from '../../caching';
+import { currentWorkingDirectory } from '../../constants';
 import type { ImageFormat } from '../../static-image-config';
 import { getStaticImageConfig, imageFormat } from '../../static-image-config';
 import { createUniqueFileNameFromPath } from '../../utils/image-fingerprinting';
@@ -15,10 +15,6 @@ export interface ImageFileSystemMetaData {
   fileName: string;
   type: ImageFormat;
 }
-
-const currentWorkingDirectory = process.cwd();
-const previouslyProcessedImageMetaData =
-  processedImageMetaDataCache.currentCache;
 
 /**
  * Programmatically builds regex matcher for image types based on array of accepted image types
@@ -113,7 +109,6 @@ export const getImageFilesMetaData = async () => {
         const hasValidImageCache = await validateImageCache(
           imageFilePath,
           uniqueImageName,
-          previouslyProcessedImageMetaData,
         );
 
         if (fileType && !hasValidImageCache) {

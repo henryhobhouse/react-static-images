@@ -1,15 +1,36 @@
 const mockGetFileContentShortHashByPath = jest.fn();
-
-import { validateImageCache } from './validate-image-cache';
+const mockLastUpdatedTime = 12_345;
+const mockFsStats = jest.fn().mockReturnValue({
+  mtimeMs: mockLastUpdatedTime,
+});
 
 jest.mock('../../utils/image-fingerprinting', () => ({
   getFileContentShortHashByPath: mockGetFileContentShortHashByPath,
 }));
 
+jest.mock('../../caching', () => ({
+  localDeveloperImageCache: {
+    currentDevCache: {},
+  },
+  processedImageMetaDataCache: {
+    currentCache: {},
+  },
+}));
+
+jest.mock('fs', () => ({
+  promises: {
+    stat: mockFsStats,
+  },
+}));
+
 describe('validateImageCache', () => {
-  afterEach(jest.clearAllMocks);
+  afterEach(() => {
+    jest.clearAllMocks();
+    jest.resetModules();
+  });
 
   it('will return false when there is no existing processed image meta data', async () => {
+    const { validateImageCache } = await import('./validate-image-cache');
     const response = await validateImageCache('', '');
 
     expect(response).toBeFalsy();
@@ -17,9 +38,18 @@ describe('validateImageCache', () => {
   });
 
   it('will return false when existing processed image meta data has no property key matching the image CacheKey', async () => {
-    const response = await validateImageCache('', 'baz', {
-      foo: { imageHash: '' },
-    });
+    jest.mock('../../caching', () => ({
+      localDeveloperImageCache: {
+        currentDevCache: {},
+      },
+      processedImageMetaDataCache: {
+        currentCache: { foo: {} },
+      },
+    }));
+
+    const { validateImageCache } = await import('./validate-image-cache');
+
+    const response = await validateImageCache('', 'baz');
 
     expect(response).toBeFalsy();
     expect(mockGetFileContentShortHashByPath).not.toBeCalled();
@@ -30,27 +60,77 @@ describe('validateImageCache', () => {
     mockGetFileContentShortHashByPath.mockImplementation(() =>
       Promise.resolve('aaa'),
     );
+    const testImageCacheKey = 'baz';
+    jest.mock('../../caching', () => ({
+      localDeveloperImageCache: {
+        currentDevCache: {},
+      },
+      processedImageMetaDataCache: {
+        currentCache: { [testImageCacheKey]: { imageHash: 'bbb' } },
+      },
+    }));
 
-    expect(
-      await validateImageCache(testFilePath, 'baz', {
-        baz: { imageHash: 'bbb' },
-      }),
-    ).toBeFalsy();
+    const { validateImageCache } = await import('./validate-image-cache');
+
+    const response = await validateImageCache(testFilePath, testImageCacheKey);
+
+    expect(response).toBeFalsy();
     expect(mockGetFileContentShortHashByPath).toBeCalledWith(testFilePath);
   });
 
   it('will return true when existing processed image meta data has cache and matching content hash', async () => {
     const testFilePath = '/pot/a/toe';
     const testImageContentHash = 'qwerty';
+    const testImageCacheKey = 'baz';
     mockGetFileContentShortHashByPath.mockImplementation(() =>
       Promise.resolve(testImageContentHash),
     );
 
-    expect(
-      await validateImageCache(testFilePath, 'baz', {
-        baz: { imageHash: testImageContentHash },
-      }),
-    ).toBeTruthy();
+    jest.mock('../../caching', () => ({
+      localDeveloperImageCache: {
+        currentDevCache: {},
+      },
+      processedImageMetaDataCache: {
+        currentCache: {
+          [testImageCacheKey]: { imageHash: testImageContentHash },
+        },
+      },
+    }));
+
+    const { validateImageCache } = await import('./validate-image-cache');
+
+    const response = await validateImageCache(testFilePath, testImageCacheKey);
+
+    expect(response).toBeTruthy();
     expect(mockGetFileContentShortHashByPath).toBeCalledWith(testFilePath);
+  });
+
+  it('will return true local dev cache last updated time matches stats from image', async () => {
+    const testFilePath = '/pot/a/toe';
+    const testImageContentHash = 'qwerty';
+    const testImageCacheKey = 'baz';
+    mockGetFileContentShortHashByPath.mockImplementation(() =>
+      Promise.resolve(testImageContentHash),
+    );
+
+    jest.mock('../../caching', () => ({
+      localDeveloperImageCache: {
+        currentDevCache: {
+          [testImageCacheKey]: mockLastUpdatedTime,
+        },
+      },
+      processedImageMetaDataCache: {
+        currentCache: {
+          foo: 'bar',
+        },
+      },
+    }));
+
+    const { validateImageCache } = await import('./validate-image-cache');
+
+    const response = await validateImageCache(testFilePath, testImageCacheKey);
+
+    expect(response).toBeTruthy();
+    expect(mockGetFileContentShortHashByPath).not.toBeCalled();
   });
 });
