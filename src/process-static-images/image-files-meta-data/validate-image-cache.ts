@@ -1,4 +1,4 @@
-import type { ProcessedImageMetaData } from '../../caching';
+import type { ProcessedImageMetaDataCache } from '../../caching';
 import { getFileContentShortHashByPath } from '../../utils/image-fingerprinting';
 
 /**
@@ -10,7 +10,7 @@ import { getFileContentShortHashByPath } from '../../utils/image-fingerprinting'
 export const validateImageCache = async (
   imagePath: string,
   imageCacheKey: string,
-  existingProcessedImageMetaData?: ProcessedImageMetaData,
+  existingProcessedImageMetaData?: ProcessedImageMetaDataCache,
 ) => {
   if (!existingProcessedImageMetaData) return false;
 
