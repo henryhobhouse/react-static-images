@@ -5,7 +5,8 @@ import VError from 'verror';
 
 import { defaultErrorLogFileName } from '../../static-image-config/constants';
 
-const mockUpsertProcessedImageMetaData = jest.fn();
+const mockAddCacheAttribute = jest.fn();
+const mockSaveCacheToFileSystem = jest.fn();
 const mockOptimiseImageBySizePipeline = jest.fn();
 const mockThumbnailPipeline = jest.fn();
 const mockValidateOptimisedImageDirectories = jest.fn();
@@ -64,7 +65,10 @@ jest.mock('../constants', () => ({
 }));
 
 jest.mock('../../caching', () => ({
-  upsertProcessedImageMetaData: mockUpsertProcessedImageMetaData,
+  processedImageMetaDataCache: {
+    addCacheAttribute: mockAddCacheAttribute,
+    saveCacheToFileSystem: mockSaveCacheToFileSystem,
+  },
 }));
 
 jest.mock('sharp', () => ({
@@ -290,7 +294,7 @@ describe('optimiseImages', () => {
     );
   });
 
-  it('will request to upsert image meta data on successful processing of image', async () => {
+  it('will request to add image meta data to cache on successful processing of image', async () => {
     const imageUniqueName = 'django';
     mockGetStaticImageConfig.mockImplementationOnce(() => ({
       optimisedImageColourQuality: 4,
@@ -310,7 +314,7 @@ describe('optimiseImages', () => {
       ],
     });
 
-    expect(mockUpsertProcessedImageMetaData).toBeCalledWith({
+    expect(mockAddCacheAttribute).toBeCalledWith({
       imageAttributes: {
         height: undefined,
         imageHash: mockHash,
@@ -318,6 +322,36 @@ describe('optimiseImages', () => {
       },
       imageCacheKey: imageUniqueName,
     });
+  });
+
+  it('will request to save image meta data cache to file system after processing all images', async () => {
+    const imageUniqueName1 = 'django';
+    const imageUniqueName2 = 'baz';
+    mockGetStaticImageConfig.mockImplementationOnce(() => ({
+      optimisedImageColourQuality: 4,
+      optimisedImageCompressionLevel: 5,
+      optimisedImageSizes: [mockOriginalImageWidth - 100],
+      thumbnailSize: 4,
+    }));
+
+    await optimiseImages({
+      imagesFileSystemMetaData: [
+        {
+          fileName: 'trigger',
+          path: 'baz/top',
+          type: 'png',
+          uniqueImageName: imageUniqueName1,
+        },
+        {
+          fileName: 'trigger',
+          path: 'baz/top',
+          type: 'png',
+          uniqueImageName: imageUniqueName2,
+        },
+      ],
+    });
+
+    expect(mockSaveCacheToFileSystem).toBeCalledWith();
   });
 
   it('will request to increment the progress bar on completion of image process', async () => {

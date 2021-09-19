@@ -15,9 +15,6 @@ const mockStaticConfigOptions = {
 
 const mockProcessImageMetaData = { foo: 'bar' };
 const mockConfig = jest.fn().mockReturnValue(mockStaticConfigOptions);
-const mockGetProcessedImageMetaData = jest
-  .fn()
-  .mockReturnValue(mockProcessImageMetaData);
 const mockValidateImageCache = jest.fn().mockReturnValue(false);
 
 import { imageFormat } from '../../static-image-config';
@@ -45,7 +42,9 @@ jest.mock('../../static-image-config', () => {
 });
 
 jest.mock('../../caching', () => ({
-  getProcessedImageMetaData: mockGetProcessedImageMetaData,
+  processedImageMetaDataCache: {
+    currentCache: mockProcessImageMetaData,
+  },
 }));
 
 jest.mock('./validate-image-cache', () => ({

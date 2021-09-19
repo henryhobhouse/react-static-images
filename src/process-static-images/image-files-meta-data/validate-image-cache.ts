@@ -16,6 +16,7 @@ export const validateImageCache = async (
 
   const existingImageCacheAttributes =
     existingProcessedImageMetaData[imageCacheKey];
+
   if (existingImageCacheAttributes) {
     const imageFileHash = await getFileContentShortHashByPath(imagePath);
 

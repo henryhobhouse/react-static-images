@@ -3,7 +3,7 @@ import path from 'path';
 import sharp from 'sharp';
 import VError from 'verror';
 
-import { upsertProcessedImageMetaData } from '../../caching';
+import { processedImageMetaDataCache } from '../../caching';
 import { cliProgressBar } from '../../cli-progress';
 import { getStaticImageConfig } from '../../static-image-config';
 import { getFileContentShortHashByPath } from '../../utils/image-fingerprinting';
@@ -95,7 +95,7 @@ export const optimiseImages = async ({ imagesFileSystemMetaData }: Props) => {
         }
 
         // on successful processing of images to save image meta in cache
-        upsertProcessedImageMetaData({
+        processedImageMetaDataCache.addCacheAttribute({
           imageAttributes: {
             height: imageMetaData.height,
             imageHash: imageContentHash,
@@ -116,4 +116,6 @@ export const optimiseImages = async ({ imagesFileSystemMetaData }: Props) => {
       }
     }),
   );
+
+  processedImageMetaDataCache.saveCacheToFileSystem();
 };
