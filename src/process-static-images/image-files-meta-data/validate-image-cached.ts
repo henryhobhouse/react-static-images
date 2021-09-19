@@ -41,7 +41,17 @@ export const validateImageCached = async (
   if (existingImageCacheAttributes) {
     const imageFileHash = await getFileContentShortHashByPath(imagePath);
 
-    return imageFileHash === existingImageCacheAttributes.imageHash;
+    const fileHashMatchesCache =
+      imageFileHash === existingImageCacheAttributes.imageHash;
+
+    if (fileHashMatchesCache) {
+      localDeveloperImageCache.addCacheAttribute({
+        imageCacheKey,
+        lastTimeFileUpdatedInMs: imageStats.mtimeMs,
+      });
+    }
+
+    return fileHashMatchesCache;
   }
 
   // if no valid cache found then return false

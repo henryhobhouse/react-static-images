@@ -6,8 +6,6 @@ NOTE: Work in progress!
 
 TODO:
 
-- Process Image Caching - Basic
-- Process Image Caching - Dev environment
 - Cache Invalidation
 - Webpack Loader to update image props in JSX at build time
 - MDX plugin to update MAST at build time (for MDX webpack loader only)
@@ -62,6 +60,7 @@ DONE:
   - image file name clashing (from different directories)
   - automatic browser cache invalidation on image content being edited (you can
     add maximum cache invalidation to image header in your static doc bucket)
+- Double layer of caching for both local machine and persistent cache for CI
 
 Side Note:
 

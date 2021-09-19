@@ -1,6 +1,7 @@
 import { promises } from 'fs';
 import path from 'path';
 
+import { localDeveloperImageCache } from '../../caching';
 import { currentWorkingDirectory } from '../../constants';
 import type { ImageFormat } from '../../static-image-config';
 import { getStaticImageConfig, imageFormat } from '../../static-image-config';
@@ -143,6 +144,8 @@ export const getImageFilesMetaData = async () => {
   };
 
   await recursiveSearchForImages(imagesBaseDirectory);
+
+  localDeveloperImageCache.saveCacheToFileSystem();
 
   return { imageFilesMetaData };
 };

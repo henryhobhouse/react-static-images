@@ -13,6 +13,10 @@ const mockOptimiseImages = jest
   .fn()
   .mockImplementation(() => Promise.resolve());
 const mockThrownExceptionToLoggerAsError = jest.fn();
+const mockValidateOptimisedImageDirectories = jest.fn();
+const mockOptimisedImageSizes = [23, 34];
+const mockRootPublicImageDirectory = 'foo';
+const mockThumbnailDirectoryPath = 'bar';
 
 import VError from 'verror';
 
@@ -24,6 +28,17 @@ jest.mock('../logger', () => ({
     info: mockInfoLogger,
     log: mockLogLogger,
   },
+}));
+
+jest.mock('./constants', () => ({
+  rootPublicImageDirectory: mockRootPublicImageDirectory,
+  thumbnailDirectoryPath: mockThumbnailDirectoryPath,
+}));
+
+jest.mock('../static-image-config', () => ({
+  getStaticImageConfig: jest.fn().mockReturnValue({
+    optimisedImageSizes: mockOptimisedImageSizes,
+  }),
 }));
 
 jest.mock('../utils/thrown-exception', () => ({
@@ -41,6 +56,10 @@ jest.mock('../cli-progress', () => ({
   },
 }));
 
+jest.mock('../utils/validate-optimised-image-directories', () => ({
+  validateOptimisedImageDirectories: mockValidateOptimisedImageDirectories,
+}));
+
 jest.mock('./optimise-images', () => ({
   optimiseImages: mockOptimiseImages,
 }));
@@ -48,7 +67,16 @@ jest.mock('./optimise-images', () => ({
 describe('processStaticImages', () => {
   afterEach(jest.clearAllMocks);
 
-  it('will request to get all images meta data with no arguements', async () => {
+  it('will request to validate all directories used to store data from processing images', async () => {
+    await processStaticImages();
+    expect(mockValidateOptimisedImageDirectories).toBeCalledWith({
+      optimisedImageSizes: mockOptimisedImageSizes,
+      rootPublicImageDirectory: mockRootPublicImageDirectory,
+      thumbnailDirectoryPath: mockThumbnailDirectoryPath,
+    });
+  });
+
+  it('will request to get all images meta data with no arguments', async () => {
     await processStaticImages();
     expect(mockGetImageMetaData).toBeCalledWith();
   });

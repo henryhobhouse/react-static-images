@@ -1,6 +1,8 @@
 import { existsSync, mkdirSync } from 'fs';
 import path from 'path';
 
+import { localCacheDirectoryPath } from '../caching/constants';
+
 interface Props {
   thumbnailDirectoryPath: string;
   rootPublicImageDirectory: string;
@@ -29,4 +31,8 @@ export const validateOptimisedImageDirectories = ({
     if (!existsSync(imageSizeDirectoryPath))
       mkdirSync(imageSizeDirectoryPath, { recursive: true });
   }
+
+  // if
+  if (!existsSync(localCacheDirectoryPath))
+    mkdirSync(localCacheDirectoryPath, { recursive: true });
 };

@@ -44,6 +44,12 @@ jest.mock('./validate-image-cached', () => ({
   validateImageCached: mockValidateImageCached,
 }));
 
+jest.mock('../../caching', () => ({
+  localDeveloperImageCache: {
+    saveCacheToFileSystem: jest.fn(),
+  },
+}));
+
 jest.mock('../constants', () => ({
   baseExcludedDirectories: [],
 }));

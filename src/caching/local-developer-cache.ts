@@ -1,9 +1,6 @@
-import { writeFileSync, promises } from 'fs';
+import { writeFileSync } from 'fs';
 
-import {
-  processedImageMetaDataFilePath,
-  localDeveloperCacheFilePath,
-} from './constants';
+import { localDeveloperCacheFilePath } from './constants';
 import { getParsedJsonByFilePath } from './get-parsed-json-by-file-path';
 
 export type LocalCache = Record<string, number>;
@@ -12,7 +9,7 @@ const isCiPipeline = process.env.CI;
 
 interface AddCacheAttributeProps {
   imageCacheKey: string;
-  imageFilePath: string;
+  lastTimeFileUpdatedInMs: number;
 }
 
 /**
@@ -41,13 +38,11 @@ class LocalDeveloperImageCache {
     return this._localDeveloperCache;
   }
 
-  public async addCacheAttribute({
+  public addCacheAttribute({
     imageCacheKey,
-    imageFilePath,
+    lastTimeFileUpdatedInMs,
   }: AddCacheAttributeProps) {
-    const imageStats = await promises.stat(imageFilePath);
-
-    this._localDeveloperCache[imageCacheKey] = imageStats.mtimeMs;
+    this._localDeveloperCache[imageCacheKey] = lastTimeFileUpdatedInMs;
   }
 
   public saveCacheToFileSystem() {
@@ -57,7 +52,7 @@ class LocalDeveloperImageCache {
       2,
     );
 
-    writeFileSync(processedImageMetaDataFilePath, prettifiedMetaDataString);
+    writeFileSync(localDeveloperCacheFilePath, prettifiedMetaDataString);
   }
 }
 

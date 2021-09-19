@@ -1,14 +1,17 @@
+import { promises } from 'fs';
 import path from 'path';
 
 import sharp from 'sharp';
 import VError from 'verror';
 
-import { processedImageMetaDataCache } from '../../caching';
+import {
+  processedImageMetaDataCache,
+  localDeveloperImageCache,
+} from '../../caching';
 import { cliProgressBar } from '../../cli-progress';
 import { getStaticImageConfig } from '../../static-image-config';
 import { getFileContentShortHashByPath } from '../../utils/image-fingerprinting';
 import { thrownExceptionToLoggerAsError } from '../../utils/thrown-exception';
-import { validateOptimisedImageDirectories } from '../../utils/validate-optimised-image-directories';
 import { rootPublicImageDirectory, thumbnailDirectoryPath } from '../constants';
 import type { ImageFileSystemMetaData } from '../image-files-meta-data';
 
@@ -36,12 +39,6 @@ export const optimiseImages = async ({ imagesFileSystemMetaData }: Props) => {
   } = getStaticImageConfig();
 
   const progressBar = cliProgressBar.getInstance();
-
-  validateOptimisedImageDirectories({
-    optimisedImageSizes,
-    rootPublicImageDirectory,
-    thumbnailDirectoryPath,
-  });
 
   await Promise.all(
     imagesFileSystemMetaData.map(async (imageFsMeta) => {
@@ -94,6 +91,15 @@ export const optimiseImages = async ({ imagesFileSystemMetaData }: Props) => {
           );
         }
 
+        // on successful processing of image to update local dev cache
+        const lastTimeFileUpdatedInMs = await (
+          await promises.stat(imageFsMeta.path)
+        ).mtimeMs;
+        localDeveloperImageCache.addCacheAttribute({
+          imageCacheKey: imageFsMeta.uniqueImageName,
+          lastTimeFileUpdatedInMs,
+        });
+
         // on successful processing of images to save image meta in cache
         processedImageMetaDataCache.addCacheAttribute({
           imageAttributes: {
@@ -117,5 +123,7 @@ export const optimiseImages = async ({ imagesFileSystemMetaData }: Props) => {
     }),
   );
 
+  // save caches to file system
+  localDeveloperImageCache.saveCacheToFileSystem();
   processedImageMetaDataCache.saveCacheToFileSystem();
 };

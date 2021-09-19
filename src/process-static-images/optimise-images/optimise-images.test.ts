@@ -1,3 +1,10 @@
+const mockLastUpdatedTimeInMs = 12_345;
+const mockFsStat = jest.fn().mockImplementation(() =>
+  Promise.resolve({
+    mtimeMs: mockLastUpdatedTimeInMs,
+  }),
+);
+
 import { existsSync, unlinkSync } from 'fs';
 import path from 'path';
 
@@ -7,9 +14,10 @@ import { defaultErrorLogFileName } from '../../static-image-config/constants';
 
 const mockAddCacheAttribute = jest.fn();
 const mockSaveCacheToFileSystem = jest.fn();
+const mockAddLocalCacheAttribute = jest.fn();
+const mockSaveLocalCacheToFileSystem = jest.fn();
 const mockOptimiseImageBySizePipeline = jest.fn();
 const mockThumbnailPipeline = jest.fn();
-const mockValidateOptimisedImageDirectories = jest.fn();
 const mockProgressBarIncrement = jest.fn();
 const mockGetInstanceOfProgressBar = jest.fn().mockReturnValue({
   increment: mockProgressBarIncrement,
@@ -45,15 +53,22 @@ const mockGetFileContentShortHashByPath = jest
 
 import { optimiseImages } from './optimise-images';
 
-jest.mock('../../utils/validate-optimised-image-directories', () => ({
-  validateOptimisedImageDirectories: mockValidateOptimisedImageDirectories,
-}));
-
 jest.mock('../../cli-progress', () => ({
   cliProgressBar: {
     getInstance: mockGetInstanceOfProgressBar,
   },
 }));
+
+jest.mock('fs', () => {
+  const orgLibrary = jest.requireActual('fs');
+
+  return {
+    ...orgLibrary,
+    promises: {
+      stat: mockFsStat,
+    },
+  };
+});
 
 jest.mock('../../static-image-config', () => ({
   getStaticImageConfig: mockGetStaticImageConfig,
@@ -65,6 +80,10 @@ jest.mock('../constants', () => ({
 }));
 
 jest.mock('../../caching', () => ({
+  localDeveloperImageCache: {
+    addCacheAttribute: mockAddLocalCacheAttribute,
+    saveCacheToFileSystem: mockSaveLocalCacheToFileSystem,
+  },
   processedImageMetaDataCache: {
     addCacheAttribute: mockAddCacheAttribute,
     saveCacheToFileSystem: mockSaveCacheToFileSystem,
@@ -94,16 +113,6 @@ describe('optimiseImages', () => {
     jest.clearAllMocks();
     const errorLogFilePath = path.join(process.cwd(), defaultErrorLogFileName);
     if (existsSync(errorLogFilePath)) unlinkSync(errorLogFilePath);
-  });
-
-  it('will request to validate optimised image directories', () => {
-    optimiseImages({ imagesFileSystemMetaData: [] });
-
-    expect(mockValidateOptimisedImageDirectories).toBeCalledWith({
-      optimisedImageSizes: mockStaticImageConfig.optimisedImageSizes,
-      rootPublicImageDirectory: mockRootPublicImageDirectory,
-      thumbnailDirectoryPath: mockThumbnailDirectoryPath,
-    });
   });
 
   it('will get the progress bar instance', () => {
@@ -324,6 +333,33 @@ describe('optimiseImages', () => {
     });
   });
 
+  it('will request to add image local developer cache on successful processing of image', async () => {
+    const imageUniqueName = 'django';
+    const testFilePath = 'baz/top';
+    mockGetStaticImageConfig.mockImplementationOnce(() => ({
+      optimisedImageColourQuality: 4,
+      optimisedImageCompressionLevel: 5,
+      optimisedImageSizes: [mockOriginalImageWidth - 100],
+      thumbnailSize: 4,
+    }));
+
+    await optimiseImages({
+      imagesFileSystemMetaData: [
+        {
+          fileName: 'trigger',
+          path: testFilePath,
+          type: 'png',
+          uniqueImageName: imageUniqueName,
+        },
+      ],
+    });
+
+    expect(mockAddLocalCacheAttribute).toBeCalledWith({
+      imageCacheKey: imageUniqueName,
+      lastTimeFileUpdatedInMs: mockLastUpdatedTimeInMs,
+    });
+  });
+
   it('will request to save image meta data cache to file system after processing all images', async () => {
     const imageUniqueName1 = 'django';
     const imageUniqueName2 = 'baz';
@@ -352,6 +388,36 @@ describe('optimiseImages', () => {
     });
 
     expect(mockSaveCacheToFileSystem).toBeCalledWith();
+  });
+
+  it('will request to save local developer cache to file system after processing all images', async () => {
+    const imageUniqueName1 = 'django';
+    const imageUniqueName2 = 'baz';
+    mockGetStaticImageConfig.mockImplementationOnce(() => ({
+      optimisedImageColourQuality: 4,
+      optimisedImageCompressionLevel: 5,
+      optimisedImageSizes: [mockOriginalImageWidth - 100],
+      thumbnailSize: 4,
+    }));
+
+    await optimiseImages({
+      imagesFileSystemMetaData: [
+        {
+          fileName: 'trigger',
+          path: 'baz/top',
+          type: 'png',
+          uniqueImageName: imageUniqueName1,
+        },
+        {
+          fileName: 'trigger',
+          path: 'baz/top',
+          type: 'png',
+          uniqueImageName: imageUniqueName2,
+        },
+      ],
+    });
+
+    expect(mockSaveLocalCacheToFileSystem).toBeCalledWith();
   });
 
   it('will request to increment the progress bar on completion of image process', async () => {

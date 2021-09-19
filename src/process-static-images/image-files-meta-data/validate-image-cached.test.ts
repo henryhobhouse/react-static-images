@@ -94,6 +94,7 @@ describe('validateImageCache', () => {
 
     jest.mock('../../caching', () => ({
       localDeveloperImageCache: {
+        addCacheAttribute: jest.fn(),
         currentDevCache: {},
       },
       processedImageMetaDataCache: {

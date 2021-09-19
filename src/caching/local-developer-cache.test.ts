@@ -1,24 +1,14 @@
-const mockLastUpdatedTime = 12_345;
-
 const mockWriteFileSyncPc = jest.fn();
-const mockFsStats = jest.fn().mockImplementation(() =>
-  Promise.resolve({
-    mtimeMs: mockLastUpdatedTime,
-  }),
-);
 
-const mockProcessedImageMetaDataFilePathPc = '/foo/bar';
+const mockLocalDeveloperCacheFilePath = '/foo/bar';
 const mockGetParsedJsonByFilePathPc = jest.fn().mockReturnValue({});
 
 jest.mock('fs', () => ({
-  promises: {
-    stat: mockFsStats,
-  },
   writeFileSync: mockWriteFileSyncPc,
 }));
 
 jest.mock('./constants', () => ({
-  processedImageMetaDataFilePath: mockProcessedImageMetaDataFilePathPc,
+  localDeveloperCacheFilePath: mockLocalDeveloperCacheFilePath,
 }));
 
 jest.mock('./get-parsed-json-by-file-path', () => ({
@@ -53,16 +43,16 @@ describe('localDeveloperImageCache', () => {
     expect(cacheInstance.currentDevCache).toEqual(testCacheFromPath);
 
     const testImageCacheKey = 'baz';
-    const testImageFilePath = './foo/bar';
+    const testLastUpdateTimeInMs = 98_734_435_202_738;
 
-    await cacheInstance.addCacheAttribute({
+    cacheInstance.addCacheAttribute({
       imageCacheKey: testImageCacheKey,
-      imageFilePath: testImageFilePath,
+      lastTimeFileUpdatedInMs: testLastUpdateTimeInMs,
     });
 
     expect(cacheInstance.currentDevCache).toEqual({
       ...testCacheFromPath,
-      [testImageCacheKey]: mockLastUpdatedTime,
+      [testImageCacheKey]: testLastUpdateTimeInMs,
     });
     expect(mockWriteFileSyncPc).not.toBeCalled();
   });
@@ -87,29 +77,29 @@ describe('localDeveloperImageCache', () => {
       './local-developer-cache'
     );
 
-    const newFilePath = './foo/bar';
+    const testLastUpdateTimeInMs = 98_734_202_738;
     const newUniqueKey = 'baz';
 
     cacheInstance.saveCacheToFileSystem();
 
     expect(mockWriteFileSyncPc).toBeCalledWith(
-      mockProcessedImageMetaDataFilePathPc,
+      mockLocalDeveloperCacheFilePath,
       JSON.stringify(testCacheFromPath, undefined, 2),
     );
 
-    await cacheInstance.addCacheAttribute({
+    cacheInstance.addCacheAttribute({
       imageCacheKey: newUniqueKey,
-      imageFilePath: newFilePath,
+      lastTimeFileUpdatedInMs: testLastUpdateTimeInMs,
     });
 
     cacheInstance.saveCacheToFileSystem();
 
     expect(mockWriteFileSyncPc.mock.calls[1]).toEqual([
-      mockProcessedImageMetaDataFilePathPc,
+      mockLocalDeveloperCacheFilePath,
       JSON.stringify(
         {
           ...testCacheFromPath,
-          [newUniqueKey]: mockLastUpdatedTime,
+          [newUniqueKey]: testLastUpdateTimeInMs,
         },
         undefined,
         2,

@@ -2,10 +2,15 @@ import type { SingleBar } from 'cli-progress';
 
 import { cliProgressBar } from '../cli-progress';
 import { logger } from '../logger';
+import { getStaticImageConfig } from '../static-image-config';
 import { thrownExceptionToLoggerAsError } from '../utils/thrown-exception';
+import { validateOptimisedImageDirectories } from '../utils/validate-optimised-image-directories';
 
+import { rootPublicImageDirectory, thumbnailDirectoryPath } from './constants';
 import { getImageFilesMetaData } from './image-files-meta-data';
 import { optimiseImages } from './optimise-images';
+
+const { optimisedImageSizes } = getStaticImageConfig();
 
 export const processStaticImages = async () => {
   let progressBar: SingleBar | undefined;
@@ -13,6 +18,12 @@ export const processStaticImages = async () => {
   logger.info('Processing static images');
 
   try {
+    validateOptimisedImageDirectories({
+      optimisedImageSizes,
+      rootPublicImageDirectory,
+      thumbnailDirectoryPath,
+    });
+
     const { imageFilesMetaData } = await getImageFilesMetaData();
 
     const totalImagesToProcess = imageFilesMetaData.length;

@@ -1,9 +1,9 @@
 const mockMkdirSync = jest.fn();
+const mockExistsSync = jest.fn();
 
-import fs from 'fs';
 import path from 'path';
 
-import del from 'del';
+import { localCacheDirectoryPath } from '../caching/constants';
 
 import { validateOptimisedImageDirectories } from './validate-optimised-image-directories';
 
@@ -12,27 +12,21 @@ const testDirectory = path.join(currentWorkingDirectory, 'test');
 const demoDirectoryRoot = path.join(testDirectory, 'foo');
 const demoDirectory = path.join(demoDirectoryRoot, 'bar');
 
+jest.mock('fs', () => ({
+  existsSync: mockExistsSync,
+  mkdirSync: mockMkdirSync,
+}));
+
 describe('validateOptimisedImageDirectories', () => {
-  beforeAll(() => {
-    del(demoDirectoryRoot);
-  });
-
   afterEach(() => {
-    del(demoDirectoryRoot);
+    jest.clearAllMocks();
   });
 
-  it('will do nothing if thumbnail directory already exists', () => {
-    jest.mock('fs', () => {
-      const originalModule = jest.requireActual('fs');
-
-      return {
-        ...originalModule,
-        mkdirSync: mockMkdirSync,
-      };
-    });
+  it('will do nothing if all directories already exists', () => {
+    mockExistsSync.mockReturnValue(true);
 
     validateOptimisedImageDirectories({
-      optimisedImageSizes: [],
+      optimisedImageSizes: [100],
       rootPublicImageDirectory: currentWorkingDirectory,
       thumbnailDirectoryPath: currentWorkingDirectory,
     });
@@ -40,48 +34,25 @@ describe('validateOptimisedImageDirectories', () => {
     expect(mockMkdirSync).not.toHaveBeenCalled();
   });
 
-  it('will do nothing if image size directory already exists', () => {
-    const testImageSize = 100;
-    const testImageDirectory = path.join(
-      demoDirectoryRoot,
-      testImageSize.toString(),
-    );
-
-    fs.mkdirSync(testImageDirectory, { recursive: true });
-    const makeDirectorySpy = jest.spyOn(fs, 'mkdirSync');
-
-    validateOptimisedImageDirectories({
-      optimisedImageSizes: [testImageSize],
-      rootPublicImageDirectory: demoDirectoryRoot,
-      thumbnailDirectoryPath: currentWorkingDirectory,
-    });
-
-    expect(makeDirectorySpy).not.toHaveBeenCalled();
-
-    del(testImageDirectory);
-  });
-
   it('will check if thumbnail directory exists and create one if not', () => {
+    mockExistsSync.mockReturnValueOnce(false).mockReturnValue(true);
+
     validateOptimisedImageDirectories({
       optimisedImageSizes: [],
       rootPublicImageDirectory: currentWorkingDirectory,
       thumbnailDirectoryPath: demoDirectory,
     });
 
-    expect(fs.existsSync(demoDirectory)).toBeTruthy();
-  });
-
-  it('will check if thumbnail directory exists and create one if not', () => {
-    validateOptimisedImageDirectories({
-      optimisedImageSizes: [],
-      rootPublicImageDirectory: currentWorkingDirectory,
-      thumbnailDirectoryPath: demoDirectory,
-    });
-
-    expect(fs.existsSync(demoDirectory)).toBeTruthy();
+    expect(mockMkdirSync).toBeCalledWith(demoDirectory, { recursive: true });
   });
 
   it('will check if all image size directories exists and create them if not', () => {
+    mockExistsSync
+      .mockReturnValueOnce(true)
+      .mockReturnValueOnce(false)
+      .mockReturnValueOnce(false)
+      .mockReturnValue(true);
+
     const imageSizes = [100, 200];
     validateOptimisedImageDirectories({
       optimisedImageSizes: imageSizes,
@@ -89,11 +60,29 @@ describe('validateOptimisedImageDirectories', () => {
       thumbnailDirectoryPath: currentWorkingDirectory,
     });
 
-    expect(
-      fs.existsSync(path.join(demoDirectory, imageSizes[0].toString())),
-    ).toBeTruthy();
-    expect(
-      fs.existsSync(path.join(demoDirectory, imageSizes[1].toString())),
-    ).toBeTruthy();
+    for (const [index, imageSize] of imageSizes.entries()) {
+      expect(mockMkdirSync.mock.calls[index]).toEqual([
+        path.join(demoDirectory, imageSize.toString()),
+        { recursive: true },
+      ]);
+    }
+  });
+
+  it('will check if local developer cache directory exists and creates it if not', () => {
+    mockExistsSync
+      .mockReturnValueOnce(true)
+      .mockReturnValueOnce(true)
+      .mockReturnValue(false);
+
+    const imageSizes = [100];
+    validateOptimisedImageDirectories({
+      optimisedImageSizes: imageSizes,
+      rootPublicImageDirectory: demoDirectory,
+      thumbnailDirectoryPath: currentWorkingDirectory,
+    });
+
+    expect(mockMkdirSync).toBeCalledWith(localCacheDirectoryPath, {
+      recursive: true,
+    });
   });
 });
