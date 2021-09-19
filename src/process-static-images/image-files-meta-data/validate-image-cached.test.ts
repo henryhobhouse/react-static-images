@@ -30,7 +30,9 @@ describe('validateImageCache', () => {
   });
 
   it('will return false when there is no existing processed image meta data', async () => {
-    const { validateImageCache } = await import('./validate-image-cache');
+    const { validateImageCached: validateImageCache } = await import(
+      './validate-image-cached'
+    );
     const response = await validateImageCache('', '');
 
     expect(response).toBeFalsy();
@@ -47,7 +49,9 @@ describe('validateImageCache', () => {
       },
     }));
 
-    const { validateImageCache } = await import('./validate-image-cache');
+    const { validateImageCached: validateImageCache } = await import(
+      './validate-image-cached'
+    );
 
     const response = await validateImageCache('', 'baz');
 
@@ -70,7 +74,9 @@ describe('validateImageCache', () => {
       },
     }));
 
-    const { validateImageCache } = await import('./validate-image-cache');
+    const { validateImageCached: validateImageCache } = await import(
+      './validate-image-cached'
+    );
 
     const response = await validateImageCache(testFilePath, testImageCacheKey);
 
@@ -97,7 +103,9 @@ describe('validateImageCache', () => {
       },
     }));
 
-    const { validateImageCache } = await import('./validate-image-cache');
+    const { validateImageCached: validateImageCache } = await import(
+      './validate-image-cached'
+    );
 
     const response = await validateImageCache(testFilePath, testImageCacheKey);
 
@@ -126,7 +134,9 @@ describe('validateImageCache', () => {
       },
     }));
 
-    const { validateImageCache } = await import('./validate-image-cache');
+    const { validateImageCached: validateImageCache } = await import(
+      './validate-image-cached'
+    );
 
     const response = await validateImageCache(testFilePath, testImageCacheKey);
 

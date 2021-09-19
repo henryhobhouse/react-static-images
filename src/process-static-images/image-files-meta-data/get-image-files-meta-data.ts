@@ -7,7 +7,7 @@ import { getStaticImageConfig, imageFormat } from '../../static-image-config';
 import { createUniqueFileNameFromPath } from '../../utils/image-fingerprinting';
 import { baseExcludedDirectories } from '../constants';
 
-import { validateImageCache } from './validate-image-cache';
+import { validateImageCached } from './validate-image-cached';
 
 export interface ImageFileSystemMetaData {
   path: string;
@@ -106,7 +106,7 @@ export const getImageFilesMetaData = async () => {
           ? imageFormat.jpeg
           : imageFormatType.toLowerCase();
 
-        const hasValidImageCache = await validateImageCache(
+        const hasValidImageCache = await validateImageCached(
           imageFilePath,
           uniqueImageName,
         );

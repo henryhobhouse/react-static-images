@@ -17,7 +17,7 @@ const previouslyProcessLocalDevelopmentCache =
  * Check if image is in the processed image cache and if the content hash matches (i.e. file has
  * not been edited since it was last processed)
  */
-export const validateImageCache = async (
+export const validateImageCached = async (
   imagePath: string,
   imageCacheKey: string,
 ) => {

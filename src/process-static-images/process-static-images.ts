@@ -53,8 +53,6 @@ export const processStaticImages = async () => {
     thrownExceptionToLoggerAsError(exception, 'Error processing Images');
   }
 
-  // TODO: caching - ensure that we don't process images that we already - basic
-  // TODO: caching - ensure that we don't process images that we already - dev env
   // TODO: cache invalidation (partial & full)
   // TODO: option to process webp images
 };

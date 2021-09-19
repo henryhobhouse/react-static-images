@@ -1,8 +1,7 @@
-import { existsSync, readFileSync, writeFileSync, unlinkSync } from 'fs';
-
-import { thrownExceptionToLoggerAsError } from '../utils/thrown-exception';
+import { writeFileSync } from 'fs';
 
 import { processedImageMetaDataFilePath } from './constants';
+import { getParsedJsonByFilePath } from './get-parsed-json-by-file-path';
 
 interface ProcessedImageMetaDataCacheAttributes {
   width?: number;
@@ -15,41 +14,26 @@ export type ProcessedImageMetaDataCache = Record<
   ProcessedImageMetaDataCacheAttributes
 >;
 
+export type LocalDeveloperCache = Record<string, number>;
+
 interface AddCacheAttributeProps {
   /* cache key for each image - using image unique name */
   imageCacheKey: string;
   imageAttributes: ProcessedImageMetaDataCacheAttributes;
 }
 
-const getParsedDataByFilePath = <T = unknown>(path: string, fallback?: T) => {
-  if (existsSync(path)) {
-    try {
-      const fileContentString = readFileSync(path).toString();
-
-      return JSON.parse(fileContentString) as T;
-    } catch (exception) {
-      thrownExceptionToLoggerAsError(
-        exception,
-        `Unable to retrieve and parse data from "${path}". Removing as likely corrupted`,
-      );
-      unlinkSync(path);
-    }
-  }
-
-  return fallback as T;
-};
-
+/**
+ *
+ */
 class ProcessedImageCache {
   private _currentCache: ProcessedImageMetaDataCache;
   private static instance: ProcessedImageCache;
 
   constructor() {
-    const cacheOnFileSystem =
-      getParsedDataByFilePath<ProcessedImageMetaDataCache>(
-        processedImageMetaDataFilePath,
-        {},
-      );
-    this._currentCache = cacheOnFileSystem;
+    this._currentCache = getParsedJsonByFilePath<ProcessedImageMetaDataCache>(
+      processedImageMetaDataFilePath,
+      {},
+    );
   }
 
   public static getInstance = () => {

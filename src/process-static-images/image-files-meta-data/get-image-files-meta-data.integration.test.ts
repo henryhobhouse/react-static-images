@@ -13,9 +13,8 @@ const mockStaticConfigOptions = {
   imagesBaseDirectory: demoContentDirectory,
 };
 
-const mockProcessImageMetaData = { foo: 'bar' };
 const mockConfig = jest.fn().mockReturnValue(mockStaticConfigOptions);
-const mockValidateImageCache = jest.fn().mockReturnValue(false);
+const mockValidateImageCached = jest.fn().mockReturnValue(false);
 
 import { imageFormat } from '../../static-image-config';
 
@@ -41,14 +40,8 @@ jest.mock('../../static-image-config', () => {
   };
 });
 
-jest.mock('../../caching', () => ({
-  processedImageMetaDataCache: {
-    currentCache: mockProcessImageMetaData,
-  },
-}));
-
-jest.mock('./validate-image-cache', () => ({
-  validateImageCache: mockValidateImageCache,
+jest.mock('./validate-image-cached', () => ({
+  validateImageCached: mockValidateImageCached,
 }));
 
 jest.mock('../constants', () => ({
@@ -386,7 +379,7 @@ describe('getImagesMetaData', () => {
   });
 
   it('will not return any meta data if each image has valid cache', async () => {
-    mockValidateImageCache.mockReturnValue(true);
+    mockValidateImageCached.mockReturnValue(true);
     mockConfig.mockReturnValueOnce({
       ...mockStaticConfigOptions,
       imageFormats: [
@@ -398,11 +391,10 @@ describe('getImagesMetaData', () => {
       ],
     });
     const result = await getImageFilesMetaData();
-    expect(mockValidateImageCache).toBeCalledTimes(7);
-    expect(mockValidateImageCache.mock.calls[0]).toEqual([
+    expect(mockValidateImageCached).toBeCalledTimes(7);
+    expect(mockValidateImageCached.mock.calls[0]).toEqual([
       path.join(demoContentDirectory, 'django.jpg'),
       '[hash]-django',
-      mockProcessImageMetaData,
     ]);
     expect(result).toEqual({ imageFilesMetaData: [] });
   });
