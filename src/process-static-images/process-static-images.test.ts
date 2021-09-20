@@ -101,7 +101,7 @@ describe('processStaticImages', () => {
       imageFilesMetaData: mockImageMetaDatas,
     }));
     await processStaticImages();
-    expect(mockInfoLogger.mock.calls[1][0]).toBe(
+    expect(mockInfoLogger.mock.calls[2][0]).toBe(
       `${mockImageMetaDatas.length} images to process. Processing...`,
     );
   });
