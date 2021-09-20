@@ -1,8 +1,12 @@
 const mockInfoLogger = jest.fn();
 const mockLogLogger = jest.fn();
-const mockGetImageMetaData = jest
-  .fn()
-  .mockImplementation(() => ({ imageFilesMetaData: [] }));
+const mockTotalImagesCached = 12;
+const mockTotalImagesFound = 45;
+const mockGetImageMetaData = jest.fn().mockImplementation(() => ({
+  imageFilesMetaData: [],
+  totalImagesCached: mockTotalImagesCached,
+  totalImagesFound: mockTotalImagesFound,
+}));
 const mockProgressBarStart = jest.fn();
 const mockProgressBarStop = jest.fn();
 const mockProgressBar = jest.fn().mockReturnValue({
@@ -190,6 +194,18 @@ describe('processStaticImages', () => {
     expect(mockThrownExceptionToLoggerAsError).toBeCalledWith(
       new VError(testErrorMessage),
       'Error processing Images',
+    );
+  });
+
+  it('will log out how many images were found and cached', async () => {
+    await processStaticImages();
+
+    expect(mockInfoLogger).toBeCalledWith(
+      `Found ${mockTotalImagesFound} images in accepted image format`,
+    );
+
+    expect(mockInfoLogger).toBeCalledWith(
+      `${mockTotalImagesCached} of those have valid cache present`,
     );
   });
 });

@@ -3,7 +3,7 @@ import { writeFileSync } from 'fs';
 import { processedImageMetaDataFilePath } from './constants';
 import { getParsedJsonByFilePath } from './get-parsed-json-by-file-path';
 
-interface ProcessedImageMetaDataCacheAttributes {
+export interface ProcessedImageMetaDataCacheAttributes {
   width?: number;
   height?: number;
   imageHash: string;

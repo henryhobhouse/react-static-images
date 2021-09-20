@@ -14,7 +14,13 @@ const mockStaticConfigOptions = {
 };
 const mockConfig = jest.fn().mockReturnValue(mockStaticConfigOptions);
 const mockValidateImageCached = jest.fn().mockReturnValue(false);
-const mockInfoLogger = jest.fn();
+const currentCacheImageName = 'foo';
+const currentCacheImageHash = 'bar';
+const mockCurrentCache = {
+  [currentCacheImageName]: {
+    imageHash: currentCacheImageHash,
+  },
+};
 
 import { imageFormat } from '../../static-image-config';
 
@@ -48,11 +54,8 @@ jest.mock('../../caching', () => ({
   localDeveloperImageCache: {
     saveCacheToFileSystem: jest.fn(),
   },
-}));
-
-jest.mock('../../logger', () => ({
-  logger: {
-    info: mockInfoLogger,
+  processedImageMetaDataCache: {
+    currentCache: mockCurrentCache,
   },
 }));
 
@@ -402,16 +405,16 @@ describe('getImagesMetaData', () => {
         imageFormat.tiff,
       ],
     });
-    const result = await getImageFilesMetaData();
+    const { imageFilesMetaData } = await getImageFilesMetaData();
     expect(mockValidateImageCached).toBeCalledTimes(7);
     expect(mockValidateImageCached.mock.calls[0]).toEqual([
       path.join(demoContentDirectory, 'django.jpg'),
       '[hash]-django',
     ]);
-    expect(result).toEqual({ imageFilesMetaData: [] });
+    expect(imageFilesMetaData).toEqual([]);
   });
 
-  it('will log out how many images it has found', async () => {
+  it('will return how many images it has found and if not in cache when not present', async () => {
     mockValidateImageCached.mockReturnValue(false);
     mockConfig.mockReturnValueOnce({
       ...mockStaticConfigOptions,
@@ -423,15 +426,14 @@ describe('getImagesMetaData', () => {
         imageFormat.tiff,
       ],
     });
-    await getImageFilesMetaData();
+    const { totalImagesFound, totalImagesCached } =
+      await getImageFilesMetaData();
 
-    expect(mockInfoLogger).toBeCalledTimes(1);
-    expect(mockInfoLogger).toBeCalledWith(
-      'Found 7 images in accepted image format',
-    );
+    expect(totalImagesFound).toBe(7);
+    expect(totalImagesCached).toBe(0);
   });
 
-  it('will log out how many images if found that were also cached', async () => {
+  it('will return how many images are in cache when present', async () => {
     mockValidateImageCached.mockReturnValue(true);
     mockConfig.mockReturnValueOnce({
       ...mockStaticConfigOptions,
@@ -443,10 +445,28 @@ describe('getImagesMetaData', () => {
         imageFormat.tiff,
       ],
     });
-    await getImageFilesMetaData();
-    expect(mockInfoLogger).toBeCalledTimes(2);
-    expect(mockInfoLogger).toBeCalledWith(
-      '7 of those have valid cache present',
-    );
+    const { totalImagesFound, totalImagesCached } =
+      await getImageFilesMetaData();
+
+    expect(totalImagesFound).toBe(7);
+    expect(totalImagesCached).toBe(7);
+  });
+
+  it('will return array of any cache that is now invalid', async () => {
+    mockConfig.mockReturnValueOnce({
+      ...mockStaticConfigOptions,
+      imageFormats: [
+        imageFormat.webp,
+        imageFormat.jpeg,
+        imageFormat.png,
+        imageFormat.avif,
+        imageFormat.tiff,
+      ],
+    });
+    const { invalidCachedImages } = await getImageFilesMetaData();
+
+    expect(invalidCachedImages).toEqual([
+      { hash: currentCacheImageHash, name: currentCacheImageName },
+    ]);
   });
 });

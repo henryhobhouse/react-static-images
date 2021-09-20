@@ -12,6 +12,15 @@ import { optimiseImages } from './optimise-images';
 
 const { optimisedImageSizes } = getStaticImageConfig();
 
+/**
+ * Gets all images by recursively searching from root of content directory as set
+ * in the config. Once obtained it processes all image to out, as configured:
+ *
+ * * thumbnails (in base64 encoding)
+ * * images optimised by size
+ *
+ * All this whilst caching the results for performant re-checking after initial optimisation
+ */
 export const processStaticImages = async () => {
   let progressBar: SingleBar | undefined;
 
@@ -24,7 +33,12 @@ export const processStaticImages = async () => {
       thumbnailDirectoryPath,
     });
 
-    const { imageFilesMetaData } = await getImageFilesMetaData();
+    const { imageFilesMetaData, totalImagesCached, totalImagesFound } =
+      await getImageFilesMetaData();
+
+    logger.info(`Found ${totalImagesFound} images in accepted image format`);
+    if (totalImagesCached)
+      logger.info(`${totalImagesCached} of those have valid cache present`);
 
     const totalImagesToProcess = imageFilesMetaData.length;
 

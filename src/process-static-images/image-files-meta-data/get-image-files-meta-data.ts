@@ -1,9 +1,12 @@
 import { promises } from 'fs';
 import path from 'path';
 
-import { localDeveloperImageCache } from '../../caching';
+import type { ProcessedImageMetaDataCacheAttributes } from '../../caching';
+import {
+  localDeveloperImageCache,
+  processedImageMetaDataCache,
+} from '../../caching';
 import { currentWorkingDirectory } from '../../constants';
-import { logger } from '../../logger';
 import type { ImageFormat } from '../../static-image-config';
 import { getStaticImageConfig, imageFormat } from '../../static-image-config';
 import { createUniqueFileNameFromPath } from '../../utils/image-fingerprinting';
@@ -52,7 +55,7 @@ const createImageFormatTypeMatcher = (fileTypes: ImageFormat[]) => {
 };
 
 /**
- * Recursively iterates through the base image directory (form the config) and checks if any image files with
+ * Recursively iterates through the base image directory (from the config) and checks if any image files with
  * accepted format types in each directory. If it finds one then to extract meta data to include:
  *
  * * image file name
@@ -65,6 +68,12 @@ export const getImageFilesMetaData = async () => {
     getStaticImageConfig();
   let totalImagesCached = 0;
   let totalImagesFound = 0;
+  const cachedImagesToValidate: Record<
+    string,
+    undefined | ProcessedImageMetaDataCacheAttributes
+  > = {
+    ...processedImageMetaDataCache.currentCache,
+  };
 
   const allExcludedDirectories = [
     ...baseExcludedDirectories,
@@ -108,6 +117,11 @@ export const getImageFilesMetaData = async () => {
             imageFilePath,
             imageDirent.name.replace(`.${imageFormatType}`, ''),
           );
+
+          // set value as undefined rather than delete property to avoid de-optimising the JS engine
+          // (fast vs slow properties https://v8.dev/blog/fast-properties#:~:text=Fast%20vs.%20slow%20properties)
+          if (cachedImagesToValidate[uniqueImageName])
+            cachedImagesToValidate[uniqueImageName] = undefined;
 
           const fileType = /jpg/i.test(imageFormatType)
             ? imageFormat.jpeg
@@ -154,11 +168,21 @@ export const getImageFilesMetaData = async () => {
 
   await recursiveSearchForImages(imagesBaseDirectory);
 
+  // filter out properties that still have an original image associated and map the remainder
+  // to create an array of pointers of invalid cache that needs to be removed
+  const invalidCachedImages = Object.entries(cachedImagesToValidate)
+    .filter((cachedImages) => !!cachedImages[1])
+    .map((filterCachedImage) => ({
+      hash: filterCachedImage[1]?.imageHash,
+      name: filterCachedImage[0],
+    }));
+
   localDeveloperImageCache.saveCacheToFileSystem();
 
-  logger.info(`Found ${totalImagesFound} images in accepted image format`);
-  if (totalImagesCached)
-    logger.info(`${totalImagesCached} of those have valid cache present`);
-
-  return { imageFilesMetaData };
+  return {
+    imageFilesMetaData,
+    invalidCachedImages,
+    totalImagesCached,
+    totalImagesFound,
+  };
 };
