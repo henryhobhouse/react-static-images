@@ -4,7 +4,7 @@ import { cliProgressBar } from '../cli-progress';
 import { logger } from '../logger';
 import { getStaticImageConfig } from '../static-image-config';
 import { thrownExceptionToLoggerAsError } from '../utils/thrown-exception';
-import { validateOptimisedImageDirectories } from '../utils/validate-optimised-image-directories';
+import { validateRequiredDirectoryPaths } from '../utils/validate-required-directory-paths';
 
 import { rootPublicImageDirectory, thumbnailDirectoryPath } from './constants';
 import { getImageFilesMetaData } from './image-files-meta-data';
@@ -18,7 +18,7 @@ export const processStaticImages = async () => {
   logger.info('Processing static images');
 
   try {
-    validateOptimisedImageDirectories({
+    validateRequiredDirectoryPaths({
       optimisedImageSizes,
       rootPublicImageDirectory,
       thumbnailDirectoryPath,
@@ -35,9 +35,7 @@ export const processStaticImages = async () => {
       return;
     }
 
-    logger.info(
-      `${totalImagesToProcess} total unprocessed images. Processing...`,
-    );
+    logger.info(`${totalImagesToProcess} images to process. Processing...`);
 
     // adjusted eta buffer by total images. If there are many then we want to increase the buffer so
     // eta adjustment is smoother.

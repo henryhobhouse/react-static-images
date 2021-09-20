@@ -5,7 +5,7 @@ import path from 'path';
 
 import { localCacheDirectoryPath } from '../caching/constants';
 
-import { validateOptimisedImageDirectories } from './validate-optimised-image-directories';
+import { validateRequiredDirectoryPaths } from './validate-required-directory-paths';
 
 const currentWorkingDirectory = process.cwd();
 const testDirectory = path.join(currentWorkingDirectory, 'test');
@@ -17,7 +17,7 @@ jest.mock('fs', () => ({
   mkdirSync: mockMkdirSync,
 }));
 
-describe('validateOptimisedImageDirectories', () => {
+describe('validateRequiredDirectoryPaths', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -25,7 +25,7 @@ describe('validateOptimisedImageDirectories', () => {
   it('will do nothing if all directories already exists', () => {
     mockExistsSync.mockReturnValue(true);
 
-    validateOptimisedImageDirectories({
+    validateRequiredDirectoryPaths({
       optimisedImageSizes: [100],
       rootPublicImageDirectory: currentWorkingDirectory,
       thumbnailDirectoryPath: currentWorkingDirectory,
@@ -37,7 +37,7 @@ describe('validateOptimisedImageDirectories', () => {
   it('will check if thumbnail directory exists and create one if not', () => {
     mockExistsSync.mockReturnValueOnce(false).mockReturnValue(true);
 
-    validateOptimisedImageDirectories({
+    validateRequiredDirectoryPaths({
       optimisedImageSizes: [],
       rootPublicImageDirectory: currentWorkingDirectory,
       thumbnailDirectoryPath: demoDirectory,
@@ -54,7 +54,7 @@ describe('validateOptimisedImageDirectories', () => {
       .mockReturnValue(true);
 
     const imageSizes = [100, 200];
-    validateOptimisedImageDirectories({
+    validateRequiredDirectoryPaths({
       optimisedImageSizes: imageSizes,
       rootPublicImageDirectory: demoDirectory,
       thumbnailDirectoryPath: currentWorkingDirectory,
@@ -75,7 +75,7 @@ describe('validateOptimisedImageDirectories', () => {
       .mockReturnValue(false);
 
     const imageSizes = [100];
-    validateOptimisedImageDirectories({
+    validateRequiredDirectoryPaths({
       optimisedImageSizes: imageSizes,
       rootPublicImageDirectory: demoDirectory,
       thumbnailDirectoryPath: currentWorkingDirectory,

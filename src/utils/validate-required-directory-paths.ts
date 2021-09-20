@@ -13,7 +13,7 @@ interface Props {
  * check if required directories exist where optimised images will live. If not create
  * them in preparation.
  */
-export const validateOptimisedImageDirectories = ({
+export const validateRequiredDirectoryPaths = ({
   thumbnailDirectoryPath,
   rootPublicImageDirectory,
   optimisedImageSizes,

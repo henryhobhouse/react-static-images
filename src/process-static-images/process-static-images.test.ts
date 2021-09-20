@@ -56,8 +56,8 @@ jest.mock('../cli-progress', () => ({
   },
 }));
 
-jest.mock('../utils/validate-optimised-image-directories', () => ({
-  validateOptimisedImageDirectories: mockValidateOptimisedImageDirectories,
+jest.mock('../utils/validate-required-directory-paths', () => ({
+  validateRequiredDirectoryPaths: mockValidateOptimisedImageDirectories,
 }));
 
 jest.mock('./optimise-images', () => ({
@@ -98,7 +98,7 @@ describe('processStaticImages', () => {
     }));
     await processStaticImages();
     expect(mockInfoLogger.mock.calls[1][0]).toBe(
-      `${mockImageMetaDatas.length} total unprocessed images. Processing...`,
+      `${mockImageMetaDatas.length} images to process. Processing...`,
     );
   });
 

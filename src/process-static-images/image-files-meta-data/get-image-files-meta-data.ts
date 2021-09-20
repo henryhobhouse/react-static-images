@@ -3,6 +3,7 @@ import path from 'path';
 
 import { localDeveloperImageCache } from '../../caching';
 import { currentWorkingDirectory } from '../../constants';
+import { logger } from '../../logger';
 import type { ImageFormat } from '../../static-image-config';
 import { getStaticImageConfig, imageFormat } from '../../static-image-config';
 import { createUniqueFileNameFromPath } from '../../utils/image-fingerprinting';
@@ -62,6 +63,8 @@ const createImageFormatTypeMatcher = (fileTypes: ImageFormat[]) => {
 export const getImageFilesMetaData = async () => {
   const { imageFormats, imagesBaseDirectory, excludedDirectories } =
     getStaticImageConfig();
+  let totalImagesCached = 0;
+  let totalImagesFound = 0;
 
   const allExcludedDirectories = [
     ...baseExcludedDirectories,
@@ -86,42 +89,48 @@ export const getImageFilesMetaData = async () => {
     );
 
     if (imageDirents.length > 0) {
-      for (const imageDirent of imageDirents) {
-        const imageFilePath = `${directoryPath}${path.sep}${imageDirent.name}`;
-        const imageFormatRegExMatchArray =
-          imageDirent.name.match(imageFileTypeRegex);
+      await Promise.all(
+        imageDirents.map(async (imageDirent) => {
+          const imageFilePath = `${directoryPath}${path.sep}${imageDirent.name}`;
+          const imageFormatRegExMatchArray =
+            imageDirent.name.match(imageFileTypeRegex);
 
-        // if the dirent isn't an accepted image file type then return to check next or exit
-        if (!imageFormatRegExMatchArray?.length) return;
+          // if the dirent isn't an accepted image file type then return to check next or exit
+          if (!imageFormatRegExMatchArray?.length) return;
 
-        const imageFormatType = imageFormatRegExMatchArray?.[0];
+          totalImagesFound += 1;
 
-        // To avoid collisions with images of same name but different paths we take a simple
-        // hash of the path as a prefix to ensure a unique name when copied to the web app public directory.
-        const uniqueImageName = createUniqueFileNameFromPath(
-          imageFilePath,
-          imageDirent.name.replace(`.${imageFormatType}`, ''),
-        );
+          const imageFormatType = imageFormatRegExMatchArray?.[0];
 
-        const fileType = /jpg/i.test(imageFormatType)
-          ? imageFormat.jpeg
-          : imageFormatType.toLowerCase();
+          // To avoid collisions with images of same name but different paths we take a simple
+          // hash of the path as a prefix to ensure a unique name when copied to the web app public directory.
+          const uniqueImageName = createUniqueFileNameFromPath(
+            imageFilePath,
+            imageDirent.name.replace(`.${imageFormatType}`, ''),
+          );
 
-        const hasValidImageCache = await validateImageCached(
-          imageFilePath,
-          uniqueImageName,
-        );
+          const fileType = /jpg/i.test(imageFormatType)
+            ? imageFormat.jpeg
+            : imageFormatType.toLowerCase();
 
-        if (fileType && !hasValidImageCache) {
-          const imageMeta = {
-            fileName: imageDirent.name,
-            path: imageFilePath,
-            type: fileType as ImageFormat,
+          const hasValidImageCache = await validateImageCached(
+            imageFilePath,
             uniqueImageName,
-          };
-          imageFilesMetaData.push(imageMeta);
-        }
-      }
+          );
+
+          if (hasValidImageCache) totalImagesCached += 1;
+
+          if (fileType && !hasValidImageCache) {
+            const imageMeta = {
+              fileName: imageDirent.name,
+              path: imageFilePath,
+              type: fileType as ImageFormat,
+              uniqueImageName,
+            };
+            imageFilesMetaData.push(imageMeta);
+          }
+        }),
+      );
     }
     await Promise.all(
       dirents.map(async (dirent) => {
@@ -146,6 +155,10 @@ export const getImageFilesMetaData = async () => {
   await recursiveSearchForImages(imagesBaseDirectory);
 
   localDeveloperImageCache.saveCacheToFileSystem();
+
+  logger.info(`Found ${totalImagesFound} images in accepted image format`);
+  if (totalImagesCached)
+    logger.info(`${totalImagesCached} of those have valid cache present`);
 
   return { imageFilesMetaData };
 };
