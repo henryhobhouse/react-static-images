@@ -1,4 +1,4 @@
-import { userConfigFileName } from './constants';
+import { userConfigFileName } from './config-constants';
 import { defaultConfig } from './default-config';
 
 export const validateUserConfig = (userConfig: unknown) => {

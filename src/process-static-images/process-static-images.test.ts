@@ -36,7 +36,7 @@ jest.mock('../logger', () => ({
   },
 }));
 
-jest.mock('./constants', () => ({
+jest.mock('../constants', () => ({
   rootPublicImageDirectory: mockRootPublicImageDirectory,
   staticImageMetaDirectoryPath: mockStaticImageMetaDirectoryPath,
   thumbnailDirectoryPath: mockThumbnailDirectoryPath,
@@ -72,7 +72,7 @@ jest.mock('./optimise-images', () => ({
   optimiseImages: mockOptimiseImages,
 }));
 
-jest.mock('../caching/constants', () => ({
+jest.mock('../caching/caching-constants', () => ({
   localCacheDirectoryPath: mockLocalCacheDirectoryPath,
 }));
 

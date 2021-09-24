@@ -7,7 +7,7 @@ jest.mock('fs', () => ({
   writeFileSync: mockWriteFileSyncPc,
 }));
 
-jest.mock('./constants', () => ({
+jest.mock('./caching-constants', () => ({
   localDeveloperCacheFilePath: mockLocalDeveloperCacheFilePath,
 }));
 
@@ -20,7 +20,7 @@ const preTestProcessCiValue = process.env.CI;
 describe('localDeveloperImageCache', () => {
   beforeAll(() => {
     process.env.CI = undefined;
-  })
+  });
 
   afterEach(() => {
     jest.clearAllMocks();

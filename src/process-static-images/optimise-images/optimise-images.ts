@@ -9,10 +9,13 @@ import {
   localDeveloperImageCache,
 } from '../../caching';
 import { cliProgressBar } from '../../cli-progress';
+import {
+  rootPublicImageDirectory,
+  thumbnailDirectoryPath,
+} from '../../constants';
 import { getStaticImageConfig } from '../../static-image-config';
 import { getFileContentShortHashByPath } from '../../utils/image-fingerprinting';
 import { thrownExceptionToLoggerAsError } from '../../utils/thrown-exception';
-import { rootPublicImageDirectory, thumbnailDirectoryPath } from '../constants';
 import type { ImageFileSystemMetaData } from '../image-files-meta-data';
 
 import { optimiseImageBySizePipeline } from './optimise-image-by-size-pipeline';

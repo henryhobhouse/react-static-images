@@ -10,7 +10,7 @@ import { currentWorkingDirectory } from '../../constants';
 import type { ImageFormat } from '../../static-image-config';
 import { getStaticImageConfig, imageFormat } from '../../static-image-config';
 import { createUniqueFileNameFromPath } from '../../utils/image-fingerprinting';
-import { baseExcludedDirectories } from '../constants';
+import { baseExcludedDirectories } from '../process-static-image-constants';
 
 import { validateImageCached } from './validate-image-cached';
 

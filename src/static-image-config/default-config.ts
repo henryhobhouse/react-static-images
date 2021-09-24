@@ -1,6 +1,6 @@
 import { currentWorkingDirectory } from '../constants';
 
-import { imageFormat } from './constants';
+import { imageFormat } from './config-constants';
 import type { ImageConfig } from './static-image-config';
 
 export const defaultConfig: ImageConfig = {

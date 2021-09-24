@@ -7,7 +7,7 @@ jest.mock('fs', () => ({
   writeFileSync: mockWriteFileSync,
 }));
 
-jest.mock('./constants', () => ({
+jest.mock('./caching-constants', () => ({
   processedImageMetaDataFilePath: mockProcessedImageMetaDataFilePath,
 }));
 

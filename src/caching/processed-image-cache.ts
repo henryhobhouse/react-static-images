@@ -1,6 +1,6 @@
 import { writeFileSync } from 'fs';
 
-import { processedImageMetaDataFilePath } from './constants';
+import { processedImageMetaDataFilePath } from './caching-constants';
 import { getParsedJsonByFilePath } from './get-parsed-json-by-file-path';
 
 export interface ProcessedImageMetaDataCacheAttributes {

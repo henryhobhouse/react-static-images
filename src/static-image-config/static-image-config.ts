@@ -2,9 +2,9 @@
 import { existsSync } from 'fs';
 import path from 'path';
 
+import type { imageFormat } from './config-constants';
+import { userConfigFileName } from './config-constants';
 import { validateUserConfig } from './config-validation';
-import type { imageFormat } from './constants';
-import { userConfigFileName } from './constants';
 import { defaultConfig } from './default-config';
 
 export type ImageFormat = keyof typeof imageFormat;

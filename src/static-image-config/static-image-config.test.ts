@@ -3,31 +3,48 @@
 import { existsSync, unlinkSync, writeFileSync } from 'fs';
 import path from 'path';
 
-import { userConfigFileName } from './constants';
-import { defaultConfig } from './default-config';
+import { userConfigFileName } from './config-constants';
 
-const relativePathToStaticImageConfig = './static-image-config';
-
-const configFilePath = path.resolve(process.cwd(), userConfigFileName);
+const mockValidateUserConfig = jest.fn();
 const mockFullConfig = {
+  applicationPublicDirectory: 'pub',
+  excludedDirectories: ['tay'],
   imageFormats: ['jpeg'],
   imagesBaseDirectory: 'foo bar',
   optimisedImageColourQuality: 1,
   optimisedImageCompressionLevel: 4,
   optimisedImageSizes: [10],
+  staticImageMetaDirectory: './qwerty',
   thumbnailSize: 3,
+};
+const mockDefaultConfig = {
+  applicationPublicDirectory: 'public',
+  excludedDirectories: [],
+  imageFormats: ['png', 'tiff'],
+  imagesBaseDirectory: '/fake/directory',
+  optimisedImageColourQuality: 100,
+  optimisedImageCompressionLevel: 9,
+  optimisedImageSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+  staticImageMetaDirectory: '/static-images-data',
+  thumbnailSize: 20,
 };
 const mockPartialConfig = {
   imagesBaseDirectory: 'foo bar',
   optimisedImageSizes: [10],
   thumbnailSize: 3,
 };
+
+const configFilePath = path.resolve(process.cwd(), userConfigFileName);
 const mockConfigModule = (config: Record<string, unknown>) =>
   `module.exports = ${JSON.stringify(config)}`;
+const relativePathToStaticImageConfig = './static-image-config';
 
-const mockValidateUserConfig = jest.fn();
 jest.mock('./config-validation', () => ({
   validateUserConfig: mockValidateUserConfig,
+}));
+
+jest.mock('./default-config', () => ({
+  defaultConfig: mockDefaultConfig,
 }));
 
 describe('Static image config', () => {
@@ -44,7 +61,7 @@ describe('Static image config', () => {
     const { getStaticImageConfig } = await import(
       relativePathToStaticImageConfig
     );
-    expect(getStaticImageConfig()).toEqual(defaultConfig);
+    expect(getStaticImageConfig()).toEqual(mockDefaultConfig);
   });
 
   // I cannot find a way to reset require/import cache of fs as imported into the tested module (not this test module)
@@ -63,7 +80,7 @@ describe('Static image config', () => {
       relativePathToStaticImageConfig
     );
     expect(getStaticImageConfig()).toEqual({
-      ...defaultConfig,
+      ...mockDefaultConfig,
       ...mockPartialConfig,
     });
   });

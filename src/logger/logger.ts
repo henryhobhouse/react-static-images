@@ -1,6 +1,6 @@
 import { format, createLogger, transports } from 'winston';
 
-import { defaultErrorLogFileName } from '../static-image-config/constants';
+import { defaultErrorLogFileName } from '../static-image-config/config-constants';
 
 const stringLineBreakRegex = /(\r\n|\n|\r)/gm;
 

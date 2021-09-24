@@ -10,7 +10,7 @@ import path from 'path';
 
 import VError from 'verror';
 
-import { defaultErrorLogFileName } from '../../static-image-config/constants';
+import { defaultErrorLogFileName } from '../../static-image-config/config-constants';
 
 const mockAddCacheAttribute = jest.fn();
 const mockSaveCacheToFileSystem = jest.fn();
@@ -74,7 +74,7 @@ jest.mock('../../static-image-config', () => ({
   getStaticImageConfig: mockGetStaticImageConfig,
 }));
 
-jest.mock('../constants', () => ({
+jest.mock('../../constants', () => ({
   rootPublicImageDirectory: mockRootPublicImageDirectory,
   thumbnailDirectoryPath: mockThumbnailDirectoryPath,
 }));

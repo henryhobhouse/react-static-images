@@ -11,6 +11,8 @@ const mockStaticConfigOptions = {
   excludedDirectories: [],
   imageFormats: ['png'],
   imagesBaseDirectory: demoContentDirectory,
+  staticImageMetaDirectory: 'baz',
+  thumbnailSize: 34,
 };
 const mockConfig = jest.fn().mockReturnValue(mockStaticConfigOptions);
 const mockValidateImageCached = jest.fn().mockReturnValue(false);
@@ -59,7 +61,7 @@ jest.mock('../../caching', () => ({
   },
 }));
 
-jest.mock('../constants', () => ({
+jest.mock('../process-static-image-constants', () => ({
   baseExcludedDirectories: [],
 }));
 

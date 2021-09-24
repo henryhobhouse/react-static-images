@@ -1,17 +1,17 @@
 import type { SingleBar } from 'cli-progress';
 
-import { localCacheDirectoryPath } from '../caching/constants';
+import { localCacheDirectoryPath } from '../caching/caching-constants';
 import { cliProgressBar } from '../cli-progress';
+import {
+  staticImageMetaDirectoryPath,
+  rootPublicImageDirectory,
+  thumbnailDirectoryPath,
+} from '../constants';
 import { logger } from '../logger';
 import { getStaticImageConfig } from '../static-image-config';
 import { thrownExceptionToLoggerAsError } from '../utils/thrown-exception';
 import { validateRequiredDirectoryPaths } from '../utils/validate-required-directory-paths';
 
-import {
-  rootPublicImageDirectory,
-  thumbnailDirectoryPath,
-  staticImageMetaDirectoryPath,
-} from './constants';
 import { getImageFilesMetaData } from './image-files-meta-data';
 import { optimiseImages } from './optimise-images';
 

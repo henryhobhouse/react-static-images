@@ -28,6 +28,7 @@
   "dependencies": {
     "cli-progress": "^3.9.0",
     "colors": "^1.4.0",
+    "del": "^6.0.0",
     "esm": "^3.2.25",
     "sharp": "^0.29.1",
     "shorthash2": "^1.0.3",
