@@ -10,9 +10,7 @@
     "check-types": "tsc --noEmit",
     "lint": "eslint '**/*.{js,ts,tsx}' --quiet --fix"
   },
-  "bin": {
-    "react-static-images": "./bin/index.js"
-  },
+  "bin": "./bin/index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/henryhobhouse/react-static-images.git"
