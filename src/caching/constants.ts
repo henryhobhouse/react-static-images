@@ -1,10 +1,9 @@
 import path from 'path';
 
-import { currentWorkingDirectory } from '../constants';
+import { currentWorkingDirectory, libraryPackageName } from '../constants';
 import { getStaticImageConfig } from '../static-image-config';
 
 const { staticImageMetaDirectory } = getStaticImageConfig();
-const libraryPackageName = 'react-static-images';
 
 export const imagesMetaDataFileName = 'image-meta-data.json';
 export const localDevelopmentCacheFileName = 'images-last-updated.json';

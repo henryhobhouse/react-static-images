@@ -14,9 +14,13 @@ export const rootPublicImageDirectory = path.join(
   optimisedImagesPublicDirectoryRoot,
 );
 
-export const thumbnailDirectoryPath = path.join(
+export const staticImageMetaDirectoryPath = path.join(
   currentWorkingDirectory,
   staticImageMetaDirectory,
+);
+
+export const thumbnailDirectoryPath = path.join(
+  staticImageMetaDirectoryPath,
   thumbnailSize.toString(),
 );
 

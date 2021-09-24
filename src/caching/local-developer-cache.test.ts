@@ -15,10 +15,17 @@ jest.mock('./get-parsed-json-by-file-path', () => ({
   getParsedJsonByFilePath: mockGetParsedJsonByFilePathPc,
 }));
 
+const preTestProcessCiValue = process.env.CI;
+
 describe('localDeveloperImageCache', () => {
   afterEach(() => {
     jest.clearAllMocks();
     jest.resetModules();
+    process.env.CI = undefined;
+  });
+
+  afterAll(() => {
+    process.env.CI = preTestProcessCiValue;
   });
 
   it('will returned the parsed contents of the local developer cache file if exists', async () => {
@@ -105,5 +112,31 @@ describe('localDeveloperImageCache', () => {
         2,
       ),
     ]);
+  });
+
+  it('will return always return an empty object if in CI pipeline', async () => {
+    const testCacheFromPath = { foo: 'bar' };
+    process.env.CI = 'true';
+    mockGetParsedJsonByFilePathPc.mockReturnValueOnce(testCacheFromPath);
+
+    const { localDeveloperImageCache: cacheInstance } = await import(
+      './local-developer-cache'
+    );
+
+    expect(cacheInstance.currentDevCache).toEqual({});
+  });
+
+  it('will not attempt to save cache to file if in CI pipeline', async () => {
+    const testCacheFromPath = { foo: 'bar' };
+    process.env.CI = 'true';
+    mockGetParsedJsonByFilePathPc.mockReturnValueOnce(testCacheFromPath);
+
+    const { localDeveloperImageCache: cacheInstance } = await import(
+      './local-developer-cache'
+    );
+
+    cacheInstance.saveCacheToFileSystem();
+
+    expect(mockWriteFileSyncPc).not.toBeCalled();
   });
 });

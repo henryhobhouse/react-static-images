@@ -1,12 +1,17 @@
 import type { SingleBar } from 'cli-progress';
 
+import { localCacheDirectoryPath } from '../caching/constants';
 import { cliProgressBar } from '../cli-progress';
 import { logger } from '../logger';
 import { getStaticImageConfig } from '../static-image-config';
 import { thrownExceptionToLoggerAsError } from '../utils/thrown-exception';
 import { validateRequiredDirectoryPaths } from '../utils/validate-required-directory-paths';
 
-import { rootPublicImageDirectory, thumbnailDirectoryPath } from './constants';
+import {
+  rootPublicImageDirectory,
+  thumbnailDirectoryPath,
+  staticImageMetaDirectoryPath,
+} from './constants';
 import { getImageFilesMetaData } from './image-files-meta-data';
 import { optimiseImages } from './optimise-images';
 
@@ -28,9 +33,13 @@ export const processStaticImages = async () => {
 
   try {
     validateRequiredDirectoryPaths({
+      directoryPaths: [
+        thumbnailDirectoryPath,
+        staticImageMetaDirectoryPath,
+        localCacheDirectoryPath,
+      ],
       optimisedImageSizes,
       rootPublicImageDirectory,
-      thumbnailDirectoryPath,
     });
 
     const { imageFilesMetaData, totalImagesCached, totalImagesFound } =

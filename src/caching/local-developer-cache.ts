@@ -5,7 +5,7 @@ import { getParsedJsonByFilePath } from './get-parsed-json-by-file-path';
 
 export type LocalCache = Record<string, number>;
 
-const isCiPipeline = process.env.CI;
+const isCiPipeline = process.env.CI === 'true';
 
 interface AddCacheAttributeProps {
   imageCacheKey: string;
@@ -42,10 +42,12 @@ class LocalDeveloperImageCache {
     imageCacheKey,
     lastTimeFileUpdatedInMs,
   }: AddCacheAttributeProps) {
+    if (isCiPipeline) return;
     this._localDeveloperCache[imageCacheKey] = lastTimeFileUpdatedInMs;
   }
 
   public saveCacheToFileSystem() {
+    if (isCiPipeline) return;
     const prettifiedMetaDataString = JSON.stringify(
       this._localDeveloperCache,
       undefined,

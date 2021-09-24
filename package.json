@@ -2,7 +2,7 @@
   "name": "react-static-images",
   "version": "0.0.1",
   "description": "Ultra fast image processing for react",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "jest --collectCoverage",
     "build": "rm -rf dist && tsc",

@@ -3,8 +3,6 @@ const mockExistsSync = jest.fn();
 
 import path from 'path';
 
-import { localCacheDirectoryPath } from '../caching/constants';
-
 import { validateRequiredDirectoryPaths } from './validate-required-directory-paths';
 
 const currentWorkingDirectory = process.cwd();
@@ -26,38 +24,43 @@ describe('validateRequiredDirectoryPaths', () => {
     mockExistsSync.mockReturnValue(true);
 
     validateRequiredDirectoryPaths({
+      directoryPaths: [currentWorkingDirectory],
       optimisedImageSizes: [100],
       rootPublicImageDirectory: currentWorkingDirectory,
-      thumbnailDirectoryPath: currentWorkingDirectory,
     });
 
     expect(mockMkdirSync).not.toHaveBeenCalled();
   });
 
-  it('will check if thumbnail directory exists and create one if not', () => {
-    mockExistsSync.mockReturnValueOnce(false).mockReturnValue(true);
+  it('will check if directory in directory paths list exists and create them if not', () => {
+    mockExistsSync
+      .mockReturnValueOnce(false)
+      .mockReturnValueOnce(false)
+      .mockReturnValue(true);
 
     validateRequiredDirectoryPaths({
+      directoryPaths: [demoDirectory, demoDirectoryRoot],
       optimisedImageSizes: [],
       rootPublicImageDirectory: currentWorkingDirectory,
-      thumbnailDirectoryPath: demoDirectory,
     });
 
+    expect(mockMkdirSync).toBeCalledWith(demoDirectoryRoot, {
+      recursive: true,
+    });
     expect(mockMkdirSync).toBeCalledWith(demoDirectory, { recursive: true });
   });
 
   it('will check if all image size directories exists and create them if not', () => {
     mockExistsSync
-      .mockReturnValueOnce(true)
       .mockReturnValueOnce(false)
       .mockReturnValueOnce(false)
       .mockReturnValue(true);
 
     const imageSizes = [100, 200];
     validateRequiredDirectoryPaths({
+      directoryPaths: [currentWorkingDirectory],
       optimisedImageSizes: imageSizes,
       rootPublicImageDirectory: demoDirectory,
-      thumbnailDirectoryPath: currentWorkingDirectory,
     });
 
     for (const [index, imageSize] of imageSizes.entries()) {
@@ -66,23 +69,5 @@ describe('validateRequiredDirectoryPaths', () => {
         { recursive: true },
       ]);
     }
-  });
-
-  it('will check if local developer cache directory exists and creates it if not', () => {
-    mockExistsSync
-      .mockReturnValueOnce(true)
-      .mockReturnValueOnce(true)
-      .mockReturnValue(false);
-
-    const imageSizes = [100];
-    validateRequiredDirectoryPaths({
-      optimisedImageSizes: imageSizes,
-      rootPublicImageDirectory: demoDirectory,
-      thumbnailDirectoryPath: currentWorkingDirectory,
-    });
-
-    expect(mockMkdirSync).toBeCalledWith(localCacheDirectoryPath, {
-      recursive: true,
-    });
   });
 });

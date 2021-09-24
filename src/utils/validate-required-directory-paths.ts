@@ -1,10 +1,8 @@
 import { existsSync, mkdirSync } from 'fs';
 import path from 'path';
 
-import { localCacheDirectoryPath } from '../caching/constants';
-
 interface Props {
-  thumbnailDirectoryPath: string;
+  directoryPaths: string[];
   rootPublicImageDirectory: string;
   optimisedImageSizes: number[];
 }
@@ -14,14 +12,10 @@ interface Props {
  * them in preparation.
  */
 export const validateRequiredDirectoryPaths = ({
-  thumbnailDirectoryPath,
+  directoryPaths,
   rootPublicImageDirectory,
   optimisedImageSizes,
 }: Props) => {
-  // if thumbnail directory doesn't exist then recursively create
-  if (!existsSync(thumbnailDirectoryPath))
-    mkdirSync(thumbnailDirectoryPath, { recursive: true });
-
   // if any of the image size directories doesn't exist then recursively create
   for (const imageSize of optimisedImageSizes) {
     const imageSizeDirectoryPath = path.join(
@@ -32,7 +26,8 @@ export const validateRequiredDirectoryPaths = ({
       mkdirSync(imageSizeDirectoryPath, { recursive: true });
   }
 
-  // if
-  if (!existsSync(localCacheDirectoryPath))
-    mkdirSync(localCacheDirectoryPath, { recursive: true });
+  // process all other paths
+  for (const path of directoryPaths) {
+    if (!existsSync(path)) mkdirSync(path, { recursive: true });
+  }
 };

@@ -24,7 +24,7 @@ export interface ImageConfig {
   imagesBaseDirectory: string;
   /* location of directory that allows public assets for your web app. ('/public') */
   applicationPublicDirectory: string;
-  /* location of directory to data that might not be added directory to 'applicationPublicDirectory' like (base64) thumbnails or image meta data */
+  /* location of directory to data that might not be added to the 'applicationPublicDirectory' directory like (base64) thumbnails, image meta data etc */
   staticImageMetaDirectory: string;
   /* any directories that should be ignored by the library when searching for images to process */
   excludedDirectories: string[];

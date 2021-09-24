@@ -21,6 +21,8 @@ const mockValidateOptimisedImageDirectories = jest.fn();
 const mockOptimisedImageSizes = [23, 34];
 const mockRootPublicImageDirectory = 'foo';
 const mockThumbnailDirectoryPath = 'bar';
+const mockStaticImageMetaDirectoryPath = 'baz';
+const mockLocalCacheDirectoryPath = 'laurie';
 
 import VError from 'verror';
 
@@ -36,12 +38,14 @@ jest.mock('../logger', () => ({
 
 jest.mock('./constants', () => ({
   rootPublicImageDirectory: mockRootPublicImageDirectory,
+  staticImageMetaDirectoryPath: mockStaticImageMetaDirectoryPath,
   thumbnailDirectoryPath: mockThumbnailDirectoryPath,
 }));
 
 jest.mock('../static-image-config', () => ({
   getStaticImageConfig: jest.fn().mockReturnValue({
     optimisedImageSizes: mockOptimisedImageSizes,
+    staticImageMetaDirectory: 'foo/bar',
   }),
 }));
 
@@ -68,15 +72,23 @@ jest.mock('./optimise-images', () => ({
   optimiseImages: mockOptimiseImages,
 }));
 
+jest.mock('../caching/constants', () => ({
+  localCacheDirectoryPath: mockLocalCacheDirectoryPath,
+}));
+
 describe('processStaticImages', () => {
   afterEach(jest.clearAllMocks);
 
   it('will request to validate all directories used to store data from processing images', async () => {
     await processStaticImages();
     expect(mockValidateOptimisedImageDirectories).toBeCalledWith({
+      directoryPaths: [
+        mockThumbnailDirectoryPath,
+        mockStaticImageMetaDirectoryPath,
+        mockLocalCacheDirectoryPath,
+      ],
       optimisedImageSizes: mockOptimisedImageSizes,
       rootPublicImageDirectory: mockRootPublicImageDirectory,
-      thumbnailDirectoryPath: mockThumbnailDirectoryPath,
     });
   });
 
