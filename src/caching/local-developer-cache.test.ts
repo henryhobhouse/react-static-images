@@ -18,6 +18,10 @@ jest.mock('./get-parsed-json-by-file-path', () => ({
 const preTestProcessCiValue = process.env.CI;
 
 describe('localDeveloperImageCache', () => {
+  beforeAll(() => {
+    process.env.CI = undefined;
+  })
+
   afterEach(() => {
     jest.clearAllMocks();
     jest.resetModules();
