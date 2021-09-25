@@ -1,6 +1,7 @@
-const mockDel = jest.fn();
+const mockDel = jest.fn().mockImplementation(() => Promise.resolve());
 const mockLocalCachePath = 'foo';
 const mockStaticImageMetaDirectoryPath = 'bar';
+const mockRootPublicImageDirectory = 'baz';
 
 import { clearCache } from './clear-cache';
 
@@ -10,6 +11,7 @@ jest.mock('del', () => ({
 }));
 
 jest.mock('../constants', () => ({
+  rootPublicImageDirectory: mockRootPublicImageDirectory,
   staticImageMetaDirectoryPath: mockStaticImageMetaDirectoryPath,
 }));
 
@@ -26,5 +28,10 @@ describe('clearCache', () => {
   it('will call "del" to recursively delete staticImageMetaDirectoryPath', async () => {
     await clearCache();
     expect(mockDel).toBeCalledWith(mockStaticImageMetaDirectoryPath);
+  });
+
+  it('will call "del" to recursively delete rootPublicImageDirector', async () => {
+    await clearCache();
+    expect(mockDel).toBeCalledWith(mockRootPublicImageDirectory);
   });
 });

@@ -1,10 +1,16 @@
 import del from 'del';
 
-import { staticImageMetaDirectoryPath } from '../constants';
+import {
+  rootPublicImageDirectory,
+  staticImageMetaDirectoryPath,
+} from '../constants';
 
 import { localCacheDirectoryPath } from './caching-constants';
 
 export const clearCache = async () => {
-  await del(localCacheDirectoryPath);
-  await del(staticImageMetaDirectoryPath);
+  await Promise.all([
+    del(localCacheDirectoryPath),
+    del(staticImageMetaDirectoryPath),
+    del(rootPublicImageDirectory),
+  ]);
 };
