@@ -9,7 +9,7 @@ import {
 import { currentWorkingDirectory } from '../../constants';
 import type { ImageFormat } from '../../static-image-config';
 import { getStaticImageConfig, imageFormat } from '../../static-image-config';
-import { createUniqueFileNameFromPath } from '../../utils/image-fingerprinting';
+import { createUniqueFileNameFromPath } from '../../utils/data-fingerprinting';
 import { baseExcludedDirectories } from '../process-static-image-constants';
 
 import { validateImageCached } from './validate-image-cached';
@@ -72,7 +72,7 @@ export const getImageFilesMetaData = async () => {
     string,
     undefined | ProcessedImageMetaDataCacheAttributes
   > = {
-    ...processedImageMetaDataCache.currentCache,
+    ...processedImageMetaDataCache.getCurrentCache(),
   };
 
   const allExcludedDirectories = [

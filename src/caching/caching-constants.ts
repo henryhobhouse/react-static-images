@@ -6,12 +6,18 @@ import {
   staticImageMetaDirectoryPath,
 } from '../constants';
 
-export const imagesMetaDataFileName = 'image-meta-data.json';
-export const localDevelopmentCacheFileName = 'images-last-updated.json';
+const imagesMetaDataFileName = 'image-meta-data.json';
+const localDevelopmentCacheFileName = 'images-last-updated.json';
+const configCacheFileName = 'build-cache.json';
 
 export const processedImageMetaDataFilePath = path.join(
   staticImageMetaDirectoryPath,
   imagesMetaDataFileName,
+);
+
+export const configCacheFilePath = path.join(
+  staticImageMetaDirectoryPath,
+  configCacheFileName,
 );
 
 export const localCacheDirectoryPath = path.join(

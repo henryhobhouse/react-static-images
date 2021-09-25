@@ -104,7 +104,7 @@ jest.mock('../../utils/thrown-exception', () => ({
   thrownExceptionToLoggerAsError: mockThrownExceptionToLoggerAsError,
 }));
 jest.mock('../image-files-meta-data');
-jest.mock('../../utils/image-fingerprinting', () => ({
+jest.mock('../../utils/data-fingerprinting', () => ({
   getFileContentShortHashByPath: mockGetFileContentShortHashByPath,
 }));
 

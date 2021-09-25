@@ -4,7 +4,7 @@ const mockFsStats = jest.fn().mockReturnValue({
   mtimeMs: mockLastUpdatedTime,
 });
 
-jest.mock('../../utils/image-fingerprinting', () => ({
+jest.mock('../../utils/data-fingerprinting', () => ({
   getFileContentShortHashByPath: mockGetFileContentShortHashByPath,
 }));
 

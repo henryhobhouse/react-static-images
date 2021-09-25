@@ -17,21 +17,27 @@ export const createUniqueFileNameFromPath = (
 };
 
 /**
- * Create short hash based on file contents.
+ * Create short hash that is file system friendly
  *
  * Done via using the fastest way to get a hash from data on node (https://medium.com/@chris_72272/what-is-the-fastest-node-js-hashing-algorithm-c15c1a0e164e)
  * then removing any characters that cannot be used in file names then returning the first seven characters
  * from resulting hash
  */
-export const getFileContentShortHashByPath = async (filePath: string) => {
-  const fileContentBuffer = await promises.readFile(filePath);
-  const fileContent = fileContentBuffer.toString();
-  const fileHash = crypto
+export const createShortHashFromString = (dataString: string) =>
+  crypto
     .createHash('sha1')
-    .update(fileContent)
+    .update(dataString)
     .digest('base64')
     .replace(/[+/=]/gi, '')
     .slice(0, 7);
+
+/**
+ * Create short hash based on file content found by path.
+ */
+export const getFileContentShortHashByPath = async (filePath: string) => {
+  const fileContentBuffer = await promises.readFile(filePath);
+  const fileContent = fileContentBuffer.toString();
+  const fileHash = createShortHashFromString(fileContent);
 
   return fileHash;
 };

@@ -1,7 +1,7 @@
 import {
   createUniqueFileNameFromPath,
   getFileContentShortHashByPath,
-} from './image-fingerprinting';
+} from './data-fingerprinting';
 
 const mockFileBuffer = Buffer.from('foo bar');
 

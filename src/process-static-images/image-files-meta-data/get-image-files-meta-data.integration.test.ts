@@ -66,7 +66,7 @@ jest.mock('../process-static-image-constants', () => ({
 }));
 
 // have the mock simple prefix '[hash]-' before file name to easily identify and test if function has been run
-jest.mock('../../utils/image-fingerprinting', () => ({
+jest.mock('../../utils/data-fingerprinting', () => ({
   createUniqueFileNameFromPath: mockGetUniqueFileNameByPath,
 }));
 
