@@ -15,7 +15,7 @@ export const defaultConfig: ImageConfig = {
   imagesBaseDirectory: currentWorkingDirectory,
   optimisedImageColourQuality: 100,
   optimisedImageCompressionLevel: 9,
-  optimisedImageSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+  optimisedImageSizes: [640, 828, 1080, 1200, 1920, 2048, 3840],
   staticImageMetaDirectory: '/static-images-data',
   thumbnailSize: 20,
 };
