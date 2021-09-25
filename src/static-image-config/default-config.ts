@@ -1,7 +1,7 @@
-import { currentWorkingDirectory } from '../constants';
-
 import { imageFormat } from './config-constants';
 import type { ImageConfig } from './static-image-config';
+
+const currentWorkingDirectory = process.cwd();
 
 export const defaultConfig: ImageConfig = {
   applicationPublicDirectory: 'public',
