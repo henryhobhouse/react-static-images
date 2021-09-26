@@ -4,7 +4,7 @@ import {
   localDeveloperImageCache,
   processedImageMetaDataCache,
 } from '../../caching';
-import { getFileContentShortHashByPath } from '../../utils/image-fingerprinting';
+import { getFileContentShortHashByPath } from '../../utils/data-fingerprinting';
 
 const previouslyProcessedImageMetaData =
   processedImageMetaDataCache.currentCache;

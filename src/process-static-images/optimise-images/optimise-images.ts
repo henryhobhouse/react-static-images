@@ -14,7 +14,7 @@ import {
   thumbnailDirectoryPath,
 } from '../../constants';
 import { getStaticImageConfig } from '../../static-image-config';
-import { getFileContentShortHashByPath } from '../../utils/image-fingerprinting';
+import { getFileContentShortHashByPath } from '../../utils/data-fingerprinting';
 import { thrownExceptionToLoggerAsError } from '../../utils/thrown-exception';
 import type { ImageFileSystemMetaData } from '../image-files-meta-data';
 
