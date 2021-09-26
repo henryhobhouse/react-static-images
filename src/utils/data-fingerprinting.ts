@@ -3,6 +3,8 @@ import { promises } from 'fs';
 
 import shortHash from 'shorthash2';
 
+import { currentWorkingDirectory } from '../constants';
+
 /**
  * To avoid collisions with files with the same name in different directories we take a simple
  * hash of the path as a prefix to ensure a unique name when copied to the web app public directory.
@@ -11,7 +13,11 @@ export const createUniqueFileNameFromPath = (
   imagePath: string,
   imageName: string,
 ) => {
-  const pathHash = shortHash(imagePath);
+  const agnosticToEnvironmentPath = imagePath.replace(
+    currentWorkingDirectory,
+    '',
+  );
+  const pathHash = shortHash(agnosticToEnvironmentPath);
 
   return `${pathHash}-${imageName}`;
 };
