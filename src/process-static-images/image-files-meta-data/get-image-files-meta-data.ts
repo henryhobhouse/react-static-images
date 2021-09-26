@@ -72,7 +72,7 @@ export const getImageFilesMetaData = async () => {
     string,
     undefined | ProcessedImageMetaDataCacheAttributes
   > = {
-    ...processedImageMetaDataCache.getCurrentCache(),
+    ...processedImageMetaDataCache.currentCache,
   };
 
   const allExcludedDirectories = [

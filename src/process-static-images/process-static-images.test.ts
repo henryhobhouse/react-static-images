@@ -1,5 +1,6 @@
 const mockInfoLogger = jest.fn();
 const mockLogLogger = jest.fn();
+const mockWarnLogger = jest.fn();
 const mockTotalImagesCached = 12;
 const mockTotalImagesFound = 45;
 const mockGetImageMetaData = jest.fn().mockImplementation(() => ({
@@ -23,6 +24,12 @@ const mockRootPublicImageDirectory = 'foo';
 const mockThumbnailDirectoryPath = 'bar';
 const mockStaticImageMetaDirectoryPath = 'baz';
 const mockLocalCacheDirectoryPath = 'laurie';
+const mockIsCurrentConfigMatchingCache = jest.fn().mockReturnValue(true);
+const mockClearFileSystemCache = jest.fn();
+const mockUpdateImageMetaDataCache = jest.fn();
+const mockSaveLocalDevelopmentCache = jest.fn();
+const mockSaveImageMetaDataCache = jest.fn();
+const mockSaveConfigToCache = jest.fn();
 
 import VError from 'verror';
 
@@ -33,6 +40,7 @@ jest.mock('../logger', () => ({
   logger: {
     info: mockInfoLogger,
     log: mockLogLogger,
+    warn: mockWarnLogger,
   },
 }));
 
@@ -72,8 +80,18 @@ jest.mock('./optimise-images', () => ({
   optimiseImages: mockOptimiseImages,
 }));
 
-jest.mock('../caching/caching-constants', () => ({
+jest.mock('../caching', () => ({
+  clearFileSystemCache: mockClearFileSystemCache,
+  isCurrentConfigMatchingCache: mockIsCurrentConfigMatchingCache,
   localCacheDirectoryPath: mockLocalCacheDirectoryPath,
+  localDeveloperImageCache: {
+    saveCacheToFileSystem: mockSaveLocalDevelopmentCache,
+  },
+  processedImageMetaDataCache: {
+    saveCacheToFileSystem: mockSaveImageMetaDataCache,
+    update: mockUpdateImageMetaDataCache,
+  },
+  saveCurrentConfigToCache: mockSaveConfigToCache,
 }));
 
 describe('processStaticImages', () => {
@@ -154,6 +172,7 @@ describe('processStaticImages', () => {
     await processStaticImages();
 
     expect(mockProgressBarStop).toBeCalledWith();
+    expect(mockThrownExceptionToLoggerAsError).not.toBeCalled();
   });
 
   it('will log out a success message', async () => {
@@ -165,7 +184,7 @@ describe('processStaticImages', () => {
 
     expect(mockLogLogger).toBeCalledWith(
       'success',
-      'thumbnails and image meta saved from permitted image types.',
+      'All available images processed successfully.',
     );
   });
 
@@ -219,5 +238,52 @@ describe('processStaticImages', () => {
     expect(mockInfoLogger).toBeCalledWith(
       `${mockTotalImagesCached} of those have valid cache present`,
     );
+  });
+
+  it('will log a warning if current config does not match cache', async () => {
+    mockIsCurrentConfigMatchingCache.mockReturnValueOnce(false);
+    await processStaticImages();
+    expect(mockWarnLogger).toBeCalledWith(
+      'Config has been changed since last time. Clearing cache and re-processing using new config',
+    );
+  });
+
+  it('will request to clear file system cache if current config does not match cache', async () => {
+    mockIsCurrentConfigMatchingCache.mockReturnValueOnce(false);
+    await processStaticImages();
+    expect(mockClearFileSystemCache).toBeCalledWith();
+  });
+
+  it('will request to update local processed image cache if current config does not match cache', async () => {
+    mockIsCurrentConfigMatchingCache.mockReturnValueOnce(false);
+    await processStaticImages();
+    expect(mockUpdateImageMetaDataCache).toBeCalledWith();
+  });
+
+  it('will request to save local developer cache on successfully processing images', async () => {
+    const mockImageMetaDatas = [{}, {}];
+    mockGetImageMetaData.mockImplementationOnce(() => ({
+      imageFilesMetaData: mockImageMetaDatas,
+    }));
+    await processStaticImages();
+    expect(mockSaveLocalDevelopmentCache).toBeCalledWith();
+  });
+
+  it('will request to save image meta data cache on successfully processing images', async () => {
+    const mockImageMetaDatas = [{}, {}];
+    mockGetImageMetaData.mockImplementationOnce(() => ({
+      imageFilesMetaData: mockImageMetaDatas,
+    }));
+    await processStaticImages();
+    expect(mockSaveImageMetaDataCache).toBeCalledWith();
+  });
+
+  it('will request to save config to cache on successfully processing images', async () => {
+    const mockImageMetaDatas = [{}, {}];
+    mockGetImageMetaData.mockImplementationOnce(() => ({
+      imageFilesMetaData: mockImageMetaDatas,
+    }));
+    await processStaticImages();
+    expect(mockSaveConfigToCache).toBeCalledWith();
   });
 });

@@ -48,6 +48,13 @@ class ProcessedImageCache {
     return this._currentCache;
   }
 
+  public update() {
+    this._currentCache = getParsedJsonByFilePath<ProcessedImageMetaDataCache>(
+      processedImageMetaDataFilePath,
+      {},
+    );
+  }
+
   public addCacheAttribute({
     imageCacheKey,
     imageAttributes,

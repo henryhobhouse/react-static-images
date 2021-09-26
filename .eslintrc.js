@@ -85,6 +85,7 @@ module.exports = {
     'import/prefer-default-export': 0,
     'no-console': 'error',
     'no-duplicate-imports': 'off',
+    'no-empty-function': 0,
     'no-undef': 0,
     'no-unused-vars': 0,
     'no-use-before-define': 0,

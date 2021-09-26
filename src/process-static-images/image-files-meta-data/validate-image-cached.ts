@@ -6,11 +6,6 @@ import {
 } from '../../caching';
 import { getFileContentShortHashByPath } from '../../utils/data-fingerprinting';
 
-const previouslyProcessedImageMetaData =
-  processedImageMetaDataCache.currentCache;
-const previouslyProcessLocalDevelopmentCache =
-  localDeveloperImageCache.currentDevCache;
-
 /**
  * Validate Image Cache
  *
@@ -21,6 +16,9 @@ export const validateImageCached = async (
   imagePath: string,
   imageCacheKey: string,
 ) => {
+  const previouslyProcessedImageMetaData =
+    processedImageMetaDataCache.currentCache;
+
   // if no base cache then no cache can exist so return false
   if (Object.keys(previouslyProcessedImageMetaData).length === 0) return false;
 
@@ -28,7 +26,8 @@ export const validateImageCached = async (
 
   // check if there is a valid local dev cache (fast check)
   if (
-    previouslyProcessLocalDevelopmentCache[imageCacheKey] === imageStats.mtimeMs
+    localDeveloperImageCache.currentDevCache[imageCacheKey] ===
+    imageStats.mtimeMs
   ) {
     return true;
   }

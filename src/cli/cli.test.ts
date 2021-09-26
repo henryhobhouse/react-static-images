@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 const mockProcessStaticImages = jest.fn();
 const mockClearCache = jest.fn();
 const mockLogger = jest.fn();
@@ -9,7 +10,7 @@ jest.mock('../process-static-images', () => ({
 }));
 
 jest.mock('../caching', () => ({
-  clearCache: mockClearCache,
+  clearFileSystemCache: mockClearCache,
 }));
 
 jest.mock('../logger', () => ({
@@ -19,6 +20,8 @@ jest.mock('../logger', () => ({
 }));
 
 describe('cli', () => {
+  // @ts-expect-error mocking function
+  const mockExit = jest.spyOn(process, 'exit').mockImplementation(() => {});
   afterEach(jest.clearAllMocks);
 
   it('will call process static images with no arguments', async () => {
@@ -47,6 +50,6 @@ describe('cli', () => {
 
   it('will not call process static images if arguments include clear cache', async () => {
     await cli(['--clearCache']);
-    expect(mockProcessStaticImages).not.toBeCalledWith();
+    expect(mockExit).toBeCalledWith(0);
   });
 });

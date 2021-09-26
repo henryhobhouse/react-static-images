@@ -360,66 +360,6 @@ describe('optimiseImages', () => {
     });
   });
 
-  it('will request to save image meta data cache to file system after processing all images', async () => {
-    const imageUniqueName1 = 'django';
-    const imageUniqueName2 = 'baz';
-    mockGetStaticImageConfig.mockImplementationOnce(() => ({
-      optimisedImageColourQuality: 4,
-      optimisedImageCompressionLevel: 5,
-      optimisedImageSizes: [mockOriginalImageWidth - 100],
-      thumbnailSize: 4,
-    }));
-
-    await optimiseImages({
-      imagesFileSystemMetaData: [
-        {
-          fileName: 'trigger',
-          path: 'baz/top',
-          type: 'png',
-          uniqueImageName: imageUniqueName1,
-        },
-        {
-          fileName: 'trigger',
-          path: 'baz/top',
-          type: 'png',
-          uniqueImageName: imageUniqueName2,
-        },
-      ],
-    });
-
-    expect(mockSaveCacheToFileSystem).toBeCalledWith();
-  });
-
-  it('will request to save local developer cache to file system after processing all images', async () => {
-    const imageUniqueName1 = 'django';
-    const imageUniqueName2 = 'baz';
-    mockGetStaticImageConfig.mockImplementationOnce(() => ({
-      optimisedImageColourQuality: 4,
-      optimisedImageCompressionLevel: 5,
-      optimisedImageSizes: [mockOriginalImageWidth - 100],
-      thumbnailSize: 4,
-    }));
-
-    await optimiseImages({
-      imagesFileSystemMetaData: [
-        {
-          fileName: 'trigger',
-          path: 'baz/top',
-          type: 'png',
-          uniqueImageName: imageUniqueName1,
-        },
-        {
-          fileName: 'trigger',
-          path: 'baz/top',
-          type: 'png',
-          uniqueImageName: imageUniqueName2,
-        },
-      ],
-    });
-
-    expect(mockSaveLocalCacheToFileSystem).toBeCalledWith();
-  });
-
   it('will request to increment the progress bar on completion of image process', async () => {
     mockGetStaticImageConfig.mockImplementationOnce(() => ({
       optimisedImageColourQuality: 4,

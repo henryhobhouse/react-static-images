@@ -95,9 +95,8 @@ export const optimiseImages = async ({ imagesFileSystemMetaData }: Props) => {
         }
 
         // on successful processing of image to update local dev cache
-        const lastTimeFileUpdatedInMs = await (
-          await promises.stat(imageFsMeta.path)
-        ).mtimeMs;
+        const imageStats = await promises.stat(imageFsMeta.path);
+        const lastTimeFileUpdatedInMs = imageStats.mtimeMs;
         localDeveloperImageCache.addCacheAttribute({
           imageCacheKey: imageFsMeta.uniqueImageName,
           lastTimeFileUpdatedInMs,
@@ -125,8 +124,4 @@ export const optimiseImages = async ({ imagesFileSystemMetaData }: Props) => {
       }
     }),
   );
-
-  // save caches to file system
-  localDeveloperImageCache.saveCacheToFileSystem();
-  processedImageMetaDataCache.saveCacheToFileSystem();
 };

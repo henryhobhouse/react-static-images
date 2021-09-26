@@ -32,8 +32,7 @@ const processExit = process.exit;
 describe('config validation', () => {
   const exitMessage = 'exiting with process exit';
   beforeAll(() => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
+    // @ts-expect-error mocking function
     process.exit = jest.fn().mockImplementation(() => {
       throw new Error(exitMessage);
     });

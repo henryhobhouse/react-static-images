@@ -1,6 +1,13 @@
 import type { SingleBar } from 'cli-progress';
 
-import { localCacheDirectoryPath } from '../caching/caching-constants';
+import {
+  clearFileSystemCache,
+  isCurrentConfigMatchingCache,
+  localDeveloperImageCache,
+  processedImageMetaDataCache,
+  saveCurrentConfigToCache,
+  localCacheDirectoryPath,
+} from '../caching';
 import { cliProgressBar } from '../cli-progress';
 import {
   staticImageMetaDirectoryPath,
@@ -32,6 +39,14 @@ export const processStaticImages = async () => {
   logger.info('Processing static images');
 
   try {
+    if (!isCurrentConfigMatchingCache()) {
+      logger.warn(
+        'Config has been changed since last time. Clearing cache and re-processing using new config',
+      );
+      await clearFileSystemCache();
+      processedImageMetaDataCache.update();
+    }
+
     validateRequiredDirectoryPaths({
       directoryPaths: [
         thumbnailDirectoryPath,
@@ -74,12 +89,14 @@ export const processStaticImages = async () => {
 
     await optimiseImages({ imagesFileSystemMetaData: imageFilesMetaData });
 
+    // save caches to file system
+    localDeveloperImageCache.saveCacheToFileSystem();
+    processedImageMetaDataCache.saveCacheToFileSystem();
+    saveCurrentConfigToCache();
+
     progressBar.stop();
 
-    logger.log(
-      'success',
-      `thumbnails and image meta saved from permitted image types.`,
-    );
+    logger.log('success', 'All available images processed successfully.');
   } catch (exception) {
     if (progressBar) progressBar.stop();
     thrownExceptionToLoggerAsError(exception, 'Error processing Images');
