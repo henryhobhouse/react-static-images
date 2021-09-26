@@ -50,4 +50,5 @@ const createConfig = () => {
 
 const configSingleton = createConfig();
 
+// using a function to return config to allow for mocking during tests
 export const getStaticImageConfig = () => configSingleton;
