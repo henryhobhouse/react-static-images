@@ -8,3 +8,5 @@ export const baseExcludedDirectories = [
   applicationPublicDirectory,
   staticImageMetaDirectory,
 ];
+
+export const thumbnailFileExtension = 'base64';

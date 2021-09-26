@@ -21,6 +21,11 @@ export interface ImageFileSystemMetaData {
   type: ImageFormat;
 }
 
+export interface InvalidImages {
+  name: string;
+  hash: string;
+}
+
 /**
  * Programmatically builds regex matcher for image types based on array of accepted image types
  * passed in arguments.
@@ -170,10 +175,12 @@ export const getImageFilesMetaData = async () => {
 
   // filter out properties that still have an original image associated and map the remainder
   // to create an array of pointers of invalid cache that needs to be removed
-  const invalidCachedImages = Object.entries(cachedImagesToValidate)
+  const invalidCachedImages: InvalidImages[] = Object.entries(
+    cachedImagesToValidate,
+  )
     .filter((cachedImages) => !!cachedImages[1])
     .map((filterCachedImage) => ({
-      hash: filterCachedImage[1]?.imageHash,
+      hash: filterCachedImage[1]?.imageHash ?? '',
       name: filterCachedImage[0],
     }));
 

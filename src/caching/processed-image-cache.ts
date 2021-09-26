@@ -11,7 +11,7 @@ export interface ProcessedImageMetaDataCacheAttributes {
 
 export type ProcessedImageMetaDataCache = Record<
   string,
-  ProcessedImageMetaDataCacheAttributes
+  ProcessedImageMetaDataCacheAttributes | undefined
 >;
 
 export type LocalDeveloperCache = Record<string, number>;
@@ -55,6 +55,12 @@ class ProcessedImageCache {
     );
   }
 
+  public removeCacheAttribute(imageCacheKey: string) {
+    // as this could be a large object. Instead of de-optimising the V8 engine using delete
+    // we just want to assign no value instead.
+    this._currentCache[imageCacheKey] = undefined;
+  }
+
   public addCacheAttribute({
     imageCacheKey,
     imageAttributes,
@@ -63,8 +69,17 @@ class ProcessedImageCache {
   }
 
   public saveCacheToFileSystem() {
+    // as we don't want invalid keys to persist to the file system we remove
+    // all properties that have no value
+    const filteredCache: ProcessedImageMetaDataCache = {};
+    for (const key in this._currentCache) {
+      if (this._currentCache[key]) {
+        filteredCache[key] = this._currentCache[key];
+      }
+    }
+
     const prettifiedMetaDataString = JSON.stringify(
-      this._currentCache,
+      filteredCache,
       undefined,
       2,
     );

@@ -3,11 +3,12 @@ const mockLogLogger = jest.fn();
 const mockWarnLogger = jest.fn();
 const mockTotalImagesCached = 12;
 const mockTotalImagesFound = 45;
-const mockGetImageMetaData = jest.fn().mockImplementation(() => ({
+const mockGetImageMetaData = jest.fn().mockReturnValue({
   imageFilesMetaData: [],
+  invalidCachedImages: [],
   totalImagesCached: mockTotalImagesCached,
   totalImagesFound: mockTotalImagesFound,
-}));
+});
 const mockProgressBarStart = jest.fn();
 const mockProgressBarStop = jest.fn();
 const mockProgressBar = jest.fn().mockReturnValue({
@@ -30,6 +31,7 @@ const mockUpdateImageMetaDataCache = jest.fn();
 const mockSaveLocalDevelopmentCache = jest.fn();
 const mockSaveImageMetaDataCache = jest.fn();
 const mockSaveConfigToCache = jest.fn();
+const mockRemoveInvalidImages = jest.fn();
 
 import VError from 'verror';
 
@@ -94,6 +96,10 @@ jest.mock('../caching', () => ({
   saveCurrentConfigToCache: mockSaveConfigToCache,
 }));
 
+jest.mock('./remove-invalid-images', () => ({
+  removeInvalidImages: mockRemoveInvalidImages,
+}));
+
 describe('processStaticImages', () => {
   afterEach(jest.clearAllMocks);
 
@@ -116,12 +122,14 @@ describe('processStaticImages', () => {
   });
 
   it('will log if no images found and exit from the process', async () => {
+    const testImagesFound = 4;
     mockGetImageMetaData.mockImplementationOnce(() => ({
       imageFilesMetaData: [],
+      totalImagesFound: testImagesFound,
     }));
     await processStaticImages();
     expect(mockInfoLogger.mock.calls.pop()[0]).toBe(
-      'No new images to process.',
+      `Found ${testImagesFound} images in accepted image format`,
     );
   });
 
@@ -129,6 +137,7 @@ describe('processStaticImages', () => {
     const mockImageMetaDatas = [{}, {}];
     mockGetImageMetaData.mockImplementationOnce(() => ({
       imageFilesMetaData: mockImageMetaDatas,
+      invalidCachedImages: [],
     }));
     await processStaticImages();
     expect(mockInfoLogger.mock.calls[2][0]).toBe(
@@ -140,6 +149,7 @@ describe('processStaticImages', () => {
     const mockImageMetaDatas = [{}, {}];
     mockGetImageMetaData.mockImplementationOnce(() => ({
       imageFilesMetaData: mockImageMetaDatas,
+      invalidCachedImages: [],
     }));
     await processStaticImages();
     expect(mockProgressBar).toBeCalledWith({ etaBuffer: 10 });
@@ -157,6 +167,7 @@ describe('processStaticImages', () => {
     ];
     mockGetImageMetaData.mockImplementationOnce(() => ({
       imageFilesMetaData: mockImageMetaDatas,
+      invalidCachedImages: [],
     }));
     await processStaticImages();
     expect(mockOptimiseImages).toBeCalledWith({
@@ -168,6 +179,7 @@ describe('processStaticImages', () => {
     const mockImageMetaDatas = [{}, {}];
     mockGetImageMetaData.mockImplementationOnce(() => ({
       imageFilesMetaData: mockImageMetaDatas,
+      invalidCachedImages: [],
     }));
     await processStaticImages();
 
@@ -179,6 +191,7 @@ describe('processStaticImages', () => {
     const mockImageMetaDatas = [{}, {}];
     mockGetImageMetaData.mockImplementationOnce(() => ({
       imageFilesMetaData: mockImageMetaDatas,
+      invalidCachedImages: [],
     }));
     await processStaticImages();
 
@@ -194,6 +207,7 @@ describe('processStaticImages', () => {
     });
     mockGetImageMetaData.mockImplementationOnce(() => ({
       imageFilesMetaData: [{}, {}],
+      invalidCachedImages: [],
     }));
 
     await processStaticImages();
@@ -218,6 +232,7 @@ describe('processStaticImages', () => {
     });
     mockGetImageMetaData.mockImplementationOnce(() => ({
       imageFilesMetaData: [{}, {}],
+      invalidCachedImages: [],
     }));
 
     await processStaticImages();
@@ -264,6 +279,7 @@ describe('processStaticImages', () => {
     const mockImageMetaDatas = [{}, {}];
     mockGetImageMetaData.mockImplementationOnce(() => ({
       imageFilesMetaData: mockImageMetaDatas,
+      invalidCachedImages: [],
     }));
     await processStaticImages();
     expect(mockSaveLocalDevelopmentCache).toBeCalledWith();
@@ -273,6 +289,7 @@ describe('processStaticImages', () => {
     const mockImageMetaDatas = [{}, {}];
     mockGetImageMetaData.mockImplementationOnce(() => ({
       imageFilesMetaData: mockImageMetaDatas,
+      invalidCachedImages: [],
     }));
     await processStaticImages();
     expect(mockSaveImageMetaDataCache).toBeCalledWith();
@@ -282,8 +299,37 @@ describe('processStaticImages', () => {
     const mockImageMetaDatas = [{}, {}];
     mockGetImageMetaData.mockImplementationOnce(() => ({
       imageFilesMetaData: mockImageMetaDatas,
+      invalidCachedImages: [],
     }));
     await processStaticImages();
     expect(mockSaveConfigToCache).toBeCalledWith();
+  });
+
+  it('will log out if get image meta data finds images in cache that are no longer used', async () => {
+    const testInvalidCachedImages = [{}, {}];
+    mockGetImageMetaData.mockReturnValue({
+      imageFilesMetaData: [],
+      invalidCachedImages: testInvalidCachedImages,
+      totalImagesCached: mockTotalImagesCached,
+      totalImagesFound: mockTotalImagesFound,
+    });
+    await processStaticImages();
+
+    expect(mockInfoLogger).toBeCalledWith(
+      `Found ${testInvalidCachedImages.length} images in cache no longer used. Deleting from cache`,
+    );
+  });
+
+  it('will request to remove invalid images that are no longer used', async () => {
+    const testInvalidCachedImages = [{ foo: 'bar' }, {}];
+    mockGetImageMetaData.mockReturnValue({
+      imageFilesMetaData: [],
+      invalidCachedImages: testInvalidCachedImages,
+      totalImagesCached: mockTotalImagesCached,
+      totalImagesFound: mockTotalImagesFound,
+    });
+    await processStaticImages();
+
+    expect(mockRemoveInvalidImages).toBeCalledWith(testInvalidCachedImages);
   });
 });

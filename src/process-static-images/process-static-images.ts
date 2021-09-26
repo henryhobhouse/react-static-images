@@ -21,6 +21,7 @@ import { validateRequiredDirectoryPaths } from '../utils/validate-required-direc
 
 import { getImageFilesMetaData } from './image-files-meta-data';
 import { optimiseImages } from './optimise-images';
+import { removeInvalidImages } from './remove-invalid-images';
 
 const { optimisedImageSizes } = getStaticImageConfig();
 
@@ -57,12 +58,24 @@ export const processStaticImages = async () => {
       rootPublicImageDirectory,
     });
 
-    const { imageFilesMetaData, totalImagesCached, totalImagesFound } =
-      await getImageFilesMetaData();
+    const {
+      imageFilesMetaData,
+      totalImagesCached,
+      totalImagesFound,
+      invalidCachedImages,
+    } = await getImageFilesMetaData();
 
     logger.info(`Found ${totalImagesFound} images in accepted image format`);
+
     if (totalImagesCached)
       logger.info(`${totalImagesCached} of those have valid cache present`);
+
+    if (invalidCachedImages.length > 0) {
+      logger.info(
+        `Found ${invalidCachedImages.length} images in cache no longer used. Deleting from cache`,
+      );
+      await removeInvalidImages(invalidCachedImages);
+    }
 
     const totalImagesToProcess = imageFilesMetaData.length;
 
@@ -102,6 +115,5 @@ export const processStaticImages = async () => {
     thrownExceptionToLoggerAsError(exception, 'Error processing Images');
   }
 
-  // TODO: cache invalidation (partial & full)
   // TODO: option to process webp images
 };

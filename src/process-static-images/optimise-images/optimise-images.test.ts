@@ -10,7 +10,21 @@ import path from 'path';
 
 import VError from 'verror';
 
-import { defaultErrorLogFileName } from '../../static-image-config/config-constants';
+const mockStaticImageConfig = {
+  optimisedImageColourQuality: 99,
+  optimisedImageCompressionLevel: 101,
+  optimisedImageSizes: [12, 34],
+  thumbnailSize: 4,
+};
+const mockGetStaticImageConfig = jest
+  .fn()
+  .mockImplementation(() => mockStaticImageConfig);
+
+import {
+  defaultErrorLogFileName,
+  imageFormat,
+} from '../../static-image-config/config-constants';
+import { thumbnailFileExtension } from '../process-static-image-constants';
 
 const mockAddCacheAttribute = jest.fn();
 const mockSaveCacheToFileSystem = jest.fn();
@@ -22,15 +36,7 @@ const mockProgressBarIncrement = jest.fn();
 const mockGetInstanceOfProgressBar = jest.fn().mockReturnValue({
   increment: mockProgressBarIncrement,
 });
-const mockStaticImageConfig = {
-  optimisedImageColourQuality: 99,
-  optimisedImageCompressionLevel: 101,
-  optimisedImageSizes: [12, 34],
-  thumbnailSize: 4,
-};
-const mockGetStaticImageConfig = jest
-  .fn()
-  .mockImplementation(() => mockStaticImageConfig);
+
 const mockRootPublicImageDirectory = 'foo/bar';
 const mockThumbnailDirectoryPath = '/baz';
 const mockPipelineCloneReturnValue = 'I am a clone';
@@ -72,6 +78,9 @@ jest.mock('fs', () => {
 
 jest.mock('../../static-image-config', () => ({
   getStaticImageConfig: mockGetStaticImageConfig,
+  imageFormat: {
+    png: 'png',
+  },
 }));
 
 jest.mock('../../constants', () => ({
@@ -207,7 +216,7 @@ describe('optimiseImages', () => {
       pipeline: mockPipelineCloneReturnValue,
       thumbnailFilePath: path.join(
         mockThumbnailDirectoryPath,
-        `${testUniqueName}.base64`,
+        `${testUniqueName}.${thumbnailFileExtension}`,
       ),
       thumbnailSize: mockStaticImageConfig.thumbnailSize,
     });
@@ -263,7 +272,7 @@ describe('optimiseImages', () => {
       imageSizeFilePath: path.join(
         mockRootPublicImageDirectory,
         imageSize.toString(),
-        `${mockHash}${testUniqueName}.${fileType}`,
+        `${mockHash}${testUniqueName}.${imageFormat.png}`,
       ),
       optimisedImageColourQuality: colourQuality,
       optimisedImageCompressionLevel: compressionLevel,

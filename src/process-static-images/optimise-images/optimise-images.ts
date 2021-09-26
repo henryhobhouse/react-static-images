@@ -13,10 +13,11 @@ import {
   rootPublicImageDirectory,
   thumbnailDirectoryPath,
 } from '../../constants';
-import { getStaticImageConfig } from '../../static-image-config';
+import { getStaticImageConfig, imageFormat } from '../../static-image-config';
 import { getFileContentShortHashByPath } from '../../utils/data-fingerprinting';
 import { thrownExceptionToLoggerAsError } from '../../utils/thrown-exception';
 import type { ImageFileSystemMetaData } from '../image-files-meta-data';
+import { thumbnailFileExtension } from '../process-static-image-constants';
 
 import { optimiseImageBySizePipeline } from './optimise-image-by-size-pipeline';
 import { thumbnailPipeline } from './thumbnail-pipeline';
@@ -61,7 +62,7 @@ export const optimiseImages = async ({ imagesFileSystemMetaData }: Props) => {
         );
 
         // create thumbnail for image
-        const thumbnailFilePath = `${thumbnailDirectoryPath}${path.sep}${imageFsMeta.uniqueImageName}.base64`;
+        const thumbnailFilePath = `${thumbnailDirectoryPath}${path.sep}${imageFsMeta.uniqueImageName}.${thumbnailFileExtension}`;
 
         await thumbnailPipeline({
           pipeline: pipeline.clone(),
@@ -82,7 +83,8 @@ export const optimiseImages = async ({ imagesFileSystemMetaData }: Props) => {
               }
 
               // create optimised variant of image in the current iterated image size
-              const imageSizeFilePath = `${rootPublicImageDirectory}${path.sep}${optimisedImageSize}${path.sep}${imageContentHash}${imageFsMeta.uniqueImageName}.${imageFsMeta.type}`;
+              const imageSizeFilePath = `${rootPublicImageDirectory}${path.sep}${optimisedImageSize}${path.sep}${imageContentHash}${imageFsMeta.uniqueImageName}.${imageFormat.png}`;
+
               await optimiseImageBySizePipeline({
                 imageSizeFilePath,
                 optimisedImageColourQuality,
