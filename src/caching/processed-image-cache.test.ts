@@ -32,7 +32,7 @@ describe('processedImageMetaDataCache', () => {
     expect(cacheInstance.currentCache).toEqual(testCacheFromPath);
   });
 
-  it('will update the current cache but not save to file system on calling addCacheAttribute', async () => {
+  it('will add to the current cache but not save to file system on calling addCacheAttribute', async () => {
     const testCacheFromPath = { foo: 'bar' };
     mockGetParsedJsonByFilePath.mockReturnValueOnce(testCacheFromPath);
 
@@ -105,5 +105,22 @@ describe('processedImageMetaDataCache', () => {
         2,
       ),
     ]);
+  });
+
+  it('will remove to the current cache but not save to file system on calling removeCacheAttribute', async () => {
+    const testCacheFromPath = { foo: 'bar' };
+    mockGetParsedJsonByFilePath.mockReturnValueOnce(testCacheFromPath);
+
+    const { processedImageMetaDataCache: cacheInstance } = await import(
+      './processed-image-cache'
+    );
+
+    expect(cacheInstance.currentCache).toEqual(testCacheFromPath);
+
+    cacheInstance.removeCacheAttribute('foo');
+
+    expect(cacheInstance.currentCache).toEqual({ foo: undefined });
+
+    expect(mockWriteFileSync).not.toBeCalled();
   });
 });

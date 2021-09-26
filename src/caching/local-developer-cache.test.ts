@@ -143,4 +143,21 @@ describe('localDeveloperImageCache', () => {
 
     expect(mockWriteFileSyncPc).not.toBeCalled();
   });
+
+  it('will remove to the current cache but not save to file system on calling removeCacheAttribute', async () => {
+    const testCacheFromPath = { foo: 'bar' };
+    mockGetParsedJsonByFilePathPc.mockReturnValueOnce(testCacheFromPath);
+
+    const { localDeveloperImageCache: cacheInstance } = await import(
+      './local-developer-cache'
+    );
+
+    expect(cacheInstance.currentDevCache).toEqual(testCacheFromPath);
+
+    cacheInstance.removeCacheAttribute('foo');
+
+    expect(cacheInstance.currentDevCache).toEqual({ foo: undefined });
+
+    expect(mockWriteFileSyncPc).not.toBeCalled();
+  });
 });
