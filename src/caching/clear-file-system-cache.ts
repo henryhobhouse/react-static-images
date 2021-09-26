@@ -7,7 +7,7 @@ import {
 
 import { localCacheDirectoryPath } from './caching-constants';
 
-export const clearCache = async () => {
+export const clearFileSystemCache = async () => {
   await Promise.all([
     del(localCacheDirectoryPath),
     del(staticImageMetaDirectoryPath),

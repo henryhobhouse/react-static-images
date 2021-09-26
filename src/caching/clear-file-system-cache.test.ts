@@ -3,7 +3,7 @@ const mockLocalCachePath = 'foo';
 const mockStaticImageMetaDirectoryPath = 'bar';
 const mockRootPublicImageDirectory = 'baz';
 
-import { clearCache } from './clear-cache';
+import { clearFileSystemCache } from './clear-file-system-cache';
 
 jest.mock('del', () => ({
   __esModule: true,
@@ -19,19 +19,19 @@ jest.mock('./caching-constants', () => ({
   localCacheDirectoryPath: mockLocalCachePath,
 }));
 
-describe('clearCache', () => {
+describe('clearFileSystemCache', () => {
   it('will call "del" to recursively delete localCacheDirectoryPath', async () => {
-    await clearCache();
+    await clearFileSystemCache();
     expect(mockDel).toBeCalledWith(mockLocalCachePath);
   });
 
   it('will call "del" to recursively delete staticImageMetaDirectoryPath', async () => {
-    await clearCache();
+    await clearFileSystemCache();
     expect(mockDel).toBeCalledWith(mockStaticImageMetaDirectoryPath);
   });
 
   it('will call "del" to recursively delete rootPublicImageDirector', async () => {
-    await clearCache();
+    await clearFileSystemCache();
     expect(mockDel).toBeCalledWith(mockRootPublicImageDirectory);
   });
 });
