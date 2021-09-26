@@ -1,4 +1,5 @@
 const mockUserConfigFileName = 'fooBar.js';
+const mockErrorLogger = jest.fn();
 
 import { validateUserConfig } from './config-validation';
 
@@ -20,28 +21,56 @@ jest.mock('./config-constants', () => ({
   userConfigFileName: mockUserConfigFileName,
 }));
 
+jest.mock('../logger', () => ({
+  logger: {
+    error: mockErrorLogger,
+  },
+}));
+
+const processExit = process.exit;
+
 describe('config validation', () => {
+  const exitMessage = 'exiting with process exit';
+  beforeAll(() => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    process.exit = jest.fn().mockImplementation(() => {
+      throw new Error(exitMessage);
+    });
+  });
+
+  afterAll(() => {
+    process.exit = processExit;
+  });
+
   it('will throw an error if config is null', () => {
-    // eslint-disable-next-line unicorn/no-null
-    expect(() => validateUserConfig(null)).toThrowError(
+    const undefinedParameter = undefined;
+
+    expect(() => validateUserConfig(undefinedParameter)).toThrowError(
+      exitMessage,
+    );
+    expect(mockErrorLogger).toBeCalledWith(
       `Your ${mockUserConfigFileName} config file is not exporting an object`,
     );
   });
 
   it('will throw an error if config is a number', () => {
-    expect(() => validateUserConfig(1)).toThrowError(
+    expect(() => validateUserConfig(1)).toThrowError(exitMessage);
+    expect(mockErrorLogger).toBeCalledWith(
       `Your ${mockUserConfigFileName} config file is not exporting an object`,
     );
   });
 
   it('will throw an error if config is a string', () => {
-    expect(() => validateUserConfig('')).toThrowError(
+    expect(() => validateUserConfig('')).toThrowError(exitMessage);
+    expect(mockErrorLogger).toBeCalledWith(
       `Your ${mockUserConfigFileName} config file is not exporting an object`,
     );
   });
 
   it('will throw an error if config is a array', () => {
-    expect(() => validateUserConfig([])).toThrowError(
+    expect(() => validateUserConfig([])).toThrowError(exitMessage);
+    expect(mockErrorLogger).toBeCalledWith(
       `Your ${mockUserConfigFileName} config file is not exporting an object`,
     );
   });
@@ -49,7 +78,10 @@ describe('config validation', () => {
   it('will throw an error if config has a non-valid key', () => {
     const invalidKey = 'foo';
     expect(() => validateUserConfig({ [invalidKey]: 'bar' })).toThrowError(
-      `You are using an invalid value in "${invalidKey}" in your ${mockUserConfigFileName} config file`,
+      exitMessage,
+    );
+    expect(mockErrorLogger).toBeCalledWith(
+      `You are using an invalid value in "${invalidKey}" in your ${mockUserConfigFileName} config file. Please check the documentation.`,
     );
   });
 });
