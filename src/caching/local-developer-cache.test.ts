@@ -11,7 +11,7 @@ jest.mock('./caching-constants', () => ({
   localDeveloperCacheFilePath: mockLocalDeveloperCacheFilePath,
 }));
 
-jest.mock('./get-parsed-json-by-file-path', () => ({
+jest.mock('../utils/get-parsed-json-by-file-path', () => ({
   getParsedJsonByFilePath: mockGetParsedJsonByFilePathPc,
 }));
 

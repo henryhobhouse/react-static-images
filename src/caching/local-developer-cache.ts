@@ -1,7 +1,8 @@
 import { writeFileSync } from 'fs';
 
+import { getParsedJsonByFilePath } from '../utils/get-parsed-json-by-file-path';
+
 import { localDeveloperCacheFilePath } from './caching-constants';
-import { getParsedJsonByFilePath } from './get-parsed-json-by-file-path';
 
 export type LocalCache = Record<string, number | undefined>;
 

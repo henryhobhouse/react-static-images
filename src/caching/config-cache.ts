@@ -2,9 +2,9 @@ import { writeFileSync } from 'fs';
 
 import { getStaticImageConfig } from '../static-image-config';
 import { createShortHashFromString } from '../utils/data-fingerprinting';
+import { getParsedJsonByFilePath } from '../utils/get-parsed-json-by-file-path';
 
 import { configCacheFilePath } from './caching-constants';
-import { getParsedJsonByFilePath } from './get-parsed-json-by-file-path';
 
 const currentConfig = getStaticImageConfig();
 

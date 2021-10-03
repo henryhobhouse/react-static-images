@@ -1,15 +1,15 @@
 const mockGetStaticImageConfig = jest.fn();
-const mockGetParsedJsonByFilePath = jest.fn();
+const mockGetParsedJsonByFilePathCc = jest.fn();
 const mockCreateShortHashFromString = jest.fn();
-const mockWriteFileSync = jest.fn();
+const mockWriteFileSyncCc = jest.fn();
 const mockConfigCacheFilePath = 'baz';
 
 jest.mock('../static-image-config', () => ({
   getStaticImageConfig: mockGetStaticImageConfig,
 }));
 
-jest.mock('./get-parsed-json-by-file-path', () => ({
-  getParsedJsonByFilePath: mockGetParsedJsonByFilePath,
+jest.mock('../utils/get-parsed-json-by-file-path', () => ({
+  getParsedJsonByFilePath: mockGetParsedJsonByFilePathCc,
 }));
 
 jest.mock('./caching-constants', () => ({
@@ -21,7 +21,7 @@ jest.mock('../utils/data-fingerprinting', () => ({
 }));
 
 jest.mock('fs', () => ({
-  writeFileSync: mockWriteFileSync,
+  writeFileSync: mockWriteFileSyncCc,
 }));
 
 const mockConfig = { foo: 'bar' };
@@ -34,14 +34,14 @@ describe('Config cache', () => {
 
   describe('isCurrentConfigMatchingCache', () => {
     it('will return false when no config cache is found', async () => {
-      mockGetParsedJsonByFilePath.mockReturnValueOnce({});
+      mockGetParsedJsonByFilePathCc.mockReturnValueOnce({});
       const { isCurrentConfigMatchingCache } = await import('./config-cache');
       expect(isCurrentConfigMatchingCache()).toBeFalsy();
       expect(mockCreateShortHashFromString).not.toBeCalled();
     });
 
     it('will return false when config cache hash does not match current config hash', async () => {
-      mockGetParsedJsonByFilePath.mockReturnValueOnce({
+      mockGetParsedJsonByFilePathCc.mockReturnValueOnce({
         previousConfigHash: 'qwerty',
       });
       mockCreateShortHashFromString.mockReturnValueOnce('bob');
@@ -55,7 +55,7 @@ describe('Config cache', () => {
 
     it('will return true when config cache hash matches current config hash', async () => {
       const testHash = 'qwerty';
-      mockGetParsedJsonByFilePath.mockReturnValueOnce({
+      mockGetParsedJsonByFilePathCc.mockReturnValueOnce({
         previousConfigHash: testHash,
       });
       mockCreateShortHashFromString.mockReturnValueOnce(testHash);
@@ -75,7 +75,7 @@ describe('Config cache', () => {
       mockCreateShortHashFromString.mockReturnValueOnce(testHash);
       const { saveCurrentConfigToCache } = await import('./config-cache');
       saveCurrentConfigToCache();
-      expect(mockWriteFileSync).toBeCalledWith(
+      expect(mockWriteFileSyncCc).toBeCalledWith(
         mockConfigCacheFilePath,
         JSON.stringify({ previousConfigHash: testHash }, undefined, 2),
       );
