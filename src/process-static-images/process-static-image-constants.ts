@@ -1,7 +1,7 @@
-import { getStaticImageConfig } from '../static-image-config';
-
-const { applicationPublicDirectory, staticImageMetaDirectory } =
-  getStaticImageConfig();
+import {
+  applicationPublicDirectory,
+  staticImageMetaDirectory,
+} from '../constants';
 
 export const baseExcludedDirectories = [
   'node_modules',

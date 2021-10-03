@@ -10,7 +10,6 @@ const mockStaticConfigOptions = {
   applicationPublicDirectory: '',
   excludedDirectories: [],
   imageFormats: ['png'],
-  imagesBaseDirectory: demoContentDirectory,
   staticImageMetaDirectory: 'baz',
   thumbnailSize: 34,
 };
@@ -50,6 +49,11 @@ jest.mock('../../static-image-config', () => {
 
 jest.mock('./validate-image-cached', () => ({
   validateImageCached: mockValidateImageCached,
+}));
+
+jest.mock('../../constants', () => ({
+  currentWorkingDirectory: process.cwd(),
+  imagesBaseDirectory: demoContentDirectory,
 }));
 
 jest.mock('../../caching', () => ({
@@ -262,6 +266,14 @@ describe('getImagesMetaData', () => {
       'django_partying.JPG',
       'django_at_beach.avif',
     ];
+    jest.mock('../../constants', () => ({
+      currentWorkingDirectory: process.cwd(),
+      imagesBaseDirectory: path.join(
+        demoContentDirectory,
+        firstChildDirectory,
+        secondChildDirectory,
+      ),
+    }));
     mockConfig.mockReturnValueOnce({
       ...mockStaticConfigOptions,
       imageFormats: [
@@ -271,13 +283,12 @@ describe('getImagesMetaData', () => {
         imageFormat.avif,
         imageFormat.tiff,
       ],
-      imagesBaseDirectory: path.join(
-        demoContentDirectory,
-        firstChildDirectory,
-        secondChildDirectory,
-      ),
     });
-    const result = await getImageFilesMetaData();
+    jest.resetModules();
+    const { getImageFilesMetaData: getImageFilesMetaDataTemporary } =
+      await import('./get-image-files-meta-data');
+
+    const result = await getImageFilesMetaDataTemporary();
     expect(mockGetUniqueFileNameByPath).toBeCalledTimes(3);
     expect(result.imageFilesMetaData).toEqual(
       expect.arrayContaining([
@@ -343,12 +354,19 @@ describe('getImagesMetaData', () => {
         imageFormat.avif,
         imageFormat.tiff,
       ],
+    });
+    jest.mock('../../constants', () => ({
+      currentWorkingDirectory: process.cwd(),
       imagesBaseDirectory: path.join(
         demoContentDirectory,
         'no_image_directory',
       ),
-    });
-    const result = await getImageFilesMetaData();
+    }));
+    jest.resetModules();
+    const { getImageFilesMetaData: getImageFilesMetaDataTemporary } =
+      await import('./get-image-files-meta-data');
+
+    const result = await getImageFilesMetaDataTemporary();
     expect(mockGetUniqueFileNameByPath).toBeCalledTimes(0);
     expect(result.imageFilesMetaData).toEqual([]);
   });

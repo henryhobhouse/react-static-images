@@ -1,4 +1,6 @@
-const mockAbsolutePathPrefix = '/qwerty';
+const mockAbsolutePathPrefix = '/qwerty/baz';
+
+import path from 'path';
 
 import {
   createUniqueFileNameFromPath,
@@ -26,14 +28,36 @@ describe('Image fingerprinting', () => {
       const testFileName = 'baz-luhrmann.jpg';
       for (const _ of Array.from({ length: 20 })) {
         expect(createUniqueFileNameFromPath(testPath, testFileName)).toBe(
-          `Zr2gHx-${testFileName}`,
+          `ZwjfjQ-${testFileName}`,
         );
       }
     });
 
-    it('will return the same hash regardless if path is absolute or from root of project', () => {
-      const testPath1 = `${mockAbsolutePathPrefix}/foo/bar`;
-      const testPath2 = `/foo/bar`;
+    it('will handle if image path is in a parent of the current working directory', () => {
+      const testPath = path.join(mockAbsolutePathPrefix, '..', 'foo/bar');
+      const testFileName = 'baz-luhrmann.jpg';
+
+      expect(createUniqueFileNameFromPath(testPath, testFileName)).toBe(
+        `Z23WOxv-${testFileName}`,
+      );
+    });
+
+    it('will handle if image path is is prefixed with a path separator', () => {
+      const testPath1 = path.join(mockAbsolutePathPrefix, 'foo/bar');
+      const testPath2 = path.join(
+        mockAbsolutePathPrefix.replace(/^\//, ''),
+        'foo/bar',
+      );
+      const testFileName = 'baz-luhrmann.jpg';
+
+      expect(createUniqueFileNameFromPath(testPath1, testFileName)).toBe(
+        createUniqueFileNameFromPath(testPath2, testFileName),
+      );
+    });
+
+    it('will handle if image path is is postfixed with a path separator', () => {
+      const testPath1 = path.join(mockAbsolutePathPrefix, 'foo/bar');
+      const testPath2 = path.join(mockAbsolutePathPrefix, 'foo/bar/');
       const testFileName = 'baz-luhrmann.jpg';
 
       expect(createUniqueFileNameFromPath(testPath1, testFileName)).toBe(

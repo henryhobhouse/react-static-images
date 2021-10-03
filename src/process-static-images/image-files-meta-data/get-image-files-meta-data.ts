@@ -6,7 +6,7 @@ import {
   localDeveloperImageCache,
   processedImageMetaDataCache,
 } from '../../caching';
-import { currentWorkingDirectory } from '../../constants';
+import { currentWorkingDirectory, imagesBaseDirectory } from '../../constants';
 import type { ImageFormat } from '../../static-image-config';
 import { getStaticImageConfig, imageFormat } from '../../static-image-config';
 import { createUniqueFileNameFromPath } from '../../utils/data-fingerprinting';
@@ -69,8 +69,8 @@ const createImageFormatTypeMatcher = (fileTypes: ImageFormat[]) => {
  * * image type
  */
 export const getImageFilesMetaData = async () => {
-  const { imageFormats, imagesBaseDirectory, excludedDirectories } =
-    getStaticImageConfig();
+  const { imageFormats, excludedDirectories } = getStaticImageConfig();
+
   let totalImagesCached = 0;
   let totalImagesFound = 0;
   const cachedImagesToValidate: Record<

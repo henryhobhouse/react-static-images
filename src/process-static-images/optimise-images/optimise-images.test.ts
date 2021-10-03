@@ -4,12 +4,6 @@ const mockFsStat = jest.fn().mockImplementation(() =>
     mtimeMs: mockLastUpdatedTimeInMs,
   }),
 );
-
-import { existsSync, unlinkSync } from 'fs';
-import path from 'path';
-
-import VError from 'verror';
-
 const mockStaticImageConfig = {
   optimisedImageColourQuality: 99,
   optimisedImageCompressionLevel: 101,
@@ -19,6 +13,13 @@ const mockStaticImageConfig = {
 const mockGetStaticImageConfig = jest
   .fn()
   .mockImplementation(() => mockStaticImageConfig);
+const mockRootPublicImageDirectory = 'foo/bar';
+const mockThumbnailDirectoryPath = '/baz';
+
+import { existsSync, unlinkSync } from 'fs';
+import path from 'path';
+
+import VError from 'verror';
 
 import {
   defaultErrorLogFileName,
@@ -37,8 +38,6 @@ const mockGetInstanceOfProgressBar = jest.fn().mockReturnValue({
   increment: mockProgressBarIncrement,
 });
 
-const mockRootPublicImageDirectory = 'foo/bar';
-const mockThumbnailDirectoryPath = '/baz';
 const mockPipelineCloneReturnValue = 'I am a clone';
 const mockSharpPipelineClone = jest
   .fn()
