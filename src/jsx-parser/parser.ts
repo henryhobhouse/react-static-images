@@ -35,13 +35,9 @@ export const jsxToSimpleAst = (input: string): RootSimpleJsxAst => {
       {
         ecmaVersion: 2020,
       },
-    ) as JsxAstRoot;
+    ) as unknown as JsxAstRoot;
 
-    const rootNode = parsedJsx.body?.[0].expression;
-
-    if (!rootNode) {
-      throw new Error('JSX tag does not have any content');
-    }
+    const rootNode = parsedJsx.body[0].expression;
 
     return {
       ...getSimpleJsxAstNode(rootNode),

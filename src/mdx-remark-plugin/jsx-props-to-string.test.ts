@@ -54,9 +54,7 @@ describe('htmlPropsToString', () => {
 
   it('will handle arrays as values', () => {
     expect(
-      jsxPropsToString([
-        ['foo', { type: 'ArrayExpression', value: '["hi"]' }],
-      ]),
+      jsxPropsToString([['foo', { type: 'ArrayExpression', value: '["hi"]' }]]),
     ).toBe(' foo={["hi"]} ');
   });
 

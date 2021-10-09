@@ -31,9 +31,13 @@ export interface RootSimpleJsxAst extends SimpleJsxAst {
   isNonEmptyOpeningTag: boolean;
 }
 
-export interface JsxAstRoot extends JsxAstNode {
+export interface JsxAstRoot {
   type: 'Program';
   sourceType: string;
+  body: {
+    type: 'ExpressionStatement';
+    expression: JSXExpression;
+  }[];
 }
 
 interface JsxAstNode extends Node {
