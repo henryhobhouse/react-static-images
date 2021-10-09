@@ -1,13 +1,29 @@
 import type { Node } from 'acorn';
 
 export interface PropertyValue {
-  type: string;
+  type:
+    | JsxExpressionType
+    | 'ArrayExpression'
+    | 'LiteralExpression'
+    | 'ObjectExpression'
+    | 'FunctionExpression'
+    | 'ArrowFunctionExpression';
   value: string;
 }
 
+type JsxExpressionType =
+  | 'JSXFragment'
+  | 'JSXElement'
+  | 'JSXAttribute'
+  | 'JSXText'
+  | 'Literal'
+  | 'Identifier';
+
+export type JsxAstProps = Record<string, PropertyValue>;
+
 export interface SimpleJsxAst {
   type: string;
-  props: Record<string, PropertyValue>;
+  props: JsxAstProps;
   children?: SimpleJsxAst[] | string;
 }
 
@@ -36,13 +52,7 @@ interface AttributeNode extends JsxAstNode {
 }
 
 export interface JSXExpression extends JsxAstNode {
-  type:
-    | 'JSXFragment'
-    | 'JSXElement'
-    | 'JSXAttribute'
-    | 'JSXText'
-    | 'Literal'
-    | 'Identifier';
+  type: JsxExpressionType;
   children?: JSXExpression[];
   openingElement: JsxAstNode & { attributes: JSXAttribute[]; name: JSXName };
   closingElement: JsxAstNode & { name: JSXName };

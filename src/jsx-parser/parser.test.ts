@@ -53,6 +53,22 @@ describe('jsxToSimpleAst', () => {
     });
   });
 
+  it("will parse a prop that's value is NaN", () => {
+    expect(
+      jsxToSimpleAst(`<${testJsxComponentName} foo={NaN} />`),
+    ).toStrictEqual({
+      children: undefined,
+      isNonEmptyOpeningTag: false,
+      props: {
+        foo: {
+          type: 'Identifier',
+          value: 'NaN',
+        },
+      },
+      type: testJsxComponentName,
+    });
+  });
+
   it("will parse a prop that's value is primitive, non string, type and identify it as primitive", () => {
     expect(
       jsxToSimpleAst(`<${testJsxComponentName} foo={1} baz={true} />`),
