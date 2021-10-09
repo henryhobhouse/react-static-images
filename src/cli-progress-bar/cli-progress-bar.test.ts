@@ -4,7 +4,7 @@ describe('CLI Progress', () => {
   afterEach(jest.resetModules);
 
   it('allows you to instantiate a cli progress instance', async () => {
-    const { cliProgressBar } = await import('./cli-progress');
+    const { cliProgressBar } = await import('./cli-progress-bar');
 
     const progressInstance = cliProgressBar.instantiateInstance();
 
@@ -13,7 +13,7 @@ describe('CLI Progress', () => {
   });
 
   it('allows you to retrieve a previously instantaited instance', async () => {
-    const { cliProgressBar } = await import('./cli-progress');
+    const { cliProgressBar } = await import('./cli-progress-bar');
 
     const instanceOnInstantiation = cliProgressBar.instantiateInstance();
 
@@ -23,7 +23,7 @@ describe('CLI Progress', () => {
   });
 
   it('will error if you try to instantiate instance twice', async () => {
-    const { cliProgressBar } = await import('./cli-progress');
+    const { cliProgressBar } = await import('./cli-progress-bar');
 
     cliProgressBar.instantiateInstance();
 
@@ -33,7 +33,7 @@ describe('CLI Progress', () => {
   });
 
   it('will error if you try to get uninstantiated instance', async () => {
-    const { cliProgressBar } = await import('./cli-progress');
+    const { cliProgressBar } = await import('./cli-progress-bar');
 
     expect(() => cliProgressBar.getInstance()).toThrowError(
       "CLI progress hasn't been instantiated yet",
@@ -41,7 +41,7 @@ describe('CLI Progress', () => {
   });
 
   it('will instantiation with custom options', async () => {
-    const { cliProgressBar } = await import('./cli-progress');
+    const { cliProgressBar } = await import('./cli-progress-bar');
 
     const newEtaBufferLength = 9999;
 
