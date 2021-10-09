@@ -36,11 +36,18 @@ interface AttributeNode extends JsxAstNode {
 }
 
 export interface JSXExpression extends JsxAstNode {
-  type: 'JSXFragment' | 'JSXElement' | 'JSXAttribute' | 'JSXText' | 'Literal';
+  type:
+    | 'JSXFragment'
+    | 'JSXElement'
+    | 'JSXAttribute'
+    | 'JSXText'
+    | 'Literal'
+    | 'Identifier';
   children?: JSXExpression[];
   openingElement: JsxAstNode & { attributes: JSXAttribute[]; name: JSXName };
   closingElement: JsxAstNode & { name: JSXName };
   value?: string;
+  name?: string;
 }
 
 type JSXName = Node & { name: string };

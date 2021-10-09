@@ -89,6 +89,14 @@ export const getSimpleJsxAstNode = (node: JSXExpression): SimpleJsxAst => {
     };
   }
 
+  if (node.type === 'Identifier') {
+    return {
+      children: node.name,
+      props: {},
+      type: 'Fragment',
+    };
+  }
+
   // Unsupported type
   throw new SyntaxError(`${node.type} is not supported`);
 };

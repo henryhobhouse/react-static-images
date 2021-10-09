@@ -12,6 +12,15 @@ describe('jsxToSimpleAst', () => {
     });
   });
 
+  it('converts a string to simple AST', () => {
+    expect(jsxToSimpleAst(`qwerty`)).toStrictEqual({
+      children: 'qwerty',
+      isNonEmptyOpeningTag: false,
+      props: {},
+      type: 'Fragment',
+    });
+  });
+
   it("will parse a prop that's values type is Literal (string only) and identify its type", () => {
     expect(
       jsxToSimpleAst(`<${testJsxComponentName} foo="bar" />`),
