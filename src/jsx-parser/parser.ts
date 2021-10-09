@@ -20,11 +20,7 @@ export const jsxToSimpleAst = (input: string): RootSimpleJsxAst => {
     // so that the acorn JSX parser doesn't thrown an error. Otherwise assume valid JSX.
     const matchedOpeningTags = input.match(/</g);
     let isNonEmptyOpeningTag = false;
-    if (
-      matchedOpeningTags &&
-      matchedOpeningTags?.length === 1 &&
-      !input.endsWith('/>')
-    ) {
+    if (matchedOpeningTags?.length === 1 && !input.endsWith('/>')) {
       input = input.replace(/>$/, '/>');
       isNonEmptyOpeningTag = true;
     }
