@@ -1,1 +1,1 @@
-export default {};
+export { mdxRemarkPlugin } from './mdx-remark-plugin';
