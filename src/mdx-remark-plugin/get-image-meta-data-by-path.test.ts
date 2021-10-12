@@ -5,24 +5,38 @@ const mockCreateUniqueFileNameFromPath = jest
   .mockReturnValue(mockUniqueName);
 const mockCurrentWorkingDirectory = 'foo';
 const mockImagesBaseDirectory = 'bar';
+const mockThumbnailBase64 = 'qwerty';
+const mockReadFileSync = jest
+  .fn()
+  .mockImplementation(() => Buffer.from(mockThumbnailBase64));
+const mockThrownExceptionToLoggerAsError = jest.fn();
 
 import { getImageMetaDataByPath } from './get-image-meta-data-by-path';
 
 jest.mock('../caching', () => ({
   processedImageMetaDataCache: {
     currentCache: {
-      [mockUniqueName]: mockImageMetaData,
+      [mockUniqueName]: { imageHash: mockImageMetaData },
     },
   },
+}));
+
+jest.mock('../utils/thrown-exception', () => ({
+  thrownExceptionToLoggerAsError: mockThrownExceptionToLoggerAsError,
 }));
 
 jest.mock('../constants', () => ({
   currentWorkingDirectory: mockCurrentWorkingDirectory,
   imagesBaseDirectory: mockImagesBaseDirectory,
+  thumbnailDirectoryPath: 'baz',
 }));
 
 jest.mock('../utils/data-fingerprinting', () => ({
   createUniqueFileNameFromPath: mockCreateUniqueFileNameFromPath,
+}));
+
+jest.mock('fs', () => ({
+  readFileSync: mockReadFileSync,
 }));
 
 describe('getImageMetaDataByPath', () => {
@@ -65,7 +79,43 @@ describe('getImageMetaDataByPath', () => {
   it('will use the returned unique file name to access the images cache', () => {
     const response = getImageMetaDataByPath('/baz/test/ping.png', '/qwerty');
     expect(mockCreateUniqueFileNameFromPath).toBeCalledTimes(1);
-    expect(response.uniqueName).toBe(mockUniqueName);
-    expect(response.data).toBe(mockImageMetaData);
+    expect(response?.uniqueName).toBe(mockUniqueName);
+    expect(response?.imageHash).toBe(mockImageMetaData);
+  });
+
+  it('will return the base 64 string for the placeholder image', () => {
+    const response = getImageMetaDataByPath('/baz/test/ping.png', '/qwerty');
+    expect(response?.placeholderBase64).toBe(mockThumbnailBase64);
+    expect(mockThrownExceptionToLoggerAsError).not.toBeCalled();
+  });
+
+  it('will return an empty string for the base 64 placeholder image, and log issue, on error retrieving file', () => {
+    const testError = 'oppises';
+    mockReadFileSync.mockImplementationOnce(() => {
+      throw new Error(testError);
+    });
+    const response = getImageMetaDataByPath('/baz/test/ping.png', '/qwerty');
+    expect(response?.placeholderBase64).toBe('');
+    expect(mockThrownExceptionToLoggerAsError).toBeCalledWith(
+      new Error(testError),
+      `Unable to get image thumbnail for path ${mockUniqueName}`,
+    );
+  });
+
+  it('will return undefined if cannot find meta data from cache', async () => {
+    jest.resetModules();
+    jest.mock('../caching', () => ({
+      processedImageMetaDataCache: {
+        currentCache: {},
+      },
+    }));
+
+    const { getImageMetaDataByPath } = await import(
+      './get-image-meta-data-by-path'
+    );
+    const response = getImageMetaDataByPath('/baz/test/ping.png', '/qwerty');
+    expect(response).toBeUndefined();
+
+    jest.resetModules();
   });
 });

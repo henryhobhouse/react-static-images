@@ -28,7 +28,7 @@ DONE:
 ```
   /* options of 'jpeg', 'png', 'webp', 'tiff' and 'avif' (default all other than 'avif') */
   imageFormats: ImageFormat[];
-  /* width of thumbnail in px whilst retaining ration of original image (default 20(px) */
+  /* width of placeholder thumbnail (before its stretched to fit size of image) in px whilst retaining ratio of original image (default 20(px) */
   thumbnailSize: number;
   /* additional images of size (width in px) created if smaller than original for the browser to use in smaller viewports (default [640, 750, 828, 1080, 1200, 1920, 2048, 3840]) */
   optimisedImageSizes: number[];

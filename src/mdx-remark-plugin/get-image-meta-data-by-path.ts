@@ -1,8 +1,14 @@
+import { readFileSync } from 'fs';
 import path from 'path';
 
 import { processedImageMetaDataCache } from '../caching';
-import { currentWorkingDirectory, imagesBaseDirectory } from '../constants';
+import {
+  currentWorkingDirectory,
+  imagesBaseDirectory,
+  thumbnailDirectoryPath,
+} from '../constants';
 import { createUniqueFileNameFromPath } from '../utils/data-fingerprinting';
+import { thrownExceptionToLoggerAsError } from '../utils/thrown-exception';
 
 /**
  * getImageMetaDataByPath
@@ -30,8 +36,26 @@ export const getImageMetaDataByPath = (
     path.parse(imageFileName).name,
   );
 
-  return {
-    data: processedImageMetaDataCache.currentCache[imageCacheKey],
-    uniqueName: imageCacheKey,
-  };
+  let placeholderBase64 = '';
+
+  try {
+    placeholderBase64 = readFileSync(
+      `${thumbnailDirectoryPath}/${imageCacheKey}`,
+    ).toString();
+  } catch (exception) {
+    thrownExceptionToLoggerAsError(
+      exception,
+      `Unable to get image thumbnail for path ${imageCacheKey}`,
+    );
+  }
+
+  const cacheData = processedImageMetaDataCache.currentCache[imageCacheKey];
+
+  return cacheData
+    ? {
+        ...cacheData,
+        placeholderBase64,
+        uniqueName: imageCacheKey,
+      }
+    : undefined;
 };
