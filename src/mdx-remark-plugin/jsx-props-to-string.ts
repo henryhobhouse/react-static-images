@@ -2,6 +2,8 @@
 
 import type { PropertyValue } from '../jsx-parser/types';
 
+type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
+
 /**
  * jsxPropsToString
  *
@@ -9,7 +11,7 @@ import type { PropertyValue } from '../jsx-parser/types';
  * value pairs in html friendly string with any key's with not value's removed.
  */
 export const jsxPropsToString = (
-  htmlProps: Array<[key: string, value?: PropertyValue]>,
+  htmlProps: Array<[key: string, value: PartialBy<PropertyValue, 'value'>]>,
 ) => {
   let propsString = ' ';
 

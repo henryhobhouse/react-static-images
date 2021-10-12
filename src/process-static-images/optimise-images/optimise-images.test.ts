@@ -58,7 +58,7 @@ const mockGetFileContentShortHashByPath = jest
 
 import { optimiseImages } from './optimise-images';
 
-jest.mock('../../cli-progress', () => ({
+jest.mock('../../cli-progress-bar', () => ({
   cliProgressBar: {
     getInstance: mockGetInstanceOfProgressBar,
   },

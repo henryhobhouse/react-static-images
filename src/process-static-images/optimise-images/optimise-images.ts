@@ -8,7 +8,7 @@ import {
   processedImageMetaDataCache,
   localDeveloperImageCache,
 } from '../../caching';
-import { cliProgressBar } from '../../cli-progress';
+import { cliProgressBar } from '../../cli-progress-bar';
 import {
   rootPublicImageDirectory,
   thumbnailDirectoryPath,

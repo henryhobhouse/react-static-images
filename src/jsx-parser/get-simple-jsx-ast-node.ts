@@ -7,6 +7,9 @@ const getChildAstNodes = (childNodes?: JSXExpression[]) =>
     ? childNodes.map((childNode) => getSimpleJsxAstNode(childNode))
     : undefined;
 
+/**
+ * getSimpleJsxAstNode
+ */
 export const getSimpleJsxAstNode = (node: JSXExpression): SimpleJsxAst => {
   if (node.type === 'JSXFragment') {
     return {
@@ -97,6 +100,5 @@ export const getSimpleJsxAstNode = (node: JSXExpression): SimpleJsxAst => {
     };
   }
 
-  // Unsupported type
   throw new SyntaxError(`${node.type} is not supported`);
 };

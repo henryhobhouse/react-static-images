@@ -67,7 +67,7 @@ jest.mock('./image-files-meta-data', () => ({
   getImageFilesMetaData: mockGetImageMetaData,
 }));
 
-jest.mock('../cli-progress', () => ({
+jest.mock('../cli-progress-bar', () => ({
   cliProgressBar: {
     getInstance: jest.fn(),
     instantiateInstance: mockProgressBar,

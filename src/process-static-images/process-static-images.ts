@@ -8,7 +8,7 @@ import {
   saveCurrentConfigToCache,
   localCacheDirectoryPath,
 } from '../caching';
-import { cliProgressBar } from '../cli-progress';
+import { cliProgressBar } from '../cli-progress-bar';
 import {
   staticImageMetaDirectoryPath,
   rootPublicImageDirectory,
