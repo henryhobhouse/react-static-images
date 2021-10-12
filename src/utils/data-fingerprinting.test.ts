@@ -5,6 +5,7 @@ import path from 'path';
 import {
   createUniqueFileNameFromPath,
   getFileContentShortHashByPath,
+  createShortHashFromString,
 } from './data-fingerprinting';
 
 const mockFileBuffer = Buffer.from('foo bar');
@@ -98,6 +99,34 @@ describe('Image fingerprinting', () => {
       for (const _ of Array.from({ length: 20 })) {
         const shortHash = await getFileContentShortHashByPath('');
         expect(shortHash).toBe('N3PeplF');
+      }
+    });
+  });
+
+  describe('createShortHashFromString', () => {
+    it('will consistently return the same hash for the same data string', () => {
+      for (const _ of Array.from({ length: 100 })) {
+        const shortHash = createShortHashFromString('foo/bar');
+        expect(shortHash).toBe('F83q76X');
+      }
+    });
+
+    it('will alway return a 7 character hash', () => {
+      for (const index in Array.from({ length: 100 })) {
+        const shortHash = createShortHashFromString(
+          `${index.toString()}/foo/bar/${index.toString()}`,
+        );
+        expect(shortHash.length).toBe(7);
+      }
+    });
+
+    it('will not include "+", "/" and "=" characters in the hash', () => {
+      const testRegEx = new RegExp('[+/=]', 'g');
+      for (const index in Array.from({ length: 100 })) {
+        const shortHash = createShortHashFromString(
+          `/foo/${index.toString()}/bar/${index.toString()}`,
+        );
+        expect(testRegEx.test(shortHash)).toBeFalsy();
       }
     });
   });

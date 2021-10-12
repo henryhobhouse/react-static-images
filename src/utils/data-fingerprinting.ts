@@ -20,7 +20,7 @@ export const createUniqueFileNameFromPath = (
 };
 
 /**
- * Create short hash that is file system friendly
+ * Create short hash that is file system naming friendly
  *
  * Done via using the fastest way to get a hash from data on node (https://medium.com/@chris_72272/what-is-the-fastest-node-js-hashing-algorithm-c15c1a0e164e)
  * then removing any characters that cannot be used in file names then returning the first seven characters
