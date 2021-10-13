@@ -38,8 +38,8 @@ jobs:
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2
         with:
-          files: ./coverage-final.json
-          directory: ./coverage
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage/lcov.info,./coverage/clover.xml,./coverage/coverage-final.json
           name: codecov-umbrella
           fail_ci_if_error: false
           verbose: true
