@@ -35,6 +35,16 @@ jobs:
       - run: yarn test
       - run: yarn run build-ci
 
+      - name: Upload coverage to Codecov
+      - uses: actions/checkout@main
+      - uses: codecov/codecov-action@v2
+        with:
+          files: ./coverage-final.json
+          directory: ./coverage
+          name: codecov-umbrella
+          fail_ci_if_error: false
+          verbose: true
+
       - name: Clean up - uninstall Yarn
         if: always()
         run: npm uninstall -g yarn
