@@ -36,7 +36,7 @@ jobs:
       - run: yarn run build-ci
 
       - name: Upload coverage to Codecov
-      - uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v2
         with:
           files: ./coverage-final.json
           directory: ./coverage
