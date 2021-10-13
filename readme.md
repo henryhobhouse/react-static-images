@@ -1,5 +1,7 @@
 # React Static Images
 
+[![codecov](https://codecov.io/gh/henryhobhouse/react-static-images/branch/main/graph/badge.svg?token=RN4PRZQ8S3)](https://codecov.io/gh/henryhobhouse/react-static-images)
+
 Ultra fast image processing for fast loading and scalable React Applications
 
 NOTE: Work in progress!
