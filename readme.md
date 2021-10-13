@@ -1,7 +1,7 @@
 # React Static Images
 
 [![test coverage](https://codecov.io/gh/henryhobhouse/react-static-images/branch/main/graph/badge.svg?token=RN4PRZQ8S3)](https://codecov.io/gh/henryhobhouse/react-static-images)
-![CI](https://github.com/henryhobhouse/react-static-images/actions/workflows/node.js.yml/badge.svg?branch=main)
+![CI](https://github.com/henryhobhouse/react-static-images/actions/workflows/static-image-ci.yml/badge.svg?branch=main)
 
 Ultra fast image processing for fast loading and scalable React Applications
 
