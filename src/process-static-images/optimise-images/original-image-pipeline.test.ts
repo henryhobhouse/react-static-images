@@ -87,11 +87,12 @@ describe('originalImagePipeline', () => {
       optimisedImageColourQuality: testOptimisedImageColourQuality,
       optimisedImageCompressionLevel: testOptimisedImageCompressionLevel,
       pipeline: mockPipeline as any,
-    }),
-      expect(mockThrownExceptionToError).toBeCalledWith(
-        new Error(testErrorMessage),
-        `Error processing original image pipeline. Unable to convert and save image`,
-      );
+    });
+
+    expect(mockThrownExceptionToError).toBeCalledWith(
+      new Error(testErrorMessage),
+      `Error processing original image pipeline. Unable to convert and save image`,
+    );
   });
 
   it('will request to rethrow any error with human readable prefix stating it attempted to move image if compress original setting is false', async () => {
@@ -107,10 +108,11 @@ describe('originalImagePipeline', () => {
       optimisedImageColourQuality: testOptimisedImageColourQuality,
       optimisedImageCompressionLevel: testOptimisedImageCompressionLevel,
       pipeline: mockPipeline as any,
-    }),
-      expect(mockThrownExceptionToError).toBeCalledWith(
-        new Error(testErrorMessage),
-        `Error processing original image pipeline. Unable to copy image`,
-      );
+    });
+
+    expect(mockThrownExceptionToError).toBeCalledWith(
+      new Error(testErrorMessage),
+      `Error processing original image pipeline. Unable to copy image`,
+    );
   });
 });
