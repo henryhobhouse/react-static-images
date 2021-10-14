@@ -14,6 +14,9 @@ export const optimisedImagesPublicDirectoryRoot = 'static-images';
 export const currentWorkingDirectory = process.cwd();
 export const libraryPackageName = 'react-static-images';
 export const originalImageDirectory = 'original';
+// key needs to be lower case to treated as a custom attribute by the dom and
+// not spam with errors.
+export const placeholderJsxKey = 'placeholderbase64';
 export const applicationPublicDirectory = trimSeparators(
   path.normalize(rawApplicationPublicDirectory),
 );
@@ -41,6 +44,6 @@ export const thumbnailDirectoryPath = path.join(
 );
 
 export const originalImageDirectoryPath = path.join(
-  staticImageMetaDirectoryPath,
+  rootPublicImageDirectory,
   originalImageDirectory,
 );

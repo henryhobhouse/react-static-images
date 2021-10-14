@@ -69,7 +69,7 @@ export const optimiseImages = async ({ imagesFileSystemMetaData }: Props) => {
           // create thumbnail for image
           const imagePublicFilePath = `${originalImageDirectoryPath}${
             path.sep
-          }${imageFsMeta.uniqueImageName}.${
+          }${imageContentHash}${imageFsMeta.uniqueImageName}.${
             compressOriginalImage ? imageFormat.png : imageFsMeta.type
           }`;
 
@@ -131,6 +131,7 @@ export const optimiseImages = async ({ imagesFileSystemMetaData }: Props) => {
           imageAttributes: {
             height: imageMetaData.height,
             imageHash: imageContentHash,
+            originalFileType: imageFsMeta.type,
             width: imageMetaData.width,
           },
           imageCacheKey: imageFsMeta.uniqueImageName,

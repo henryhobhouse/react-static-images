@@ -7,6 +7,7 @@ import {
   imagesBaseDirectory,
   thumbnailDirectoryPath,
 } from '../constants';
+import { thumbnailFileExtension } from '../process-static-images/process-static-image-constants';
 import { createUniqueFileNameFromPath } from '../utils/data-fingerprinting';
 import { thrownExceptionToLoggerAsError } from '../utils/thrown-exception';
 
@@ -40,7 +41,7 @@ export const getImageMetaDataByPath = (
 
   try {
     placeholderBase64 = readFileSync(
-      `${thumbnailDirectoryPath}/${imageCacheKey}`,
+      `${thumbnailDirectoryPath}/${imageCacheKey}.${thumbnailFileExtension}`,
     ).toString();
   } catch (exception) {
     thrownExceptionToLoggerAsError(

@@ -23,6 +23,14 @@ jest.mock('../utils/thrown-exception', () => ({
 jest.mock('./get-image-meta-data-by-path', () => ({
   getImageMetaDataByPath: mockGetImageMetaDataByPath,
 }));
+jest.mock('../static-image-config', () => ({
+  getStaticImageConfig: jest
+    .fn()
+    .mockImplementation(() => ({ compressOriginalImage: true })),
+  imageFormat: {
+    png: 'png',
+  },
+}));
 
 import { hydrateMdImageProps } from './hydrate-md-image-props';
 import type { JsxNode } from './types';
@@ -76,7 +84,42 @@ describe('hydrateMdImageProps', () => {
     const testNode = { type: 'image', url: 'bar' } as const;
     hydrateMdImageProps('jumbo/round')(testNode);
     expect((testNode as unknown as JsxNode).value).toBe(
-      `<img src="/${mockOptimisedPublicDirectory}/${mockOriginalImageDirectory}/${testHash}${testUniqueName}" placeholderBase64="${testImageBase64}" width={${testWidth}} height={${testHeight}} />`,
+      `<img src="/${mockOptimisedPublicDirectory}/${mockOriginalImageDirectory}/${testHash}${testUniqueName}.png" placeholderbase64="${testImageBase64}" width={${testWidth}} height={${testHeight}} />`,
+    );
+    expect((testNode as unknown as JsxNode).type).toBe('jsx');
+    expect(mockErrorLogger).not.toBeCalled();
+    expect(mockThrownExceptionToLoggerAsError).not.toBeCalled();
+  });
+
+  it('will transform the node to type JSX with image type being per the original if not set to be compressed', async () => {
+    jest.resetModules();
+    const testHash = 'django';
+    const testUniqueName = 'derek';
+    const testImageBase64 = 'beebop';
+    const testHeight = 10;
+    const testWidth = 30;
+    const testImageType = 'webp';
+    jest.mock('../static-image-config', () => ({
+      getStaticImageConfig: jest
+        .fn()
+        .mockImplementation(() => ({ compressOriginalImage: false })),
+      imageFormat: {
+        png: 'png',
+      },
+    }));
+    mockGetImageMetaDataByPath.mockReturnValueOnce({
+      height: testHeight,
+      imageHash: testHash,
+      originalFileType: testImageType,
+      placeholderBase64: testImageBase64,
+      uniqueName: testUniqueName,
+      width: testWidth,
+    });
+    const testNode = { type: 'image', url: 'bar' } as const;
+    const { hydrateMdImageProps } = await import('./hydrate-md-image-props');
+    hydrateMdImageProps('jumbo/round')(testNode);
+    expect((testNode as unknown as JsxNode).value).toBe(
+      `<img src="/${mockOptimisedPublicDirectory}/${mockOriginalImageDirectory}/${testHash}${testUniqueName}.${testImageType}" placeholderbase64="${testImageBase64}" width={${testWidth}} height={${testHeight}} />`,
     );
     expect((testNode as unknown as JsxNode).type).toBe('jsx');
     expect(mockErrorLogger).not.toBeCalled();
@@ -106,7 +149,7 @@ describe('hydrateMdImageProps', () => {
     } as const;
     hydrateMdImageProps('jumbo/round')(testNode);
     expect((testNode as unknown as JsxNode).value).toBe(
-      `<img alt="${testAltTitle}" title="${testTitle}" src="/${mockOptimisedPublicDirectory}/${mockOriginalImageDirectory}/${testHash}${testUniqueName}" placeholderBase64="${testImageBase64}" width={${testWidth}} height={${testHeight}} />`,
+      `<img alt="${testAltTitle}" title="${testTitle}" src="/${mockOptimisedPublicDirectory}/${mockOriginalImageDirectory}/${testHash}${testUniqueName}.png" placeholderbase64="${testImageBase64}" width={${testWidth}} height={${testHeight}} />`,
     );
   });
 });

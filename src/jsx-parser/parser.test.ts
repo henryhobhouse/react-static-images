@@ -46,7 +46,23 @@ describe('jsxToSimpleAst', () => {
       props: {
         foo: {
           type: 'LiteralExpression',
-          value: 'bar',
+          value: '"bar"',
+        },
+      },
+      type: testJsxComponentName,
+    });
+  });
+
+  it("will parse a prop that's values type is Literal (non-string), that is wrapped in curly brackets, and identify its type", () => {
+    expect(
+      jsxToSimpleAst(`<${testJsxComponentName} foo={23} />`),
+    ).toStrictEqual({
+      children: undefined,
+      isNonEmptyOpeningTag: false,
+      props: {
+        foo: {
+          type: 'LiteralExpression',
+          value: '23',
         },
       },
       type: testJsxComponentName,
@@ -78,11 +94,11 @@ describe('jsxToSimpleAst', () => {
       props: {
         baz: {
           type: 'LiteralExpression',
-          value: true,
+          value: 'true',
         },
         foo: {
           type: 'LiteralExpression',
-          value: 1,
+          value: '1',
         },
       },
       type: testJsxComponentName,
@@ -212,7 +228,7 @@ describe('jsxToSimpleAst', () => {
           props: {
             foo: {
               type: 'LiteralExpression',
-              value: 'bar',
+              value: '"bar"',
             },
           },
           type: 'div',
@@ -238,7 +254,7 @@ describe('jsxToSimpleAst', () => {
               props: {
                 foo: {
                   type: 'LiteralExpression',
-                  value: 'bar',
+                  value: '"bar"',
                 },
               },
               type: 'div',
@@ -282,7 +298,7 @@ describe('jsxToSimpleAst', () => {
       props: {
         width: {
           type: 'LiteralExpression',
-          value: 23,
+          value: '23',
         },
       },
       type: 'qwerty',

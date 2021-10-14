@@ -7,11 +7,14 @@ import {
 import type { JsxAstProps } from '../jsx-parser';
 import { jsxToSimpleAst } from '../jsx-parser';
 import { logger } from '../logger';
+import { getStaticImageConfig, imageFormat } from '../static-image-config';
 import { thrownExceptionToLoggerAsError } from '../utils/thrown-exception';
 
 import { getImageMetaDataByPath } from './get-image-meta-data-by-path';
 import { jsxPropsToString } from './jsx-props-to-string';
 import type { JsxNode } from './types';
+
+const { compressOriginalImage } = getStaticImageConfig();
 
 export const hydrateJsxImageProps = (filePath: string) => (node: JsxNode) => {
   const fileDirectory = path.dirname(filePath);
@@ -34,14 +37,19 @@ export const hydrateJsxImageProps = (filePath: string) => (node: JsxNode) => {
       return;
     }
 
-    const imagePublicUrl = `/${optimisedImagesPublicDirectoryRoot}/${originalImageDirectory}/${imageMeta.imageHash}${imageMeta.uniqueName}`;
+    const imagePublicUrl = `/${optimisedImagesPublicDirectoryRoot}/${originalImageDirectory}/${
+      imageMeta.imageHash
+    }${imageMeta.uniqueName}.${
+      compressOriginalImage ? imageFormat.png : imageMeta.originalFileType
+    }`;
+
     const imageProps: JsxAstProps = {
       ...imageAst.props,
       height: {
         type: 'LiteralExpression',
         value: imageMeta.height?.toString() ?? '',
       },
-      placeholderBase64: {
+      placeholderbase64: {
         type: 'Literal',
         value: imageMeta.placeholderBase64,
       },

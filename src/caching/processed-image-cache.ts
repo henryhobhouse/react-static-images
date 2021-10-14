@@ -1,5 +1,6 @@
 import { writeFileSync } from 'fs';
 
+import type { ImageFormat } from '../static-image-config';
 import { getParsedJsonByFilePath } from '../utils/get-parsed-json-by-file-path';
 
 import { processedImageMetaDataFilePath } from './caching-constants';
@@ -7,6 +8,7 @@ import { processedImageMetaDataFilePath } from './caching-constants';
 export interface ProcessedImageMetaDataCacheAttributes {
   width?: number;
   height?: number;
+  originalFileType?: ImageFormat;
   imageHash: string;
 }
 

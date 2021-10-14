@@ -358,7 +358,7 @@ describe('optimiseImages', () => {
     expect(mockOriginalImagePipeline).toBeCalledWith({
       compressOriginalImage: testCompressImage,
       imageCurrentFilePath: testPath,
-      imagePublicFilePath: `${mockOriginalImageDirectoryPath}/${testUniqueName}.png`,
+      imagePublicFilePath: `${mockOriginalImageDirectoryPath}/${mockHash}${testUniqueName}.png`,
       optimisedImageColourQuality: testOptimisedImageColourQuality,
       optimisedImageCompressionLevel: testOptimisedImageCompressionLevel,
       pipeline: mockPipelineCloneReturnValue,
@@ -368,7 +368,7 @@ describe('optimiseImages', () => {
   it('will request original image pipeline with optimised path to keep original file type if set not to compress original', async () => {
     const testPath = 'baz/top';
     const testCompressImage = false;
-    const testUniqueName = 'qwerty';
+    const testUniqueName = 'pingu';
     const testOptimisedImageColourQuality = 990;
     const testOptimisedImageCompressionLevel = 87;
     const testOriginalFileType = 'tiff';
@@ -396,7 +396,7 @@ describe('optimiseImages', () => {
     expect(mockOriginalImagePipeline).toBeCalledWith({
       compressOriginalImage: testCompressImage,
       imageCurrentFilePath: testPath,
-      imagePublicFilePath: `${mockOriginalImageDirectoryPath}/${testUniqueName}.${testOriginalFileType}`,
+      imagePublicFilePath: `${mockOriginalImageDirectoryPath}/${mockHash}${testUniqueName}.${testOriginalFileType}`,
       optimisedImageColourQuality: testOptimisedImageColourQuality,
       optimisedImageCompressionLevel: testOptimisedImageCompressionLevel,
       pipeline: mockPipelineCloneReturnValue,
@@ -405,6 +405,7 @@ describe('optimiseImages', () => {
 
   it('will request to add image meta data to cache on successful processing of image', async () => {
     const imageUniqueName = 'django';
+    const testFileType = 'tiff';
     mockGetStaticImageConfig.mockImplementationOnce(() => ({
       optimisedImageColourQuality: 4,
       optimisedImageCompressionLevel: 5,
@@ -417,7 +418,7 @@ describe('optimiseImages', () => {
         {
           fileName: 'trigger',
           path: 'baz/top',
-          type: 'png',
+          type: testFileType,
           uniqueImageName: imageUniqueName,
         },
       ],
@@ -427,6 +428,7 @@ describe('optimiseImages', () => {
       imageAttributes: {
         height: undefined,
         imageHash: mockHash,
+        originalFileType: testFileType,
         width: mockOriginalImageWidth,
       },
       imageCacheKey: imageUniqueName,

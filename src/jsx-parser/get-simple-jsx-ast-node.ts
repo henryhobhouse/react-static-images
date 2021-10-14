@@ -44,11 +44,16 @@ export const getSimpleJsxAstNode = (node: JSXExpression): SimpleJsxAst => {
           }
 
           if (attribute.value?.expression?.type === 'Literal') {
+            const expressionValue = attribute.value.expression.value;
+            const valueIsString = typeof expressionValue === 'string';
+
             return [
               attribute.name.name,
               {
                 type: 'LiteralExpression',
-                value: attribute.value.expression.value,
+                value: valueIsString
+                  ? `"${attribute.value.expression.value}"`
+                  : `${expressionValue}`,
               },
             ];
           }

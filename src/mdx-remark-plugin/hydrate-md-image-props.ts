@@ -8,10 +8,13 @@ import {
   originalImageDirectory,
 } from '../constants';
 import { logger } from '../logger';
+import { getStaticImageConfig, imageFormat } from '../static-image-config';
 
 import { getImageMetaDataByPath } from './get-image-meta-data-by-path';
 import { jsxPropsToString } from './jsx-props-to-string';
 import type { JsxNode } from './types';
+
+const { compressOriginalImage } = getStaticImageConfig();
 
 export const hydrateMdImageProps = (filePath: string) => (node: Image) => {
   const fileDirectory = path.dirname(filePath);
@@ -25,13 +28,18 @@ export const hydrateMdImageProps = (filePath: string) => (node: Image) => {
     return;
   }
 
-  const imagePublicUrl = `/${optimisedImagesPublicDirectoryRoot}/${originalImageDirectory}/${imageMeta.imageHash}${imageMeta.uniqueName}`;
+  const imagePublicUrl = `/${optimisedImagesPublicDirectoryRoot}/${originalImageDirectory}/${
+    imageMeta.imageHash
+  }${imageMeta.uniqueName}.${
+    compressOriginalImage ? imageFormat.png : imageMeta.originalFileType
+  }`;
+
   const imagePropsString = jsxPropsToString([
     ['alt', { type: 'Literal', value: node.alt as string | undefined }],
     ['title', { type: 'Literal', value: node.title as string | undefined }],
     ['src', { type: 'Literal', value: imagePublicUrl }],
     [
-      'placeholderBase64',
+      'placeholderbase64',
       { type: 'Literal', value: imageMeta.placeholderBase64 },
     ],
     [
