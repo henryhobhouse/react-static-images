@@ -17,18 +17,9 @@ export const hydrateJsxImageProps = (filePath: string) => (node: JsxNode) => {
   const fileDirectory = path.dirname(filePath);
 
   try {
-    // jsxToAst (and MDX) is expecting JSX tags not HTML so we need to ensure a non closed HTML img tag is replaced
-    // with a self closing JSX tag
-    if (!node.value.endsWith('/>')) node.value = node.value.replace(/>$/, '/>');
-
     const imageAst = jsxToSimpleAst(node.value);
 
-    if (
-      typeof imageAst === 'string' ||
-      imageAst.type !== 'img' ||
-      !imageAst.props.src
-    )
-      return;
+    if (imageAst.type !== 'img' || !imageAst.props.src?.value) return;
 
     const imageMeta = getImageMetaDataByPath(
       imageAst.props.src?.value,
@@ -37,7 +28,7 @@ export const hydrateJsxImageProps = (filePath: string) => (node: JsxNode) => {
 
     if (!imageMeta) {
       logger.error(
-        `Cannot find processed image, within a JSX tag, in path "${imageAst.props.src}" from "${filePath}"`,
+        `Cannot find processed image, within a JSX tag, in path "${imageAst.props.src?.value}" from "${filePath}"`,
       );
 
       return;
@@ -68,7 +59,7 @@ export const hydrateJsxImageProps = (filePath: string) => (node: JsxNode) => {
   } catch (exception) {
     thrownExceptionToLoggerAsError(
       exception,
-      `Cannot find processed image for JSX tag "${node.value}" with path from "${filePath}"`,
+      `Unable to hydrate properties for JSX tag "${node.value}" with path from "${filePath}"`,
     );
   }
 };

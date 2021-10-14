@@ -9,11 +9,10 @@ NOTE: Work in progress!
 
 TODO:
 
-- Cache Invalidation
 - Webpack Loader to update image props in JSX at build time
-- MDX plugin to update MAST at build time (for MDX webpack loader only)
+- React component to render the images
 - Manual publish to NPM
-- Add versioning (likely via lerna)
+- Add versioning (likely using semantic release)
 - Update github actions config to auto publish on merge to main branch
 - Documentation (readme/wikis)
 - Consideration of runtime updates (no need to eject webpack config in CRA).
@@ -64,6 +63,8 @@ DONE:
   - automatic browser cache invalidation on image content being edited (you can
     add maximum cache invalidation to image header in your static doc bucket)
 - Double layer of caching for both local machine and persistent cache for CI
+- Cache Invalidation
+- MDX plugin to update MAST at build time (for MDX webpack loader only)
 
 Side Note:
 
