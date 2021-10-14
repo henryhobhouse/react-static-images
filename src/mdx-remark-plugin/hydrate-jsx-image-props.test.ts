@@ -130,7 +130,7 @@ describe('hydrateJsxImageProps', () => {
     const testNode = { type: 'jsx', value: 'bar' } as const;
     hydrateJsxImageProps('jumbo/round')(testNode);
     expect(testNode.value).toBe(
-      `<img src="/${mockOptimisedPublicDirectory}/${mockOriginalImageDirectory}/${testHash}${testUniqueName}" height={${testHeight}} placeholderBase64={${testImageBase64}} width={${testWidth}} />`,
+      `<img src="/${mockOptimisedPublicDirectory}/${mockOriginalImageDirectory}/${testHash}${testUniqueName}" height={${testHeight}} placeholderBase64="${testImageBase64}" width={${testWidth}} />`,
     );
     expect(mockErrorLogger).not.toBeCalled();
     expect(mockThrownExceptionToLoggerAsError).not.toBeCalled();
@@ -167,7 +167,7 @@ describe('hydrateJsxImageProps', () => {
     });
     hydrateJsxImageProps('jumbo/round')(testNode);
     expect(testNode.value).toBe(
-      `<img src="/${mockOptimisedPublicDirectory}/${mockOriginalImageDirectory}/${testHash}${testUniqueName}" ${testPropertyKey}="${testPropertyValue}" height={${testHeight}} placeholderBase64={${testImageBase64}} width={${testWidth}} />`,
+      `<img src="/${mockOptimisedPublicDirectory}/${mockOriginalImageDirectory}/${testHash}${testUniqueName}" ${testPropertyKey}="${testPropertyValue}" height={${testHeight}} placeholderBase64="${testImageBase64}" width={${testWidth}} />`,
     );
   });
 

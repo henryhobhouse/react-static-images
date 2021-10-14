@@ -7,13 +7,21 @@ describe('htmlPropsToString', () => {
     expect(jsxPropsToString([])).toBe(' ');
   });
 
-  it('will ignore any props that have an undefined value', () => {
+  it('will ignore any props that have no property at all', () => {
     expect(jsxPropsToString([['foo', undefined]])).toBe(' ');
+  });
+
+  it('will ignore any props that have an undefined value', () => {
+    expect(
+      jsxPropsToString([['foo', { type: 'Literal', value: undefined }]]),
+    ).toBe(' ');
   });
 
   it('will ignore any props that have an null value', () => {
     // eslint-disable-next-line unicorn/no-null
-    expect(jsxPropsToString([['foo', null]])).toBe(' ');
+    expect(jsxPropsToString([['foo', { type: 'Literal', value: null }]])).toBe(
+      ' ',
+    );
   });
 
   it('will ignore any props that have an empty string as a value', () => {

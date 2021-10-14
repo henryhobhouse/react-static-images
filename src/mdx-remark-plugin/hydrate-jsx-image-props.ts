@@ -42,7 +42,7 @@ export const hydrateJsxImageProps = (filePath: string) => (node: JsxNode) => {
         value: imageMeta.height?.toString() ?? '',
       },
       placeholderBase64: {
-        type: 'LiteralExpression',
+        type: 'Literal',
         value: imageMeta.placeholderBase64,
       },
       src: {
