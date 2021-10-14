@@ -10,6 +10,7 @@ import {
 } from '../../caching';
 import { cliProgressBar } from '../../cli-progress-bar';
 import {
+  originalImageDirectoryPath,
   rootPublicImageDirectory,
   thumbnailDirectoryPath,
 } from '../../constants';
@@ -20,6 +21,7 @@ import type { ImageFileSystemMetaData } from '../image-files-meta-data';
 import { thumbnailFileExtension } from '../process-static-image-constants';
 
 import { optimiseImageBySizePipeline } from './optimise-image-by-size-pipeline';
+import { originalImagePipeline } from './original-image-pipeline';
 import { thumbnailPipeline } from './thumbnail-pipeline';
 
 interface Props {
@@ -40,6 +42,8 @@ export const optimiseImages = async ({ imagesFileSystemMetaData }: Props) => {
     thumbnailSize,
     optimisedImageCompressionLevel,
     optimisedImageColourQuality,
+    compressOriginalImage,
+    moveOriginalImageToPublic,
   } = getStaticImageConfig();
 
   const progressBar = cliProgressBar.getInstance();
@@ -60,6 +64,24 @@ export const optimiseImages = async ({ imagesFileSystemMetaData }: Props) => {
         const imageContentHash = await getFileContentShortHashByPath(
           imageFsMeta.path,
         );
+
+        if (moveOriginalImageToPublic) {
+          // create thumbnail for image
+          const imagePublicFilePath = `${originalImageDirectoryPath}${
+            path.sep
+          }${imageFsMeta.uniqueImageName}.${
+            compressOriginalImage ? imageFormat.png : imageFsMeta.type
+          }`;
+
+          await originalImagePipeline({
+            compressOriginalImage,
+            imageCurrentFilePath: imageFsMeta.path,
+            imagePublicFilePath,
+            optimisedImageColourQuality,
+            optimisedImageCompressionLevel,
+            pipeline: pipeline.clone(),
+          });
+        }
 
         // create thumbnail for image
         const thumbnailFilePath = `${thumbnailDirectoryPath}${path.sep}${imageFsMeta.uniqueImageName}.${thumbnailFileExtension}`;

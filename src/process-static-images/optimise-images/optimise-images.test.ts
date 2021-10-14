@@ -5,6 +5,7 @@ const mockFsStat = jest.fn().mockImplementation(() =>
   }),
 );
 const mockStaticImageConfig = {
+  moveOriginalImageToPublic: false,
   optimisedImageColourQuality: 99,
   optimisedImageCompressionLevel: 101,
   optimisedImageSizes: [12, 34],
@@ -14,19 +15,8 @@ const mockGetStaticImageConfig = jest
   .fn()
   .mockImplementation(() => mockStaticImageConfig);
 const mockRootPublicImageDirectory = 'foo/bar';
+const mockOriginalImageDirectoryPath = 'john';
 const mockThumbnailDirectoryPath = '/baz';
-
-import { existsSync, unlinkSync } from 'fs';
-import path from 'path';
-
-import VError from 'verror';
-
-import {
-  defaultErrorLogFileName,
-  imageFormat,
-} from '../../static-image-config/config-constants';
-import { thumbnailFileExtension } from '../process-static-image-constants';
-
 const mockAddCacheAttribute = jest.fn();
 const mockSaveCacheToFileSystem = jest.fn();
 const mockAddLocalCacheAttribute = jest.fn();
@@ -37,7 +27,7 @@ const mockProgressBarIncrement = jest.fn();
 const mockGetInstanceOfProgressBar = jest.fn().mockReturnValue({
   increment: mockProgressBarIncrement,
 });
-
+const mockOriginalImagePipeline = jest.fn();
 const mockPipelineCloneReturnValue = 'I am a clone';
 const mockSharpPipelineClone = jest
   .fn()
@@ -55,8 +45,6 @@ const mockHash = 'qwerty';
 const mockGetFileContentShortHashByPath = jest
   .fn()
   .mockImplementation(() => Promise.resolve(mockHash));
-
-import { optimiseImages } from './optimise-images';
 
 jest.mock('../../cli-progress-bar', () => ({
   cliProgressBar: {
@@ -83,6 +71,7 @@ jest.mock('../../static-image-config', () => ({
 }));
 
 jest.mock('../../constants', () => ({
+  originalImageDirectoryPath: mockOriginalImageDirectoryPath,
   rootPublicImageDirectory: mockRootPublicImageDirectory,
   thumbnailDirectoryPath: mockThumbnailDirectoryPath,
 }));
@@ -115,6 +104,22 @@ jest.mock('../image-files-meta-data');
 jest.mock('../../utils/data-fingerprinting', () => ({
   getFileContentShortHashByPath: mockGetFileContentShortHashByPath,
 }));
+jest.mock('./original-image-pipeline', () => ({
+  originalImagePipeline: mockOriginalImagePipeline,
+}));
+
+import { existsSync, unlinkSync } from 'fs';
+import path from 'path';
+
+import VError from 'verror';
+
+import {
+  defaultErrorLogFileName,
+  imageFormat,
+} from '../../static-image-config/config-constants';
+import { thumbnailFileExtension } from '../process-static-image-constants';
+
+import { optimiseImages } from './optimise-images';
 
 describe('optimiseImages', () => {
   afterEach(() => {
@@ -309,6 +314,93 @@ describe('optimiseImages', () => {
         optimisedImageSize: imageSizeSmallerThanOriginal,
       }),
     );
+  });
+
+  it('will request original image pipeline if set to move original image in global config', async () => {
+    const testPath = 'baz/top';
+    const testCompressImage = true;
+    const testUniqueName = 'qwerty';
+    const testOptimisedImageColourQuality = 990;
+    const testOptimisedImageCompressionLevel = 87;
+    await optimiseImages({
+      imagesFileSystemMetaData: [
+        {
+          fileName: 'trigger',
+          path: testPath,
+          type: 'png',
+          uniqueImageName: testUniqueName,
+        },
+      ],
+    });
+
+    expect(mockOriginalImagePipeline).not.toBeCalled();
+
+    mockGetStaticImageConfig.mockImplementationOnce(() => ({
+      compressOriginalImage: testCompressImage,
+      moveOriginalImageToPublic: true,
+      optimisedImageColourQuality: testOptimisedImageColourQuality,
+      optimisedImageCompressionLevel: testOptimisedImageCompressionLevel,
+      optimisedImageSizes: [12, 34],
+      thumbnailSize: 4,
+    }));
+
+    await optimiseImages({
+      imagesFileSystemMetaData: [
+        {
+          fileName: 'trigger',
+          path: testPath,
+          type: 'png',
+          uniqueImageName: testUniqueName,
+        },
+      ],
+    });
+
+    expect(mockOriginalImagePipeline).toBeCalledWith({
+      compressOriginalImage: testCompressImage,
+      imageCurrentFilePath: testPath,
+      imagePublicFilePath: `${mockOriginalImageDirectoryPath}/${testUniqueName}.png`,
+      optimisedImageColourQuality: testOptimisedImageColourQuality,
+      optimisedImageCompressionLevel: testOptimisedImageCompressionLevel,
+      pipeline: mockPipelineCloneReturnValue,
+    });
+  });
+
+  it('will request original image pipeline with optimised path to keep original file type if set not to compress original', async () => {
+    const testPath = 'baz/top';
+    const testCompressImage = false;
+    const testUniqueName = 'qwerty';
+    const testOptimisedImageColourQuality = 990;
+    const testOptimisedImageCompressionLevel = 87;
+    const testOriginalFileType = 'tiff';
+
+    mockGetStaticImageConfig.mockImplementationOnce(() => ({
+      compressOriginalImage: testCompressImage,
+      moveOriginalImageToPublic: true,
+      optimisedImageColourQuality: testOptimisedImageColourQuality,
+      optimisedImageCompressionLevel: testOptimisedImageCompressionLevel,
+      optimisedImageSizes: [12, 34],
+      thumbnailSize: 4,
+    }));
+
+    await optimiseImages({
+      imagesFileSystemMetaData: [
+        {
+          fileName: 'trigger',
+          path: testPath,
+          type: testOriginalFileType,
+          uniqueImageName: testUniqueName,
+        },
+      ],
+    });
+
+    expect(mockOriginalImagePipeline).toBeCalledWith({
+      compressOriginalImage: testCompressImage,
+      imageCurrentFilePath: testPath,
+      imagePublicFilePath: `${mockOriginalImageDirectoryPath}/${testUniqueName}.${testOriginalFileType}`,
+      optimisedImageColourQuality: testOptimisedImageColourQuality,
+      optimisedImageCompressionLevel: testOptimisedImageCompressionLevel,
+      pipeline: mockPipelineCloneReturnValue,
+    });
   });
 
   it('will request to add image meta data to cache on successful processing of image', async () => {

@@ -28,6 +28,10 @@ export interface ImageConfig {
   staticImageMetaDirectory: string;
   /* any directories that should be ignored by the library when searching for images to process */
   excludedDirectories: string[];
+  /* move original image to the public directory to make accessible by the client (default true) */
+  moveOriginalImageToPublic: boolean;
+  /* if original image is moved to public directory to add compression to reduce size whilst retaining original size (default true) */
+  compressOriginalImage: boolean;
 }
 
 const configFilePath = path.resolve(process.cwd(), userConfigFileName);

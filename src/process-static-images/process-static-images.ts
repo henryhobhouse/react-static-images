@@ -13,6 +13,7 @@ import {
   staticImageMetaDirectoryPath,
   rootPublicImageDirectory,
   thumbnailDirectoryPath,
+  originalImageDirectoryPath,
 } from '../constants';
 import { logger } from '../logger';
 import { getStaticImageConfig } from '../static-image-config';
@@ -53,6 +54,7 @@ export const processStaticImages = async () => {
         thumbnailDirectoryPath,
         staticImageMetaDirectoryPath,
         localCacheDirectoryPath,
+        originalImageDirectoryPath,
       ],
       optimisedImageSizes,
       rootPublicImageDirectory,

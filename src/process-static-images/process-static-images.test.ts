@@ -25,6 +25,7 @@ const mockRootPublicImageDirectory = 'foo';
 const mockThumbnailDirectoryPath = 'bar';
 const mockStaticImageMetaDirectoryPath = 'baz';
 const mockLocalCacheDirectoryPath = 'laurie';
+const mockOriginalImageDirectoryPath = 'qwerty';
 const mockIsCurrentConfigMatchingCache = jest.fn().mockReturnValue(true);
 const mockClearFileSystemCache = jest.fn();
 const mockUpdateImageMetaDataCache = jest.fn();
@@ -47,6 +48,7 @@ jest.mock('../logger', () => ({
 }));
 
 jest.mock('../constants', () => ({
+  originalImageDirectoryPath: mockOriginalImageDirectoryPath,
   rootPublicImageDirectory: mockRootPublicImageDirectory,
   staticImageMetaDirectoryPath: mockStaticImageMetaDirectoryPath,
   thumbnailDirectoryPath: mockThumbnailDirectoryPath,
@@ -110,6 +112,7 @@ describe('processStaticImages', () => {
         mockThumbnailDirectoryPath,
         mockStaticImageMetaDirectoryPath,
         mockLocalCacheDirectoryPath,
+        mockOriginalImageDirectoryPath,
       ],
       optimisedImageSizes: mockOptimisedImageSizes,
       rootPublicImageDirectory: mockRootPublicImageDirectory,

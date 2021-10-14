@@ -9,6 +9,7 @@ interface Props {
   optimisedImageColourQuality: number;
   imageSizeFilePath: string;
 }
+
 export const optimiseImageBySizePipeline = async ({
   pipeline,
   optimisedImageSize,

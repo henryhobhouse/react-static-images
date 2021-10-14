@@ -39,3 +39,8 @@ export const thumbnailDirectoryPath = path.join(
   staticImageMetaDirectoryPath,
   thumbnailSize.toString(),
 );
+
+export const originalImageDirectoryPath = path.join(
+  staticImageMetaDirectoryPath,
+  originalImageDirectory,
+);

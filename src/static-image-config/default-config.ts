@@ -5,6 +5,7 @@ const currentWorkingDirectory = process.cwd();
 
 export const defaultConfig: ImageConfig = {
   applicationPublicDirectory: 'public',
+  compressOriginalImage: true,
   excludedDirectories: [],
   imageFormats: [
     imageFormat.png,
@@ -13,6 +14,7 @@ export const defaultConfig: ImageConfig = {
     imageFormat.webp,
   ],
   imagesBaseDirectory: currentWorkingDirectory,
+  moveOriginalImageToPublic: true,
   optimisedImageColourQuality: 100,
   optimisedImageCompressionLevel: 9,
   optimisedImageSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
