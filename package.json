@@ -36,7 +36,7 @@
     "sharp": "^0.29.1",
     "shorthash2": "^1.0.3",
     "simplified-jsx-to-ast": "^0.4.0",
-    "unist-util-visit": "2",
+    "unist-util-visit": "4",
     "verror": "^1.10.0",
     "winston": "^3.3.3"
   },
