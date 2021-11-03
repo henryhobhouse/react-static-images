@@ -46,7 +46,7 @@
     "@types/jest": "^27.0.1",
     "@types/mdast": "^3.0.10",
     "@types/node": "^16.11.6",
-    "@types/sharp": "^0.29.1",
+    "@types/sharp": "^0.29.3",
     "@types/unist": "^2.0.6",
     "@types/verror": "^1.10.5",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
