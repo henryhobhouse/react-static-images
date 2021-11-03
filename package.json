@@ -37,7 +37,7 @@
     "shorthash2": "^1.0.3",
     "simplified-jsx-to-ast": "^0.4.0",
     "unist-util-visit": "2",
-    "verror": "^1.10.0",
+    "verror": "^1.10.1",
     "winston": "^3.3.3"
   },
   "devDependencies": {
