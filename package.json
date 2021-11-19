@@ -43,7 +43,7 @@
   "devDependencies": {
     "@types/cli-progress": "^3.9.2",
     "@types/escodegen": "^0.0.7",
-    "@types/jest": "^27.0.1",
+    "@types/jest": "^27.0.3",
     "@types/mdast": "^3.0.10",
     "@types/node": "^16.11.7",
     "@types/sharp": "^0.29.3",
