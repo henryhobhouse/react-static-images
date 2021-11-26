@@ -64,7 +64,7 @@
     "eslint-plugin-unicorn": "^37.0.1",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^27.3.1",
-    "prettier": "^2.3.2",
+    "prettier": "^2.5.0",
     "ts-jest": "^27.0.7",
     "typescript": "^4.5.2",
     "vfile": "^5.2.0"
