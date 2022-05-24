@@ -33,7 +33,7 @@
     "del": "^6.0.0",
     "escodegen": "^2.0.0",
     "esm": "^3.2.25",
-    "sharp": "^0.29.3",
+    "sharp": "^0.30.5",
     "shorthash2": "^1.0.3",
     "simplified-jsx-to-ast": "^0.4.0",
     "unist-util-visit": "2",
