@@ -30,9 +30,7 @@ const secondChildDirectory = 'nested_child_directory';
 
 const mockGetUniqueFileNameByPath = jest
   .fn()
-  .mockImplementation((_, fileName: string) => {
-    return `[hash]-${fileName}`;
-  });
+  .mockImplementation((_, fileName: string) => `[hash]-${fileName}`);
 
 import { getImageFilesMetaData } from './get-image-files-meta-data';
 
@@ -80,7 +78,7 @@ describe('getImagesMetaData', () => {
   it('will retrieve all PNG images from chosen content directory', async () => {
     const pngFileName = 'django_in_park.png';
     const result = await getImageFilesMetaData();
-    expect(mockGetUniqueFileNameByPath).toBeCalledTimes(1);
+    expect(mockGetUniqueFileNameByPath).toHaveBeenCalledTimes(1);
     expect(result.imageFilesMetaData).toEqual([
       {
         fileName: pngFileName,
@@ -163,7 +161,7 @@ describe('getImagesMetaData', () => {
       imageFormats: [imageFormat.tiff],
     });
     const result = await getImageFilesMetaData();
-    expect(mockGetUniqueFileNameByPath).toBeCalledTimes(1);
+    expect(mockGetUniqueFileNameByPath).toHaveBeenCalledTimes(1);
     expect(result.imageFilesMetaData).toEqual([
       {
         fileName: tiffFileName,
@@ -191,7 +189,7 @@ describe('getImagesMetaData', () => {
       imageFormats: [imageFormat.avif],
     });
     const result = await getImageFilesMetaData();
-    expect(mockGetUniqueFileNameByPath).toBeCalledTimes(1);
+    expect(mockGetUniqueFileNameByPath).toHaveBeenCalledTimes(1);
     expect(result.imageFilesMetaData).toEqual([
       {
         fileName: avifFileName,
@@ -219,7 +217,7 @@ describe('getImagesMetaData', () => {
       imageFormats: [imageFormat.webp],
     });
     const result = await getImageFilesMetaData();
-    expect(mockGetUniqueFileNameByPath).toBeCalledTimes(1);
+    expect(mockGetUniqueFileNameByPath).toHaveBeenCalledTimes(1);
     expect(result.imageFilesMetaData).toEqual([
       {
         fileName: webpFileName,
@@ -247,7 +245,7 @@ describe('getImagesMetaData', () => {
       ],
     });
     const result = await getImageFilesMetaData();
-    expect(mockGetUniqueFileNameByPath).toBeCalledTimes(7);
+    expect(mockGetUniqueFileNameByPath).toHaveBeenCalledTimes(7);
     expect(result.imageFilesMetaData).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
@@ -289,7 +287,7 @@ describe('getImagesMetaData', () => {
       await import('./get-image-files-meta-data');
 
     const result = await getImageFilesMetaDataTemporary();
-    expect(mockGetUniqueFileNameByPath).toBeCalledTimes(3);
+    expect(mockGetUniqueFileNameByPath).toHaveBeenCalledTimes(3);
     expect(result.imageFilesMetaData).toEqual(
       expect.arrayContaining([
         {
@@ -367,7 +365,7 @@ describe('getImagesMetaData', () => {
       await import('./get-image-files-meta-data');
 
     const result = await getImageFilesMetaDataTemporary();
-    expect(mockGetUniqueFileNameByPath).toBeCalledTimes(0);
+    expect(mockGetUniqueFileNameByPath).toHaveBeenCalledTimes(0);
     expect(result.imageFilesMetaData).toEqual([]);
   });
 
@@ -397,7 +395,7 @@ describe('getImagesMetaData', () => {
       imageFormats: [imageFormat.jpeg],
     });
     const result = await getImageFilesMetaData();
-    expect(mockGetUniqueFileNameByPath).toBeCalledTimes(1);
+    expect(mockGetUniqueFileNameByPath).toHaveBeenCalledTimes(1);
     expect(result.imageFilesMetaData).toEqual([
       {
         fileName: jpgFileNameInRoot,
@@ -426,7 +424,7 @@ describe('getImagesMetaData', () => {
       ],
     });
     const { imageFilesMetaData } = await getImageFilesMetaData();
-    expect(mockValidateImageCached).toBeCalledTimes(7);
+    expect(mockValidateImageCached).toHaveBeenCalledTimes(7);
     expect(mockValidateImageCached.mock.calls[0]).toEqual([
       path.join(demoContentDirectory, 'django.jpg'),
       '[hash]-django',

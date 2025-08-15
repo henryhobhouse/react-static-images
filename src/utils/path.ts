@@ -1,3 +1,2 @@
-export const trimSeparators = (path: string) => {
-  return path.replace(/[/\\]+$/, '').replace(/^[/\\]+/, '');
-};
+export const trimSeparators = (path: string) =>
+  path.replace(/[/\\]+$/, '').replace(/^[/\\]+/, '');

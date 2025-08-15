@@ -12,9 +12,8 @@ export interface BuildCache {
   previousConfigHash?: string;
 }
 
-const getConfigCache = () => {
-  return getParsedJsonByFilePath<BuildCache>(configCacheFilePath, {});
-};
+const getConfigCache = () =>
+  getParsedJsonByFilePath<BuildCache>(configCacheFilePath, {});
 
 export const saveCurrentConfigToCache = () => {
   const currentConfigHash = createShortHashFromString(
