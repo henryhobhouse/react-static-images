@@ -5,68 +5,46 @@ import { waitFor } from '../../test/utils/wait-for';
 
 import { logger } from './logger';
 
-const globalConsole = console;
-
 const pathToErrorLogFile = path.resolve(
   process.cwd(),
   'static-image-error.log',
 );
 
 describe('logger', () => {
-  const consoleLogMock = jest.fn();
+  let stdoutWriteMock: jest.SpyInstance;
+  let stderrWriteMock: jest.SpyInstance;
 
   beforeAll(() => {
-    // eslint-disable-next-line no-global-assign
-    console = {
-      log: consoleLogMock,
-    } as never;
+    // Winston Console transport writes to process.stdout / process.stderr
+    // rather than console.log. Spy on these to capture output.
+    stdoutWriteMock = jest
+      .spyOn(process.stdout, 'write')
+      .mockImplementation(() => true);
+    stderrWriteMock = jest
+      .spyOn(process.stderr, 'write')
+      .mockImplementation(() => true);
   });
 
   afterAll(() => {
-    // eslint-disable-next-line no-global-assign
-    console = globalConsole;
+    stdoutWriteMock.mockRestore();
+    stderrWriteMock.mockRestore();
     waitFor(() => unlinkSync(pathToErrorLogFile));
   });
 
-  beforeEach(jest.clearAllMocks);
-
-  it('will log out standard messages with a blue info prefix', () => {
-    const logMessage = 'hello world';
-    logger.info(logMessage);
-    expect(consoleLogMock).toBeCalledWith(expect.stringContaining(logMessage));
-    expect(consoleLogMock).toBeCalledWith(
-      expect.stringContaining('\u001B[34minfo'),
-    );
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
-  it('will log out warning messages with a yellow warn prefix', () => {
-    const logMessage = 'oh no a warning';
-    logger.warn(logMessage);
-    expect(consoleLogMock).toBeCalledWith(expect.stringContaining(logMessage));
-    expect(consoleLogMock).toBeCalledWith(
-      expect.stringContaining('\u001B[33mwarn'),
-    );
-  });
+  const combinedOutput = () => {
+    const stdout = stdoutWriteMock.mock.calls
+      .map((arguments_) => String(arguments_[0] ?? ''))
+      .join('');
+    const stderr = stderrWriteMock.mock.calls
+      .map((arguments_) => String(arguments_[0] ?? ''))
+      .join('');
 
-  it('will log out custom success messages with a green success prefix', () => {
-    const logMessage = 'oh joy. It has worked...';
-    logger.log('success', logMessage);
-    expect(consoleLogMock).toBeCalledWith(expect.stringContaining(logMessage));
-    expect(consoleLogMock).toBeCalledWith(
-      expect.stringContaining('\u001B[32msuccess'),
-    );
-  });
-
-  it('will log out error messages with a red error prefix', async () => {
-    const logMessage = 'oh dear, we have failed...';
-    logger.error(logMessage);
-    expect(consoleLogMock).toBeCalledWith(expect.stringContaining(logMessage));
-    expect(consoleLogMock).toBeCalledWith(
-      expect.stringContaining('\u001B[31merror'),
-    );
-    // need to clear error from log file to not corrupt other tests
-    await waitFor(() => writeFileSync(pathToErrorLogFile, ''));
-  });
+    return `${stdout}${stderr}`;
+  };
 
   it('will create an empty error log file on instantiation', async () => {
     await waitFor(() => {
@@ -76,6 +54,40 @@ describe('logger', () => {
 
     const errorLogFileContent = readFileSync(pathToErrorLogFile).toString();
     expect(errorLogFileContent).toBe('');
+  });
+
+  it('will log out standard messages with a blue info prefix', () => {
+    const logMessage = 'hello world';
+    logger.info(logMessage);
+    expect(combinedOutput()).toEqual(expect.stringContaining(logMessage));
+    expect(combinedOutput()).toEqual(expect.stringContaining('\u001B[34minfo'));
+  });
+
+  it('will log out warning messages with a yellow warn prefix', () => {
+    const logMessage = 'oh no a warning';
+    logger.warn(logMessage);
+    expect(combinedOutput()).toEqual(expect.stringContaining(logMessage));
+    expect(combinedOutput()).toEqual(expect.stringContaining('\u001B[33mwarn'));
+  });
+
+  it('will log out custom success messages with a green success prefix', () => {
+    const logMessage = 'oh joy. It has worked...';
+    logger.log('success', logMessage);
+    expect(combinedOutput()).toEqual(expect.stringContaining(logMessage));
+    expect(combinedOutput()).toEqual(
+      expect.stringContaining('\u001B[32msuccess'),
+    );
+  });
+
+  it('will log out error messages with a red error prefix', async () => {
+    const logMessage = 'oh dear, we have failed...';
+    logger.error(logMessage);
+    expect(combinedOutput()).toEqual(expect.stringContaining(logMessage));
+    expect(combinedOutput()).toEqual(
+      expect.stringContaining('\u001B[31merror'),
+    );
+    // need to clear error from log file to not corrupt other tests
+    await waitFor(() => writeFileSync(pathToErrorLogFile, ''));
   });
 
   it('will save log error to file', async () => {
@@ -107,6 +119,7 @@ describe('logger', () => {
     logger.log({ level: 'info', message: 'blah blah blah', noConsole: true });
     logger.log({ level: 'warn', message: 'foo bar', noConsole: true });
 
-    expect(consoleLogMock).not.toBeCalled();
+    expect(stdoutWriteMock).not.toBeCalled();
+    expect(stderrWriteMock).not.toBeCalled();
   });
 });
