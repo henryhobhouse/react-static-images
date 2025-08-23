@@ -1,47 +1,83 @@
-const mockUniqueName = 'abracadabra';
-const mockImageMetaData = 'rocking robin';
-const mockCreateUniqueFileNameFromPath = jest
-  .fn()
-  .mockReturnValue(mockUniqueName);
-const mockCurrentWorkingDirectory = 'foo';
-const mockImagesBaseDirectory = 'bar';
-const mockThumbnailBase64 = 'qwerty';
-const mockReadFileSync = jest
-  .fn()
-  .mockImplementation(() => Buffer.from(mockThumbnailBase64));
-const mockThrownExceptionToLoggerAsError = jest.fn();
+import { readFileSync } from 'fs';
+
+import { createUniqueFileNameFromPath } from '../utils/data-fingerprinting';
+import { thrownExceptionToLoggerAsError } from '../utils/thrown-exception';
 
 import { getImageMetaDataByPath } from './get-image-meta-data-by-path';
 
-jest.mock('../caching', () => ({
-  processedImageMetaDataCache: {
-    currentCache: {
-      [mockUniqueName]: { imageHash: mockImageMetaData },
+jest.mock('../caching', () => {
+  const mockUniqueName = 'abracadabra';
+  const mockImageMetaData = 'rocking robin';
+
+  return {
+    processedImageMetaDataCache: {
+      currentCache: {
+        [mockUniqueName]: { imageHash: mockImageMetaData },
+      },
     },
-  },
-}));
+  };
+});
 
-jest.mock('../utils/thrown-exception', () => ({
-  thrownExceptionToLoggerAsError: mockThrownExceptionToLoggerAsError,
-}));
+jest.mock('../utils/thrown-exception', () => {
+  const mockThrownExceptionToLoggerAsError = jest.fn();
 
-jest.mock('../constants', () => ({
-  currentWorkingDirectory: mockCurrentWorkingDirectory,
-  imagesBaseDirectory: mockImagesBaseDirectory,
-  thumbnailDirectoryPath: 'baz',
-}));
+  return {
+    thrownExceptionToLoggerAsError: mockThrownExceptionToLoggerAsError,
+  };
+});
 
-jest.mock('../utils/data-fingerprinting', () => ({
-  createUniqueFileNameFromPath: mockCreateUniqueFileNameFromPath,
-}));
+jest.mock('../constants', () => {
+  const mockCurrentWorkingDirectory = 'foo';
+  const mockImagesBaseDirectory = 'bar';
 
-jest.mock('fs', () => ({
-  readFileSync: mockReadFileSync,
-}));
+  return {
+    currentWorkingDirectory: mockCurrentWorkingDirectory,
+    imagesBaseDirectory: mockImagesBaseDirectory,
+    thumbnailDirectoryPath: 'baz',
+  };
+});
+
+jest.mock('../utils/data-fingerprinting', () => {
+  const mockUniqueName = 'abracadabra';
+  const mockCreateUniqueFileNameFromPath = jest
+    .fn()
+    .mockReturnValue(mockUniqueName);
+
+  return {
+    createUniqueFileNameFromPath: mockCreateUniqueFileNameFromPath,
+  };
+});
+
+jest.mock('fs', () => {
+  const mockThumbnailBase64 = 'qwerty';
+  const mockReadFileSync = jest
+    .fn()
+    .mockImplementation(() => Buffer.from(mockThumbnailBase64));
+
+  return {
+    readFileSync: mockReadFileSync,
+  };
+});
+
+const mockReadFileSync = readFileSync as jest.MockedFunction<
+  typeof readFileSync
+>;
+const mockCreateUniqueFileNameFromPath =
+  createUniqueFileNameFromPath as jest.MockedFunction<
+    typeof createUniqueFileNameFromPath
+  >;
+const mockThrownExceptionToLoggerAsError =
+  thrownExceptionToLoggerAsError as jest.MockedFunction<
+    typeof thrownExceptionToLoggerAsError
+  >;
+
+const mockUniqueName = 'abracadabra';
+const mockImageMetaData = 'rocking robin';
+const mockCurrentWorkingDirectory = 'foo';
+const mockImagesBaseDirectory = 'bar';
+const mockThumbnailBase64 = 'qwerty';
 
 describe('getImageMetaDataByPath', () => {
-  afterEach(jest.clearAllMocks);
-
   it('will consider image path with path separator prefix as absolute from base image directory from config', () => {
     const testAbsoluteImagePath = '/baz/test/ping.png';
     getImageMetaDataByPath(testAbsoluteImagePath, '/qwerty');

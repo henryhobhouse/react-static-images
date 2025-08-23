@@ -1,8 +1,30 @@
-const mockFsPromisesWriteFile = jest.fn();
-const mockThrownExceptionToError = jest.fn();
-
 import { thumbnailPipeline } from './thumbnail-pipeline';
 
+jest.mock('fs', () => {
+  const mockFsPromisesWriteFile = jest.fn();
+
+  return {
+    promises: {
+      writeFile: mockFsPromisesWriteFile,
+    },
+  };
+});
+
+jest.mock('../../utils/thrown-exception', () => {
+  const mockThrownExceptionToError = jest.fn();
+
+  return {
+    thrownExceptionToError: mockThrownExceptionToError,
+  };
+});
+
+const { promises: fsPromises } = jest.requireMock('fs');
+const { thrownExceptionToError: mockThrownExceptionToError } = jest.requireMock(
+  '../../utils/thrown-exception',
+);
+const mockFsPromisesWriteFile = fsPromises.writeFile;
+
+// Create mock pipeline objects
 const mockPipelineToBuffer = jest
   .fn()
   .mockImplementation(() => Buffer.from('fooBar'));
@@ -16,21 +38,9 @@ const mockPipeline = {
   resize: mockPipelineResize,
 };
 
-jest.mock('fs', () => ({
-  promises: {
-    writeFile: mockFsPromisesWriteFile,
-  },
-}));
-
-jest.mock('../../utils/thrown-exception', () => ({
-  thrownExceptionToError: mockThrownExceptionToError,
-}));
-
 const mockThumbnailSize = 20;
 
 describe('thumbnailPipeline', () => {
-  afterEach(jest.clearAllMocks);
-
   it('will request to resize image to thumbnail width', () => {
     thumbnailPipeline({
       pipeline: mockPipeline as any,

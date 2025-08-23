@@ -25,7 +25,6 @@ jest.mock('fs', () => ({
 
 describe('validateImageCache', () => {
   afterEach(() => {
-    jest.clearAllMocks();
     jest.resetModules();
   });
 

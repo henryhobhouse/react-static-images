@@ -28,7 +28,6 @@ const mockConfig = { foo: 'bar' };
 
 describe('Config cache', () => {
   afterEach(() => {
-    jest.clearAllMocks();
     jest.resetModules();
   });
 

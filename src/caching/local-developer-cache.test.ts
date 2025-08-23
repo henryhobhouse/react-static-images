@@ -23,7 +23,6 @@ describe('localDeveloperImageCache', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
     jest.resetModules();
     process.env.CI = undefined;
   });

@@ -1,27 +1,46 @@
-const mockProcessStaticImages = jest.fn();
-const mockClearCache = jest.fn();
-const mockLogger = jest.fn();
+import { clearFileSystemCache } from '../caching';
+import { logger } from '../logger';
+import { processStaticImages } from '../process-static-images';
 
 import { cli } from './cli';
 
-jest.mock('../process-static-images', () => ({
-  processStaticImages: mockProcessStaticImages,
-}));
+jest.mock('../process-static-images', () => {
+  const mockProcessStaticImages = jest.fn();
 
-jest.mock('../caching', () => ({
-  clearFileSystemCache: mockClearCache,
-}));
+  return {
+    processStaticImages: mockProcessStaticImages,
+  };
+});
 
-jest.mock('../logger', () => ({
-  logger: {
-    log: mockLogger,
-  },
-}));
+jest.mock('../caching', () => {
+  const mockClearCache = jest.fn();
+
+  return {
+    clearFileSystemCache: mockClearCache,
+  };
+});
+
+jest.mock('../logger', () => {
+  const mockLogger = jest.fn();
+
+  return {
+    logger: {
+      log: mockLogger,
+    },
+  };
+});
+
+const mockProcessStaticImages = processStaticImages as jest.MockedFunction<
+  typeof processStaticImages
+>;
+const mockClearCache = clearFileSystemCache as jest.MockedFunction<
+  typeof clearFileSystemCache
+>;
+const mockLogger = logger.log as jest.MockedFunction<typeof logger.log>;
 
 describe('cli', () => {
   // @ts-expect-error mocking function
   const mockExit = jest.spyOn(process, 'exit').mockImplementation(() => {});
-  afterEach(jest.clearAllMocks);
 
   it('will call process static images with no arguments', async () => {
     await cli([]);

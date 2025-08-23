@@ -1,51 +1,92 @@
-const mockLocalDevelopmentRemoveCacheAttribute = jest.fn();
-const mockProcessedImageRemoveCacheAttribute = jest.fn();
-const mockFsExistsSync = jest.fn().mockReturnValue(false);
-const mockDirentIsDirectory = jest.fn().mockReturnValue(true);
-const mockDirentName = '100';
-const mockRootPublicImageDirectory = 'foo';
-const mockFsPromisesUnlink = jest.fn();
-const mockThumbnailDirectoryPath = 'bar';
-const mockThumbnailFileExtension = 'qwerty';
+import { existsSync, promises as fsPromises } from 'fs';
+
+import {
+  localDeveloperImageCache,
+  processedImageMetaDataCache,
+} from '../../caching';
 
 import { removeInvalidImages } from './remove-invalid-images';
 
-jest.mock('../../caching', () => ({
-  localDeveloperImageCache: {
-    removeCacheAttribute: mockLocalDevelopmentRemoveCacheAttribute,
-  },
-  processedImageMetaDataCache: {
-    removeCacheAttribute: mockProcessedImageRemoveCacheAttribute,
-  },
-}));
+jest.mock('../../caching', () => {
+  const mockLocalDevelopmentRemoveCacheAttribute = jest.fn();
+  const mockProcessedImageRemoveCacheAttribute = jest.fn();
 
-jest.mock('fs', () => ({
-  existsSync: mockFsExistsSync,
-  promises: {
-    readdir: jest.fn().mockResolvedValue([
-      {
-        isDirectory: mockDirentIsDirectory,
-        name: mockDirentName,
-      },
-    ]),
-    unlink: mockFsPromisesUnlink,
-  },
-}));
+  return {
+    localDeveloperImageCache: {
+      removeCacheAttribute: mockLocalDevelopmentRemoveCacheAttribute,
+    },
+    processedImageMetaDataCache: {
+      removeCacheAttribute: mockProcessedImageRemoveCacheAttribute,
+    },
+  };
+});
 
-jest.mock('../../static-image-config', () => ({
-  imageFormat: {
-    png: 'png',
-  },
-}));
+jest.mock('fs', () => {
+  const mockFsExistsSync = jest.fn().mockReturnValue(false);
+  const mockDirentName = '100';
+  const mockFsPromisesUnlink = jest.fn();
 
-jest.mock('../process-static-image-constants', () => ({
-  thumbnailFileExtension: mockThumbnailFileExtension,
-}));
+  return {
+    existsSync: mockFsExistsSync,
+    promises: {
+      readdir: jest.fn().mockResolvedValue([
+        {
+          isDirectory: () => true, // This will be overridden in tests
+          name: mockDirentName,
+        },
+      ]),
+      unlink: mockFsPromisesUnlink,
+    },
+  };
+});
 
-jest.mock('../../constants', () => ({
-  rootPublicImageDirectory: mockRootPublicImageDirectory,
-  thumbnailDirectoryPath: mockThumbnailDirectoryPath,
-}));
+jest.mock('../../static-image-config', () => {
+  return {
+    imageFormat: {
+      png: 'png',
+    },
+  };
+});
+
+jest.mock('../process-static-image-constants', () => {
+  const mockThumbnailFileExtension = 'qwerty';
+
+  return {
+    thumbnailFileExtension: mockThumbnailFileExtension,
+  };
+});
+
+jest.mock('../../constants', () => {
+  const mockRootPublicImageDirectory = 'foo';
+  const mockThumbnailDirectoryPath = 'bar';
+
+  return {
+    rootPublicImageDirectory: mockRootPublicImageDirectory,
+    thumbnailDirectoryPath: mockThumbnailDirectoryPath,
+  };
+});
+
+const mockFsExistsSync = existsSync as jest.MockedFunction<typeof existsSync>;
+const mockFsPromisesUnlink = fsPromises.unlink as jest.MockedFunction<
+  typeof fsPromises.unlink
+>;
+const mockLocalDevelopmentRemoveCacheAttribute =
+  localDeveloperImageCache.removeCacheAttribute as jest.MockedFunction<
+    typeof localDeveloperImageCache.removeCacheAttribute
+  >;
+const mockProcessedImageRemoveCacheAttribute =
+  processedImageMetaDataCache.removeCacheAttribute as jest.MockedFunction<
+    typeof processedImageMetaDataCache.removeCacheAttribute
+  >;
+
+// Create a reference to the dirent mock that we can control in tests
+const mockDirentIsDirectory = jest.fn().mockReturnValue(true);
+
+// Test constants
+const mockDirentName = '100';
+const mockRootPublicImageDirectory = 'foo';
+const mockThumbnailDirectoryPath = 'bar';
+const mockThumbnailFileExtension = 'qwerty';
 
 const mockInvalidImages = [
   {
@@ -62,7 +103,18 @@ const imageOnePath = `${mockRootPublicImageDirectory}/${mockDirentName}/${mockIn
 const imageTwoPath = `${mockRootPublicImageDirectory}/${mockDirentName}/${mockInvalidImages[1].hash}${mockInvalidImages[1].name}.png`;
 
 describe('removeInvalidImages', () => {
-  afterEach(jest.clearAllMocks);
+  beforeEach(() => {
+    // Set up the fs.promises.readdir mock to return our controllable dirent
+    const mockFsPromisesReaddir = fsPromises.readdir as jest.MockedFunction<
+      typeof fsPromises.readdir
+    >;
+    mockFsPromisesReaddir.mockResolvedValue([
+      {
+        isDirectory: mockDirentIsDirectory,
+        name: mockDirentName,
+      } as any,
+    ]);
+  });
 
   it('will call to remove local cache attribute of each invalid image', async () => {
     await removeInvalidImages(mockInvalidImages);

@@ -1,15 +1,20 @@
-const mockLoggerError = jest.fn();
+jest.mock('../logger', () => {
+  const mockLoggerError = jest.fn();
+
+  return {
+    logger: {
+      error: mockLoggerError,
+    },
+  };
+});
 
 import {
   thrownExceptionToError,
   thrownExceptionToLoggerAsError,
 } from './thrown-exception';
 
-jest.mock('../logger', () => ({
-  logger: {
-    error: mockLoggerError,
-  },
-}));
+const { logger } = jest.requireMock('../logger');
+const mockLoggerError = logger.error;
 
 describe('thrown exception', () => {
   describe('thrownExceptionToError', () => {
@@ -48,8 +53,6 @@ describe('thrown exception', () => {
   });
 
   describe('thrownExceptionToLogError', () => {
-    afterEach(jest.clearAllMocks);
-
     it('will log an Error object gracefully if passed as exception', () => {
       const errorMessage = 'fooBar';
       const appendedErrorMessage = 'baz';

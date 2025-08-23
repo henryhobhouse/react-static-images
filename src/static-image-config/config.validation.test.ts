@@ -1,6 +1,3 @@
-const mockUserConfigFileName = 'fooBar.js';
-const mockErrorLogger = jest.fn();
-
 import { validateUserConfig } from './config-validation';
 
 jest.mock('./default-config', () => ({
@@ -17,15 +14,28 @@ jest.mock('./default-config', () => ({
   },
 }));
 
-jest.mock('./config-constants', () => ({
-  userConfigFileName: mockUserConfigFileName,
-}));
+jest.mock('./config-constants', () => {
+  const mockUserConfigFileName = 'fooBar.js';
 
-jest.mock('../logger', () => ({
-  logger: {
-    error: mockErrorLogger,
-  },
-}));
+  return {
+    userConfigFileName: mockUserConfigFileName,
+  };
+});
+
+jest.mock('../logger', () => {
+  const mockErrorLogger = jest.fn();
+
+  return {
+    logger: {
+      error: mockErrorLogger,
+    },
+  };
+});
+
+const { userConfigFileName: mockUserConfigFileName } =
+  jest.requireMock('./config-constants');
+const { logger } = jest.requireMock('../logger');
+const mockErrorLogger = logger.error;
 
 const processExit = process.exit;
 

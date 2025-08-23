@@ -31,10 +31,6 @@ describe('logger', () => {
     waitFor(() => unlinkSync(pathToErrorLogFile));
   });
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
   const combinedOutput = () => {
     const stdout = stdoutWriteMock.mock.calls
       .map((arguments_) => String(arguments_[0] ?? ''))

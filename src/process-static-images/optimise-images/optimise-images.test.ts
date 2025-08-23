@@ -1,113 +1,3 @@
-const mockLastUpdatedTimeInMs = 12_345;
-const mockFsStat = jest.fn().mockImplementation(() =>
-  Promise.resolve({
-    mtimeMs: mockLastUpdatedTimeInMs,
-  }),
-);
-const mockStaticImageConfig = {
-  moveOriginalImageToPublic: false,
-  optimisedImageColourQuality: 99,
-  optimisedImageCompressionLevel: 101,
-  optimisedImageSizes: [12, 34],
-  thumbnailSize: 4,
-};
-const mockGetStaticImageConfig = jest
-  .fn()
-  .mockImplementation(() => mockStaticImageConfig);
-const mockRootPublicImageDirectory = 'foo/bar';
-const mockOriginalImageDirectoryPath = 'john';
-const mockThumbnailDirectoryPath = '/baz';
-const mockAddCacheAttribute = jest.fn();
-const mockSaveCacheToFileSystem = jest.fn();
-const mockAddLocalCacheAttribute = jest.fn();
-const mockSaveLocalCacheToFileSystem = jest.fn();
-const mockOptimiseImageBySizePipeline = jest.fn();
-const mockThumbnailPipeline = jest.fn();
-const mockProgressBarIncrement = jest.fn();
-const mockGetInstanceOfProgressBar = jest.fn().mockReturnValue({
-  increment: mockProgressBarIncrement,
-});
-const mockOriginalImagePipeline = jest.fn();
-const mockPipelineCloneReturnValue = 'I am a clone';
-const mockSharpPipelineClone = jest
-  .fn()
-  .mockReturnValue(mockPipelineCloneReturnValue);
-const mockOriginalImageWidth = 300;
-const mockSharpPipelineMetaData = jest
-  .fn()
-  .mockImplementation(() => Promise.resolve({ width: mockOriginalImageWidth }));
-const mockThrownExceptionToLoggerAsError = jest.fn();
-const mockSharpPipeline = jest.fn().mockImplementation(() => ({
-  clone: mockSharpPipelineClone,
-  metadata: mockSharpPipelineMetaData,
-}));
-const mockHash = 'qwerty';
-const mockGetFileContentShortHashByPath = jest
-  .fn()
-  .mockImplementation(() => Promise.resolve(mockHash));
-
-jest.mock('../../cli-progress-bar', () => ({
-  cliProgressBar: {
-    getInstance: mockGetInstanceOfProgressBar,
-  },
-}));
-
-jest.mock('fs', () => {
-  const orgLibrary = jest.requireActual('fs');
-
-  return {
-    ...orgLibrary,
-    promises: {
-      stat: mockFsStat,
-    },
-  };
-});
-
-jest.mock('../../static-image-config', () => ({
-  getStaticImageConfig: mockGetStaticImageConfig,
-  imageFormat: {
-    png: 'png',
-  },
-}));
-
-jest.mock('../../constants', () => ({
-  originalImageDirectoryPath: mockOriginalImageDirectoryPath,
-  rootPublicImageDirectory: mockRootPublicImageDirectory,
-  thumbnailDirectoryPath: mockThumbnailDirectoryPath,
-}));
-
-jest.mock('../../caching', () => ({
-  localDeveloperImageCache: {
-    addCacheAttribute: mockAddLocalCacheAttribute,
-    saveCacheToFileSystem: mockSaveLocalCacheToFileSystem,
-  },
-  processedImageMetaDataCache: {
-    addCacheAttribute: mockAddCacheAttribute,
-    saveCacheToFileSystem: mockSaveCacheToFileSystem,
-  },
-}));
-
-jest.mock('sharp', () => ({
-  __esModule: true,
-  default: mockSharpPipeline,
-}));
-jest.mock('./optimise-image-by-size-pipeline', () => ({
-  optimiseImageBySizePipeline: mockOptimiseImageBySizePipeline,
-}));
-jest.mock('./thumbnail-pipeline', () => ({
-  thumbnailPipeline: mockThumbnailPipeline,
-}));
-jest.mock('../../utils/thrown-exception', () => ({
-  thrownExceptionToLoggerAsError: mockThrownExceptionToLoggerAsError,
-}));
-jest.mock('../image-files-meta-data');
-jest.mock('../../utils/data-fingerprinting', () => ({
-  getFileContentShortHashByPath: mockGetFileContentShortHashByPath,
-}));
-jest.mock('./original-image-pipeline', () => ({
-  originalImagePipeline: mockOriginalImagePipeline,
-}));
-
 import { existsSync, unlinkSync } from 'fs';
 import path from 'path';
 
@@ -121,9 +11,208 @@ import { thumbnailFileExtension } from '../process-static-image-constants';
 
 import { optimiseImages } from './optimise-images';
 
+jest.mock('../../cli-progress-bar', () => {
+  const mockProgressBarIncrement = jest.fn();
+  const mockGetInstanceOfProgressBar = jest.fn().mockReturnValue({
+    increment: mockProgressBarIncrement,
+  });
+
+  return {
+    cliProgressBar: {
+      getInstance: mockGetInstanceOfProgressBar,
+    },
+  };
+});
+
+jest.mock('fs', () => {
+  const mockLastUpdatedTimeInMs = 12_345;
+  const mockFsStat = jest.fn().mockImplementation(() =>
+    Promise.resolve({
+      mtimeMs: mockLastUpdatedTimeInMs,
+    }),
+  );
+  const orgLibrary = jest.requireActual('fs');
+
+  return {
+    ...orgLibrary,
+    promises: {
+      stat: mockFsStat,
+    },
+  };
+});
+
+jest.mock('../../static-image-config', () => {
+  const mockStaticImageConfig = {
+    moveOriginalImageToPublic: false,
+    optimisedImageColourQuality: 99,
+    optimisedImageCompressionLevel: 101,
+    optimisedImageSizes: [12, 34],
+    thumbnailSize: 4,
+  };
+  const mockGetStaticImageConfig = jest
+    .fn()
+    .mockImplementation(() => mockStaticImageConfig);
+
+  return {
+    getStaticImageConfig: mockGetStaticImageConfig,
+    imageFormat: {
+      png: 'png',
+    },
+  };
+});
+
+jest.mock('../../constants', () => {
+  const mockRootPublicImageDirectory = 'foo/bar';
+  const mockOriginalImageDirectoryPath = 'john';
+  const mockThumbnailDirectoryPath = '/baz';
+
+  return {
+    originalImageDirectoryPath: mockOriginalImageDirectoryPath,
+    rootPublicImageDirectory: mockRootPublicImageDirectory,
+    thumbnailDirectoryPath: mockThumbnailDirectoryPath,
+  };
+});
+
+jest.mock('../../caching', () => {
+  const mockAddCacheAttribute = jest.fn();
+  const mockSaveCacheToFileSystem = jest.fn();
+  const mockAddLocalCacheAttribute = jest.fn();
+  const mockSaveLocalCacheToFileSystem = jest.fn();
+
+  return {
+    localDeveloperImageCache: {
+      addCacheAttribute: mockAddLocalCacheAttribute,
+      saveCacheToFileSystem: mockSaveLocalCacheToFileSystem,
+    },
+    processedImageMetaDataCache: {
+      addCacheAttribute: mockAddCacheAttribute,
+      saveCacheToFileSystem: mockSaveCacheToFileSystem,
+    },
+  };
+});
+
+jest.mock('sharp', () => {
+  const mockPipelineCloneReturnValue = 'I am a clone';
+  const mockSharpPipelineClone = jest
+    .fn()
+    .mockReturnValue(mockPipelineCloneReturnValue);
+  const mockOriginalImageWidth = 300;
+  const mockSharpPipelineMetaData = jest
+    .fn()
+    .mockImplementation(() =>
+      Promise.resolve({ width: mockOriginalImageWidth }),
+    );
+  const mockSharpPipeline = jest.fn().mockImplementation(() => ({
+    clone: mockSharpPipelineClone,
+    metadata: mockSharpPipelineMetaData,
+  }));
+
+  return {
+    __esModule: true,
+    default: mockSharpPipeline,
+  };
+});
+
+jest.mock('./optimise-image-by-size-pipeline', () => {
+  const mockOptimiseImageBySizePipeline = jest.fn();
+
+  return {
+    optimiseImageBySizePipeline: mockOptimiseImageBySizePipeline,
+  };
+});
+
+jest.mock('./thumbnail-pipeline', () => {
+  const mockThumbnailPipeline = jest.fn();
+
+  return {
+    thumbnailPipeline: mockThumbnailPipeline,
+  };
+});
+
+jest.mock('../../utils/thrown-exception', () => {
+  const mockThrownExceptionToLoggerAsError = jest.fn();
+
+  return {
+    thrownExceptionToLoggerAsError: mockThrownExceptionToLoggerAsError,
+  };
+});
+
+jest.mock('../image-files-meta-data');
+
+jest.mock('../../utils/data-fingerprinting', () => {
+  const mockHash = 'qwerty';
+  const mockGetFileContentShortHashByPath = jest
+    .fn()
+    .mockImplementation(() => Promise.resolve(mockHash));
+
+  return {
+    getFileContentShortHashByPath: mockGetFileContentShortHashByPath,
+  };
+});
+
+jest.mock('./original-image-pipeline', () => {
+  const mockOriginalImagePipeline = jest.fn();
+
+  return {
+    originalImagePipeline: mockOriginalImagePipeline,
+  };
+});
+
+const { cliProgressBar } = jest.requireMock('../../cli-progress-bar');
+const { getStaticImageConfig } = jest.requireMock('../../static-image-config');
+const {
+  originalImageDirectoryPath: mockOriginalImageDirectoryPath,
+  rootPublicImageDirectory: mockRootPublicImageDirectory,
+  thumbnailDirectoryPath: mockThumbnailDirectoryPath,
+} = jest.requireMock('../../constants');
+const { localDeveloperImageCache, processedImageMetaDataCache } =
+  jest.requireMock('../../caching');
+const sharpMock = jest.requireMock('sharp').default;
+const { optimiseImageBySizePipeline: mockOptimiseImageBySizePipeline } =
+  jest.requireMock('./optimise-image-by-size-pipeline');
+const { thumbnailPipeline: mockThumbnailPipeline } = jest.requireMock(
+  './thumbnail-pipeline',
+);
+const { thrownExceptionToLoggerAsError: mockThrownExceptionToLoggerAsError } =
+  jest.requireMock('../../utils/thrown-exception');
+const { getFileContentShortHashByPath: mockGetFileContentShortHashByPath } =
+  jest.requireMock('../../utils/data-fingerprinting');
+const { originalImagePipeline: mockOriginalImagePipeline } = jest.requireMock(
+  './original-image-pipeline',
+);
+
+const mockGetInstanceOfProgressBar = cliProgressBar.getInstance;
+const mockGetStaticImageConfig = getStaticImageConfig;
+const mockAddCacheAttribute = processedImageMetaDataCache.addCacheAttribute;
+const mockAddLocalCacheAttribute = localDeveloperImageCache.addCacheAttribute;
+const mockSharpPipeline = sharpMock;
+
+const mockLastUpdatedTimeInMs = 12_345;
+const mockStaticImageConfig = {
+  moveOriginalImageToPublic: false,
+  optimisedImageColourQuality: 99,
+  optimisedImageCompressionLevel: 101,
+  optimisedImageSizes: [12, 34],
+  thumbnailSize: 4,
+};
+const mockPipelineCloneReturnValue = 'I am a clone';
+const mockOriginalImageWidth = 300;
+const mockHash = 'qwerty';
+
+let mockProgressBarIncrement: jest.MockedFunction<any>;
+let mockSharpPipelineMetaData: jest.MockedFunction<any>;
+
 describe('optimiseImages', () => {
+  beforeEach(() => {
+    // Get fresh references to the mocked functions that are created in mock factories
+    const mockSharpInstance = mockSharpPipeline();
+    mockSharpPipelineMetaData = mockSharpInstance.metadata;
+
+    const mockProgressBarInstance = mockGetInstanceOfProgressBar();
+    mockProgressBarIncrement = mockProgressBarInstance.increment;
+  });
+
   afterEach(() => {
-    jest.clearAllMocks();
     const errorLogFilePath = path.join(process.cwd(), defaultErrorLogFileName);
     if (existsSync(errorLogFilePath)) unlinkSync(errorLogFilePath);
   });

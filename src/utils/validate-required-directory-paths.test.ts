@@ -1,25 +1,28 @@
-const mockMkdirSync = jest.fn();
-const mockExistsSync = jest.fn();
-
 import path from 'path';
 
 import { validateRequiredDirectoryPaths } from './validate-required-directory-paths';
+
+jest.mock('fs', () => {
+  const mockMkdirSync = jest.fn();
+  const mockExistsSync = jest.fn();
+
+  return {
+    existsSync: mockExistsSync,
+    mkdirSync: mockMkdirSync,
+  };
+});
+
+// Get references to the mocked functions
+const fs = jest.requireMock('fs');
+const mockMkdirSync = fs.mkdirSync;
+const mockExistsSync = fs.existsSync;
 
 const currentWorkingDirectory = process.cwd();
 const testDirectory = path.join(currentWorkingDirectory, 'test');
 const demoDirectoryRoot = path.join(testDirectory, 'foo');
 const demoDirectory = path.join(demoDirectoryRoot, 'bar');
 
-jest.mock('fs', () => ({
-  existsSync: mockExistsSync,
-  mkdirSync: mockMkdirSync,
-}));
-
 describe('validateRequiredDirectoryPaths', () => {
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
   it('will do nothing if all directories already exists', () => {
     mockExistsSync.mockReturnValue(true);
 

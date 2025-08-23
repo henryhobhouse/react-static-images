@@ -17,7 +17,6 @@ jest.mock('../utils/get-parsed-json-by-file-path', () => ({
 
 describe('processedImageMetaDataCache', () => {
   afterEach(() => {
-    jest.clearAllMocks();
     jest.resetModules();
   });
 

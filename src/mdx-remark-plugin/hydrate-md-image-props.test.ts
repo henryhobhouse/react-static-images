@@ -1,43 +1,86 @@
-const mockFileDirectory = 'foo/bar';
-const mockPathDirname = jest.fn().mockReturnValue(mockFileDirectory);
-const mockGetImageMetaDataByPath = jest.fn().mockReturnValue({});
-const mockErrorLogger = jest.fn();
-const mockOptimisedPublicDirectory = 'publico';
-const mockOriginalImageDirectory = 'tanker';
-const mockThrownExceptionToLoggerAsError = jest.fn();
-jest.mock('path', () => ({
-  dirname: mockPathDirname,
-}));
-jest.mock('../constants', () => ({
-  optimisedImagesPublicDirectoryRoot: mockOptimisedPublicDirectory,
-  originalImageDirectory: mockOriginalImageDirectory,
-}));
-jest.mock('../logger', () => ({
-  logger: {
-    error: mockErrorLogger,
-  },
-}));
-jest.mock('../utils/thrown-exception', () => ({
-  thrownExceptionToLoggerAsError: mockThrownExceptionToLoggerAsError,
-}));
-jest.mock('./get-image-meta-data-by-path', () => ({
-  getImageMetaDataByPath: mockGetImageMetaDataByPath,
-}));
-jest.mock('../static-image-config', () => ({
-  getStaticImageConfig: jest
-    .fn()
-    .mockImplementation(() => ({ compressOriginalImage: true })),
-  imageFormat: {
-    png: 'png',
-  },
-}));
+import { dirname } from 'path';
 
+import { logger } from '../logger';
+import { thrownExceptionToLoggerAsError } from '../utils/thrown-exception';
+
+import { getImageMetaDataByPath } from './get-image-meta-data-by-path';
 import { hydrateMdImageProps } from './hydrate-md-image-props';
 import type { JsxNode } from './types';
 
-describe('hydrateMdImageProps', () => {
-  afterEach(jest.clearAllMocks);
+jest.mock('path', () => {
+  const mockFileDirectory = 'foo/bar';
+  const mockPathDirname = jest.fn().mockReturnValue(mockFileDirectory);
 
+  return {
+    dirname: mockPathDirname,
+  };
+});
+
+jest.mock('../constants', () => {
+  const mockOptimisedPublicDirectory = 'publico';
+  const mockOriginalImageDirectory = 'tanker';
+
+  return {
+    optimisedImagesPublicDirectoryRoot: mockOptimisedPublicDirectory,
+    originalImageDirectory: mockOriginalImageDirectory,
+  };
+});
+
+jest.mock('../logger', () => {
+  const mockErrorLogger = jest.fn();
+
+  return {
+    logger: {
+      error: mockErrorLogger,
+    },
+  };
+});
+
+jest.mock('../utils/thrown-exception', () => {
+  const mockThrownExceptionToLoggerAsError = jest.fn();
+
+  return {
+    thrownExceptionToLoggerAsError: mockThrownExceptionToLoggerAsError,
+  };
+});
+
+jest.mock('./get-image-meta-data-by-path', () => {
+  const mockGetImageMetaDataByPath = jest.fn().mockReturnValue({});
+
+  return {
+    getImageMetaDataByPath: mockGetImageMetaDataByPath,
+  };
+});
+
+jest.mock('../static-image-config', () => {
+  return {
+    getStaticImageConfig: jest
+      .fn()
+      .mockImplementation(() => ({ compressOriginalImage: true })),
+    imageFormat: {
+      png: 'png',
+    },
+  };
+});
+
+// Get references to the mocked functions
+const mockPathDirname = dirname as jest.MockedFunction<typeof dirname>;
+const mockGetImageMetaDataByPath =
+  getImageMetaDataByPath as jest.MockedFunction<typeof getImageMetaDataByPath>;
+const mockErrorLogger = logger.error as jest.MockedFunction<
+  typeof logger.error
+>;
+const mockThrownExceptionToLoggerAsError =
+  thrownExceptionToLoggerAsError as jest.MockedFunction<
+    typeof thrownExceptionToLoggerAsError
+  >;
+
+// Test constants
+const mockFileDirectory = 'foo/bar';
+const mockOptimisedPublicDirectory = 'publico';
+const mockOriginalImageDirectory = 'tanker';
+
+describe('hydrateMdImageProps', () => {
   it('will request the directory name of the filepath', () => {
     const testFilePath = 'foo/';
     hydrateMdImageProps(testFilePath)({ type: 'image', url: 'bar' });
@@ -99,6 +142,9 @@ describe('hydrateMdImageProps', () => {
     const testHeight = 10;
     const testWidth = 30;
     const testImageType = 'webp';
+    const testOptimisedPublicDirectory = 'publico';
+    const testOriginalImageDirectory = 'tanker';
+
     jest.mock('../static-image-config', () => ({
       getStaticImageConfig: jest
         .fn()
@@ -107,19 +153,23 @@ describe('hydrateMdImageProps', () => {
         png: 'png',
       },
     }));
-    mockGetImageMetaDataByPath.mockReturnValueOnce({
-      height: testHeight,
-      imageHash: testHash,
-      originalFileType: testImageType,
-      placeholderBase64: testImageBase64,
-      uniqueName: testUniqueName,
-      width: testWidth,
-    });
+
+    jest.mock('./get-image-meta-data-by-path', () => ({
+      getImageMetaDataByPath: jest.fn().mockReturnValue({
+        height: testHeight,
+        imageHash: testHash,
+        originalFileType: testImageType,
+        placeholderBase64: testImageBase64,
+        uniqueName: testUniqueName,
+        width: testWidth,
+      }),
+    }));
+
     const testNode = { type: 'image', url: 'bar' } as const;
     const { hydrateMdImageProps } = await import('./hydrate-md-image-props');
     hydrateMdImageProps('jumbo/round')(testNode);
     expect((testNode as unknown as JsxNode).value).toBe(
-      `<img src="/${mockOptimisedPublicDirectory}/${mockOriginalImageDirectory}/${testHash}${testUniqueName}.${testImageType}" placeholderbase64="${testImageBase64}" width={${testWidth}} height={${testHeight}} />`,
+      `<img src="/${testOptimisedPublicDirectory}/${testOriginalImageDirectory}/${testHash}${testUniqueName}.${testImageType}" placeholderbase64="${testImageBase64}" width={${testWidth}} height={${testHeight}} />`,
     );
     expect((testNode as unknown as JsxNode).type).toBe('jsx');
     expect(mockErrorLogger).not.toHaveBeenCalled();

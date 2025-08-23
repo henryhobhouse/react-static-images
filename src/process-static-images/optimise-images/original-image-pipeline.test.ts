@@ -1,3 +1,29 @@
+import { originalImagePipeline } from './original-image-pipeline';
+
+jest.mock('fs', () => {
+  const mockCopyFile = jest.fn();
+
+  return {
+    promises: {
+      copyFile: mockCopyFile,
+    },
+  };
+});
+
+jest.mock('../../utils/thrown-exception', () => {
+  const mockThrownExceptionToError = jest.fn();
+
+  return {
+    thrownExceptionToError: mockThrownExceptionToError,
+  };
+});
+
+const { promises: fsPromises } = jest.requireMock('fs');
+const { thrownExceptionToError: mockThrownExceptionToError } = jest.requireMock(
+  '../../utils/thrown-exception',
+);
+const mockCopyFile = fsPromises.copyFile;
+
 const mockPipelineToFile = jest.fn();
 const mockPipelinePng = jest.fn().mockImplementation(() => ({
   toFile: mockPipelineToFile,
@@ -5,28 +31,13 @@ const mockPipelinePng = jest.fn().mockImplementation(() => ({
 const mockPipeline = {
   png: mockPipelinePng,
 };
-const mockCopyFile = jest.fn();
+
 const testOptimisedImageCompressionLevel = 5;
 const testOptimisedImageColourQuality = 80;
 const testImagePublicFilePath = 'qwerty';
 const testImageCurrentFilePath = 'jennifer';
-const mockThrownExceptionToError = jest.fn();
-
-jest.mock('fs', () => ({
-  promises: {
-    copyFile: mockCopyFile,
-  },
-}));
-
-jest.mock('../../utils/thrown-exception', () => ({
-  thrownExceptionToError: mockThrownExceptionToError,
-}));
-
-import { originalImagePipeline } from './original-image-pipeline';
 
 describe('originalImagePipeline', () => {
-  afterEach(jest.clearAllMocks);
-
   it('will request to copy original image if compress original image setting is false', () => {
     originalImagePipeline({
       compressOriginalImage: false,

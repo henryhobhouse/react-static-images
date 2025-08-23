@@ -1,19 +1,39 @@
-const mockExistsSync = jest.fn();
-const mockReadFileSync = jest.fn();
-const mockUnlinkSync = jest.fn();
-const mockThrownExceptionToLoggerAsError = jest.fn();
+import { existsSync, readFileSync, unlinkSync } from 'fs';
+
+import { thrownExceptionToLoggerAsError } from '../utils/thrown-exception';
 
 import { getParsedJsonByFilePath } from './get-parsed-json-by-file-path';
 
-jest.mock('fs', () => ({
-  existsSync: mockExistsSync,
-  readFileSync: mockReadFileSync,
-  unlinkSync: mockUnlinkSync,
-}));
+jest.mock('fs', () => {
+  const mockExistsSync = jest.fn();
+  const mockReadFileSync = jest.fn();
+  const mockUnlinkSync = jest.fn();
 
-jest.mock('../utils/thrown-exception', () => ({
-  thrownExceptionToLoggerAsError: mockThrownExceptionToLoggerAsError,
-}));
+  return {
+    existsSync: mockExistsSync,
+    readFileSync: mockReadFileSync,
+    unlinkSync: mockUnlinkSync,
+  };
+});
+
+jest.mock('../utils/thrown-exception', () => {
+  const mockThrownExceptionToLoggerAsError = jest.fn();
+
+  return {
+    thrownExceptionToLoggerAsError: mockThrownExceptionToLoggerAsError,
+  };
+});
+
+// Get references to the mocked functions
+const mockExistsSync = existsSync as jest.MockedFunction<typeof existsSync>;
+const mockReadFileSync = readFileSync as jest.MockedFunction<
+  typeof readFileSync
+>;
+const mockUnlinkSync = unlinkSync as jest.MockedFunction<typeof unlinkSync>;
+const mockThrownExceptionToLoggerAsError =
+  thrownExceptionToLoggerAsError as jest.MockedFunction<
+    typeof thrownExceptionToLoggerAsError
+  >;
 
 describe('getParsedJsonByFilePath', () => {
   it('will return the fallback if path from props is not valid', () => {
