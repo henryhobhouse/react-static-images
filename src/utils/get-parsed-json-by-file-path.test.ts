@@ -49,7 +49,9 @@ describe('getParsedJsonByFilePath', () => {
     );
 
     expect(mockThrownExceptionToLoggerAsError).toBeCalledWith(
-      new SyntaxError('Unexpected token I in JSON at position 0'),
+      new SyntaxError(
+        `Unexpected token 'I', "I am not an object" is not valid JSON`,
+      ),
       `Unable to retrieve and parse data from "${testPath}". Removing as likely corrupted`,
     );
   });
