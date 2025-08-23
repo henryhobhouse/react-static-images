@@ -26,7 +26,7 @@
   ],
   "homepage": "https://github.com/henryhobhouse/react-static-images#readme",
   "dependencies": {
-    "acorn": "^8.7.0",
+    "acorn": "^8.15.0",
     "acorn-jsx": "^5.3.2",
     "cli-progress": "^3.9.0",
     "colors": "^1.4.0",
