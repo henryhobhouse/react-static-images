@@ -44,10 +44,12 @@ describe('validateRequiredDirectoryPaths', () => {
       rootPublicImageDirectory: currentWorkingDirectory,
     });
 
-    expect(mockMkdirSync).toBeCalledWith(demoDirectoryRoot, {
+    expect(mockMkdirSync).toHaveBeenCalledWith(demoDirectoryRoot, {
       recursive: true,
     });
-    expect(mockMkdirSync).toBeCalledWith(demoDirectory, { recursive: true });
+    expect(mockMkdirSync).toHaveBeenCalledWith(demoDirectory, {
+      recursive: true,
+    });
   });
 
   it('will check if all image size directories exists and create them if not', () => {

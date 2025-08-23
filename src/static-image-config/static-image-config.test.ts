@@ -1,5 +1,3 @@
-/* eslint-disable unicorn/prefer-module */
-/* eslint-disable @typescript-eslint/no-var-requires */
 import { existsSync, unlinkSync, writeFileSync } from 'fs';
 import path from 'path';
 
@@ -90,6 +88,6 @@ describe('Static image config', () => {
     // to ensure test is always standalone
     writeFileSync(configFilePath, mockConfigModule(mockPartialConfig));
     await import(relativePathToStaticImageConfig);
-    expect(mockValidateUserConfig).toBeCalledWith(mockPartialConfig);
+    expect(mockValidateUserConfig).toHaveBeenCalledWith(mockPartialConfig);
   });
 });

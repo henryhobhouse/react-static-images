@@ -78,7 +78,7 @@ describe('getImageMetaDataByPath', () => {
 
   it('will use the returned unique file name to access the images cache', () => {
     const response = getImageMetaDataByPath('/baz/test/ping.png', '/qwerty');
-    expect(mockCreateUniqueFileNameFromPath).toBeCalledTimes(1);
+    expect(mockCreateUniqueFileNameFromPath).toHaveBeenCalledTimes(1);
     expect(response?.uniqueName).toBe(mockUniqueName);
     expect(response?.imageHash).toBe(mockImageMetaData);
   });
@@ -86,7 +86,7 @@ describe('getImageMetaDataByPath', () => {
   it('will return the base 64 string for the placeholder image', () => {
     const response = getImageMetaDataByPath('/baz/test/ping.png', '/qwerty');
     expect(response?.placeholderBase64).toBe(mockThumbnailBase64);
-    expect(mockThrownExceptionToLoggerAsError).not.toBeCalled();
+    expect(mockThrownExceptionToLoggerAsError).not.toHaveBeenCalled();
   });
 
   it('will return an empty string for the base 64 placeholder image, and log issue, on error retrieving file', () => {
@@ -96,7 +96,7 @@ describe('getImageMetaDataByPath', () => {
     });
     const response = getImageMetaDataByPath('/baz/test/ping.png', '/qwerty');
     expect(response?.placeholderBase64).toBe('');
-    expect(mockThrownExceptionToLoggerAsError).toBeCalledWith(
+    expect(mockThrownExceptionToLoggerAsError).toHaveBeenCalledWith(
       new Error(testError),
       `Unable to get image thumbnail for path ${mockUniqueName}`,
     );

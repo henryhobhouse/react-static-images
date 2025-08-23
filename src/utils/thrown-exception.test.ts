@@ -19,7 +19,7 @@ describe('thrown exception', () => {
       const testExceptionFunction = () =>
         thrownExceptionToError(new Error(errorMessage), appendedErrorMessage);
 
-      expect(testExceptionFunction).toThrowError(
+      expect(testExceptionFunction).toThrow(
         `${appendedErrorMessage}: ${errorMessage}`,
       );
     });
@@ -30,7 +30,7 @@ describe('thrown exception', () => {
       const testExceptionFunction = () =>
         thrownExceptionToError({ errorMessage }, appendedErrorMessage);
 
-      expect(testExceptionFunction).toThrowError(
+      expect(testExceptionFunction).toThrow(
         `${appendedErrorMessage}. Exception not an error: {"errorMessage":"${errorMessage}"}`,
       );
     });
@@ -41,7 +41,7 @@ describe('thrown exception', () => {
       const testExceptionFunction = () =>
         thrownExceptionToError(errorMessage, appendedErrorMessage);
 
-      expect(testExceptionFunction).toThrowError(
+      expect(testExceptionFunction).toThrow(
         `${appendedErrorMessage}. Exception not an error: ${errorMessage}`,
       );
     });
@@ -58,7 +58,7 @@ describe('thrown exception', () => {
         appendedErrorMessage,
       );
 
-      expect(mockLoggerError).toBeCalledWith(
+      expect(mockLoggerError).toHaveBeenCalledWith(
         `${appendedErrorMessage}: ${errorMessage}`,
       );
     });
@@ -68,7 +68,7 @@ describe('thrown exception', () => {
       const appendedErrorMessage = 'baz';
       thrownExceptionToLoggerAsError({ errorMessage }, appendedErrorMessage);
 
-      expect(mockLoggerError).toBeCalledWith(
+      expect(mockLoggerError).toHaveBeenCalledWith(
         `${appendedErrorMessage}. Exception not an error: {"errorMessage":"${errorMessage}"}`,
       );
     });
@@ -78,7 +78,7 @@ describe('thrown exception', () => {
       const appendedErrorMessage = 'baz';
       thrownExceptionToLoggerAsError(errorMessage, appendedErrorMessage);
 
-      expect(mockLoggerError).toBeCalledWith(
+      expect(mockLoggerError).toHaveBeenCalledWith(
         `${appendedErrorMessage}. Exception not an error: ${errorMessage}`,
       );
     });

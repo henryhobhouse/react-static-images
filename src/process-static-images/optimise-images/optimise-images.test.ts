@@ -131,7 +131,7 @@ describe('optimiseImages', () => {
   it('will get the progress bar instance', () => {
     optimiseImages({ imagesFileSystemMetaData: [] });
 
-    expect(mockGetInstanceOfProgressBar).toBeCalledWith();
+    expect(mockGetInstanceOfProgressBar).toHaveBeenCalledWith();
   });
 
   it('will instantiate sharp with the image path', () => {
@@ -147,7 +147,7 @@ describe('optimiseImages', () => {
       ],
     });
 
-    expect(mockSharpPipeline).toBeCalledWith(imagePath);
+    expect(mockSharpPipeline).toHaveBeenCalledWith(imagePath);
   });
 
   it('will request image metadata from sharp pipeline instance', () => {
@@ -162,7 +162,7 @@ describe('optimiseImages', () => {
       ],
     });
 
-    expect(mockSharpPipelineMetaData).toBeCalledWith();
+    expect(mockSharpPipelineMetaData).toHaveBeenCalledWith();
   });
 
   it('will throw an error if metadata does return a width from sharp pipeline metadata instance', async () => {
@@ -181,7 +181,7 @@ describe('optimiseImages', () => {
       ],
     });
 
-    expect(mockThrownExceptionToLoggerAsError).toBeCalledWith(
+    expect(mockThrownExceptionToLoggerAsError).toHaveBeenCalledWith(
       new VError('Unable to determine image width'),
       `Image of type "${testImageType}" at path "${testImagePath}" cannot be resized`,
     );
@@ -200,7 +200,9 @@ describe('optimiseImages', () => {
       ],
     });
 
-    expect(mockGetFileContentShortHashByPath).toBeCalledWith(testImagePath);
+    expect(mockGetFileContentShortHashByPath).toHaveBeenCalledWith(
+      testImagePath,
+    );
   });
 
   it('will request to process the image in the thumbnail pipeline with a cloned pipeline', async () => {
@@ -216,7 +218,7 @@ describe('optimiseImages', () => {
       ],
     });
 
-    expect(mockThumbnailPipeline).toBeCalledWith({
+    expect(mockThumbnailPipeline).toHaveBeenCalledWith({
       pipeline: mockPipelineCloneReturnValue,
       thumbnailFilePath: path.join(
         mockThumbnailDirectoryPath,
@@ -245,8 +247,8 @@ describe('optimiseImages', () => {
       ],
     });
 
-    expect(mockThumbnailPipeline).toBeCalledTimes(1);
-    expect(mockOptimiseImageBySizePipeline).toBeCalledTimes(0);
+    expect(mockThumbnailPipeline).toHaveBeenCalledTimes(1);
+    expect(mockOptimiseImageBySizePipeline).toHaveBeenCalledTimes(0);
   });
 
   it('will request the image size pipeline with cloned pipeline, image meta data and public file path', async () => {
@@ -272,7 +274,7 @@ describe('optimiseImages', () => {
       ],
     });
 
-    expect(mockOptimiseImageBySizePipeline).toBeCalledWith({
+    expect(mockOptimiseImageBySizePipeline).toHaveBeenCalledWith({
       imageSizeFilePath: path.join(
         mockRootPublicImageDirectory,
         imageSize.toString(),
@@ -308,8 +310,8 @@ describe('optimiseImages', () => {
       ],
     });
 
-    expect(mockThumbnailPipeline).toBeCalledTimes(1);
-    expect(mockOptimiseImageBySizePipeline).toBeCalledWith(
+    expect(mockThumbnailPipeline).toHaveBeenCalledTimes(1);
+    expect(mockOptimiseImageBySizePipeline).toHaveBeenCalledWith(
       expect.objectContaining({
         optimisedImageSize: imageSizeSmallerThanOriginal,
       }),
@@ -333,7 +335,7 @@ describe('optimiseImages', () => {
       ],
     });
 
-    expect(mockOriginalImagePipeline).not.toBeCalled();
+    expect(mockOriginalImagePipeline).not.toHaveBeenCalled();
 
     mockGetStaticImageConfig.mockImplementationOnce(() => ({
       compressOriginalImage: testCompressImage,
@@ -355,7 +357,7 @@ describe('optimiseImages', () => {
       ],
     });
 
-    expect(mockOriginalImagePipeline).toBeCalledWith({
+    expect(mockOriginalImagePipeline).toHaveBeenCalledWith({
       compressOriginalImage: testCompressImage,
       imageCurrentFilePath: testPath,
       imagePublicFilePath: `${mockOriginalImageDirectoryPath}/${mockHash}${testUniqueName}.png`,
@@ -393,7 +395,7 @@ describe('optimiseImages', () => {
       ],
     });
 
-    expect(mockOriginalImagePipeline).toBeCalledWith({
+    expect(mockOriginalImagePipeline).toHaveBeenCalledWith({
       compressOriginalImage: testCompressImage,
       imageCurrentFilePath: testPath,
       imagePublicFilePath: `${mockOriginalImageDirectoryPath}/${mockHash}${testUniqueName}.${testOriginalFileType}`,
@@ -424,7 +426,7 @@ describe('optimiseImages', () => {
       ],
     });
 
-    expect(mockAddCacheAttribute).toBeCalledWith({
+    expect(mockAddCacheAttribute).toHaveBeenCalledWith({
       imageAttributes: {
         height: undefined,
         imageHash: mockHash,
@@ -456,7 +458,7 @@ describe('optimiseImages', () => {
       ],
     });
 
-    expect(mockAddLocalCacheAttribute).toBeCalledWith({
+    expect(mockAddLocalCacheAttribute).toHaveBeenCalledWith({
       imageCacheKey: imageUniqueName,
       lastTimeFileUpdatedInMs: mockLastUpdatedTimeInMs,
     });
@@ -481,6 +483,6 @@ describe('optimiseImages', () => {
       ],
     });
 
-    expect(mockProgressBarIncrement).toBeCalledWith();
+    expect(mockProgressBarIncrement).toHaveBeenCalledWith();
   });
 });

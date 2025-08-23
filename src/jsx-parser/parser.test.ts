@@ -290,7 +290,7 @@ describe('jsxToSimpleAst', () => {
   });
 
   it('will throw an error on invalid jsx, other than having an unclosed opening jsx tag', () => {
-    expect(() => jsxToSimpleAst(`<${testJsxComponentName}>>`)).toThrowError(
+    expect(() => jsxToSimpleAst(`<${testJsxComponentName}>>`)).toThrow(
       'Could not parse "<qwerty>/>": Unexpected token `>`. Did you mean `&gt;` or `{">"}`? (1:9)',
     );
   });
@@ -298,7 +298,7 @@ describe('jsxToSimpleAst', () => {
   it('will throw and error on unclosed jsx tag with children', () => {
     expect(() =>
       jsxToSimpleAst(`<${testJsxComponentName} width={23}><div />`),
-    ).toThrowError(
+    ).toThrow(
       'Could not parse "<qwerty width={23}><div />": Unexpected token (1:26)',
     );
   });

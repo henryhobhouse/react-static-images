@@ -36,7 +36,7 @@ describe('validateImageCache', () => {
     const response = await validateImageCache('', '');
 
     expect(response).toBeFalsy();
-    expect(mockGetFileContentShortHashByPath).not.toBeCalled();
+    expect(mockGetFileContentShortHashByPath).not.toHaveBeenCalled();
   });
 
   it('will return false when existing processed image meta data has no property key matching the image CacheKey', async () => {
@@ -56,7 +56,7 @@ describe('validateImageCache', () => {
     const response = await validateImageCache('', 'baz');
 
     expect(response).toBeFalsy();
-    expect(mockGetFileContentShortHashByPath).not.toBeCalled();
+    expect(mockGetFileContentShortHashByPath).not.toHaveBeenCalled();
   });
 
   it('will return false when existing processed image meta data has cache but miss matched content hash', async () => {
@@ -81,7 +81,9 @@ describe('validateImageCache', () => {
     const response = await validateImageCache(testFilePath, testImageCacheKey);
 
     expect(response).toBeFalsy();
-    expect(mockGetFileContentShortHashByPath).toBeCalledWith(testFilePath);
+    expect(mockGetFileContentShortHashByPath).toHaveBeenCalledWith(
+      testFilePath,
+    );
   });
 
   it('will return true when existing processed image meta data has cache and matching content hash', async () => {
@@ -111,7 +113,9 @@ describe('validateImageCache', () => {
     const response = await validateImageCache(testFilePath, testImageCacheKey);
 
     expect(response).toBeTruthy();
-    expect(mockGetFileContentShortHashByPath).toBeCalledWith(testFilePath);
+    expect(mockGetFileContentShortHashByPath).toHaveBeenCalledWith(
+      testFilePath,
+    );
   });
 
   it('will return true local dev cache last updated time matches stats from image', async () => {
@@ -142,6 +146,6 @@ describe('validateImageCache', () => {
     const response = await validateImageCache(testFilePath, testImageCacheKey);
 
     expect(response).toBeTruthy();
-    expect(mockGetFileContentShortHashByPath).not.toBeCalled();
+    expect(mockGetFileContentShortHashByPath).not.toHaveBeenCalled();
   });
 });

@@ -54,7 +54,7 @@ describe('processedImageMetaDataCache', () => {
       ...testCacheFromPath,
       [testImageCacheKey]: testImageAttributes,
     });
-    expect(mockWriteFileSync).not.toBeCalled();
+    expect(mockWriteFileSync).not.toHaveBeenCalled();
   });
 
   it('will retrieve the same reference/class instantiation on each import', async () => {
@@ -82,7 +82,7 @@ describe('processedImageMetaDataCache', () => {
 
     cacheInstance.saveCacheToFileSystem();
 
-    expect(mockWriteFileSync).toBeCalledWith(
+    expect(mockWriteFileSync).toHaveBeenCalledWith(
       mockProcessedImageMetaDataFilePath,
       JSON.stringify(testCacheFromPath, undefined, 2),
     );
@@ -121,6 +121,6 @@ describe('processedImageMetaDataCache', () => {
 
     expect(cacheInstance.currentCache).toEqual({ foo: undefined });
 
-    expect(mockWriteFileSync).not.toBeCalled();
+    expect(mockWriteFileSync).not.toHaveBeenCalled();
   });
 });

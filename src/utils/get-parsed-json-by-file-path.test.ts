@@ -24,7 +24,7 @@ describe('getParsedJsonByFilePath', () => {
     expect(getParsedJsonByFilePath(testFilePath, testFallback)).toBe(
       testFallback,
     );
-    expect(mockExistsSync).toBeCalledWith(testFilePath);
+    expect(mockExistsSync).toHaveBeenCalledWith(testFilePath);
   });
 
   it('will parse contents from file path and return result', () => {
@@ -48,7 +48,7 @@ describe('getParsedJsonByFilePath', () => {
       testFallback,
     );
 
-    expect(mockThrownExceptionToLoggerAsError).toBeCalledWith(
+    expect(mockThrownExceptionToLoggerAsError).toHaveBeenCalledWith(
       new SyntaxError(
         `Unexpected token 'I', "I am not an object" is not valid JSON`,
       ),
@@ -67,6 +67,6 @@ describe('getParsedJsonByFilePath', () => {
       testFallback,
     );
 
-    expect(mockUnlinkSync).toBeCalledWith(testPath);
+    expect(mockUnlinkSync).toHaveBeenCalledWith(testPath);
   });
 });

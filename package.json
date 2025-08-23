@@ -43,7 +43,7 @@
   "devDependencies": {
     "@types/cli-progress": "^3.9.2",
     "@types/escodegen": "^0.0.7",
-    "@types/jest": "^27.4.0",
+    "@types/jest": "^30.0.0",
     "@types/mdast": "^3.0.10",
     "@types/node": "22.17.2",
     "@types/sharp": "^0.29.5",
@@ -63,9 +63,10 @@
     "eslint-plugin-sort-keys-fix": "^1.1.2",
     "eslint-plugin-unicorn": "^60.0.0",
     "identity-obj-proxy": "^3.0.0",
-    "jest": "^27.4.5",
+    "jest": "^30.0.5",
     "prettier": "^3.6.2",
     "ts-jest": "^29.4.1",
+    "ts-node": "^10.9.2",
     "typescript": "^5.9.2",
     "vfile": "^5.3.0"
   }

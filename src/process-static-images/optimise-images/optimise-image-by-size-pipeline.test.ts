@@ -27,7 +27,7 @@ describe('optimiseImageBySizePipeline', () => {
       pipeline: mockPipeline as any,
     });
 
-    expect(mockPipelineResize).toBeCalledWith({ width: testImageSize });
+    expect(mockPipelineResize).toHaveBeenCalledWith({ width: testImageSize });
   });
 
   it('will request to convert image to png with quality and high compression levels set by arguments', () => {
@@ -39,7 +39,7 @@ describe('optimiseImageBySizePipeline', () => {
       pipeline: mockPipeline as any,
     });
 
-    expect(mockPipelinePng).toBeCalledWith({
+    expect(mockPipelinePng).toHaveBeenCalledWith({
       compressionLevel: testOptimisedImageCompressionLevel,
       quality: testOptimisedImageColourQuality,
     });
@@ -54,7 +54,7 @@ describe('optimiseImageBySizePipeline', () => {
       pipeline: mockPipeline as any,
     });
 
-    expect(mockPipelineToFile).toBeCalledWith(testImageSizeFilePath);
+    expect(mockPipelineToFile).toHaveBeenCalledWith(testImageSizeFilePath);
   });
 
   it('will rethrow any error with human readable prefix', async () => {
@@ -71,7 +71,7 @@ describe('optimiseImageBySizePipeline', () => {
         optimisedImageSize: testImageSize,
         pipeline: mockPipeline as any,
       }),
-    ).rejects.toThrowError(
+    ).rejects.toThrow(
       `Error processing image size '${testImageSize}' pipeline: ${testErrorMessage}`,
     );
   });

@@ -38,7 +38,9 @@ describe('thumbnailPipeline', () => {
       thumbnailSize: mockThumbnailSize,
     });
 
-    expect(mockPipelineResize).toBeCalledWith({ width: mockThumbnailSize });
+    expect(mockPipelineResize).toHaveBeenCalledWith({
+      width: mockThumbnailSize,
+    });
   });
 
   it('will request to convert image to png with low quality and high compression levels', () => {
@@ -48,7 +50,10 @@ describe('thumbnailPipeline', () => {
       thumbnailSize: mockThumbnailSize,
     });
 
-    expect(mockPipelinePng).toBeCalledWith({ compressionLevel: 9, quality: 5 });
+    expect(mockPipelinePng).toHaveBeenCalledWith({
+      compressionLevel: 9,
+      quality: 5,
+    });
   });
 
   it('will convert the return from pipeline buffer to base64 and attempt to write to file', async () => {
@@ -59,7 +64,7 @@ describe('thumbnailPipeline', () => {
       thumbnailSize: mockThumbnailSize,
     });
 
-    expect(mockFsPromisesWriteFile).toBeCalledWith(
+    expect(mockFsPromisesWriteFile).toHaveBeenCalledWith(
       mockPath,
       'data:image/png;base64,Zm9vQmFy',
     );
@@ -77,7 +82,7 @@ describe('thumbnailPipeline', () => {
       thumbnailSize: mockThumbnailSize,
     });
 
-    expect(mockThrownExceptionToError).toBeCalledWith(
+    expect(mockThrownExceptionToError).toHaveBeenCalledWith(
       new Error(testErrorMessage),
       'Error processing image thumbnail pipeline',
     );

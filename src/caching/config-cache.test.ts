@@ -37,7 +37,7 @@ describe('Config cache', () => {
       mockGetParsedJsonByFilePathCc.mockReturnValueOnce({});
       const { isCurrentConfigMatchingCache } = await import('./config-cache');
       expect(isCurrentConfigMatchingCache()).toBeFalsy();
-      expect(mockCreateShortHashFromString).not.toBeCalled();
+      expect(mockCreateShortHashFromString).not.toHaveBeenCalled();
     });
 
     it('will return false when config cache hash does not match current config hash', async () => {
@@ -48,7 +48,7 @@ describe('Config cache', () => {
       mockGetStaticImageConfig.mockReturnValueOnce(mockConfig);
       const { isCurrentConfigMatchingCache } = await import('./config-cache');
       expect(isCurrentConfigMatchingCache()).toBeFalsy();
-      expect(mockCreateShortHashFromString).toBeCalledWith(
+      expect(mockCreateShortHashFromString).toHaveBeenCalledWith(
         JSON.stringify(mockConfig),
       );
     });
@@ -62,7 +62,7 @@ describe('Config cache', () => {
       mockGetStaticImageConfig.mockReturnValueOnce(mockConfig);
       const { isCurrentConfigMatchingCache } = await import('./config-cache');
       expect(isCurrentConfigMatchingCache()).toBeTruthy();
-      expect(mockCreateShortHashFromString).toBeCalledWith(
+      expect(mockCreateShortHashFromString).toHaveBeenCalledWith(
         JSON.stringify(mockConfig),
       );
     });
@@ -75,11 +75,11 @@ describe('Config cache', () => {
       mockCreateShortHashFromString.mockReturnValueOnce(testHash);
       const { saveCurrentConfigToCache } = await import('./config-cache');
       saveCurrentConfigToCache();
-      expect(mockWriteFileSyncCc).toBeCalledWith(
+      expect(mockWriteFileSyncCc).toHaveBeenCalledWith(
         mockConfigCacheFilePath,
         JSON.stringify({ previousConfigHash: testHash }, undefined, 2),
       );
-      expect(mockCreateShortHashFromString).toBeCalledWith(
+      expect(mockCreateShortHashFromString).toHaveBeenCalledWith(
         JSON.stringify(mockConfig),
       );
     });

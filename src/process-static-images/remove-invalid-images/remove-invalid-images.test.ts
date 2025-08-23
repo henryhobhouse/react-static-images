@@ -66,26 +66,26 @@ describe('removeInvalidImages', () => {
 
   it('will call to remove local cache attribute of each invalid image', async () => {
     await removeInvalidImages(mockInvalidImages);
-    expect(mockLocalDevelopmentRemoveCacheAttribute).toBeCalledTimes(
+    expect(mockLocalDevelopmentRemoveCacheAttribute).toHaveBeenCalledTimes(
       mockInvalidImages.length,
     );
-    expect(mockLocalDevelopmentRemoveCacheAttribute).toBeCalledWith(
+    expect(mockLocalDevelopmentRemoveCacheAttribute).toHaveBeenCalledWith(
       mockInvalidImages[0].name,
     );
-    expect(mockLocalDevelopmentRemoveCacheAttribute).toBeCalledWith(
+    expect(mockLocalDevelopmentRemoveCacheAttribute).toHaveBeenCalledWith(
       mockInvalidImages[1].name,
     );
   });
 
   it('will call to remove processed image meta data cache attribute of each invalid image', async () => {
     await removeInvalidImages(mockInvalidImages);
-    expect(mockProcessedImageRemoveCacheAttribute).toBeCalledTimes(
+    expect(mockProcessedImageRemoveCacheAttribute).toHaveBeenCalledTimes(
       mockInvalidImages.length,
     );
-    expect(mockProcessedImageRemoveCacheAttribute).toBeCalledWith(
+    expect(mockProcessedImageRemoveCacheAttribute).toHaveBeenCalledWith(
       mockInvalidImages[0].name,
     );
-    expect(mockProcessedImageRemoveCacheAttribute).toBeCalledWith(
+    expect(mockProcessedImageRemoveCacheAttribute).toHaveBeenCalledWith(
       mockInvalidImages[1].name,
     );
   });
@@ -93,16 +93,16 @@ describe('removeInvalidImages', () => {
   it('will not check if each image exists in the public directory if all child dirents are not directories', async () => {
     mockDirentIsDirectory.mockReturnValueOnce(false).mockReturnValueOnce(false);
     await removeInvalidImages(mockInvalidImages);
-    expect(mockFsExistsSync).toBeCalledTimes(2);
-    expect(mockFsExistsSync).not.toBeCalledWith(imageOnePath);
+    expect(mockFsExistsSync).toHaveBeenCalledTimes(2);
+    expect(mockFsExistsSync).not.toHaveBeenCalledWith(imageOnePath);
   });
 
   it('will check if each image exists in all child dirents that are directories of the static image public directory', async () => {
     await removeInvalidImages(mockInvalidImages);
-    expect(mockFsExistsSync).toBeCalledTimes(4);
-    expect(mockFsExistsSync).toBeCalledWith(imageOnePath);
-    expect(mockFsExistsSync).toBeCalledWith(imageTwoPath);
-    expect(mockFsPromisesUnlink).not.toBeCalled();
+    expect(mockFsExistsSync).toHaveBeenCalledTimes(4);
+    expect(mockFsExistsSync).toHaveBeenCalledWith(imageOnePath);
+    expect(mockFsExistsSync).toHaveBeenCalledWith(imageTwoPath);
+    expect(mockFsPromisesUnlink).not.toHaveBeenCalled();
   });
 
   it('will request to remove optimised images if it finds them in the static image public directory', async () => {
@@ -111,28 +111,28 @@ describe('removeInvalidImages', () => {
       .mockReturnValueOnce(true)
       .mockReturnValueOnce(true);
     await removeInvalidImages(mockInvalidImages);
-    expect(mockFsPromisesUnlink).toBeCalledWith(imageOnePath);
-    expect(mockFsPromisesUnlink).toBeCalledWith(imageTwoPath);
+    expect(mockFsPromisesUnlink).toHaveBeenCalledWith(imageOnePath);
+    expect(mockFsPromisesUnlink).toHaveBeenCalledWith(imageTwoPath);
   });
 
   it('will check if a thumbnail exists for each image', async () => {
     await removeInvalidImages(mockInvalidImages);
-    expect(mockFsExistsSync).toBeCalledWith(
+    expect(mockFsExistsSync).toHaveBeenCalledWith(
       `${mockThumbnailDirectoryPath}/${mockInvalidImages[0].name}.${mockThumbnailFileExtension}`,
     );
-    expect(mockFsExistsSync).toBeCalledWith(
+    expect(mockFsExistsSync).toHaveBeenCalledWith(
       `${mockThumbnailDirectoryPath}/${mockInvalidImages[1].name}.${mockThumbnailFileExtension}`,
     );
-    expect(mockFsPromisesUnlink).not.toBeCalled();
+    expect(mockFsPromisesUnlink).not.toHaveBeenCalled();
   });
 
   it('will request to delete thumbnail file if exists for each image', async () => {
     mockFsExistsSync.mockReturnValue(true);
     await removeInvalidImages(mockInvalidImages);
-    expect(mockFsPromisesUnlink).toBeCalledWith(
+    expect(mockFsPromisesUnlink).toHaveBeenCalledWith(
       `${mockThumbnailDirectoryPath}/${mockInvalidImages[0].name}.${mockThumbnailFileExtension}`,
     );
-    expect(mockFsPromisesUnlink).toBeCalledWith(
+    expect(mockFsPromisesUnlink).toHaveBeenCalledWith(
       `${mockThumbnailDirectoryPath}/${mockInvalidImages[1].name}.${mockThumbnailFileExtension}`,
     );
   });

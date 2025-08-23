@@ -65,7 +65,7 @@ describe('localDeveloperImageCache', () => {
       ...testCacheFromPath,
       [testImageCacheKey]: testLastUpdateTimeInMs,
     });
-    expect(mockWriteFileSyncPc).not.toBeCalled();
+    expect(mockWriteFileSyncPc).not.toHaveBeenCalled();
   });
 
   it('will retrieve the same reference/class instantiation on each import', async () => {
@@ -93,7 +93,7 @@ describe('localDeveloperImageCache', () => {
 
     cacheInstance.saveCacheToFileSystem();
 
-    expect(mockWriteFileSyncPc).toBeCalledWith(
+    expect(mockWriteFileSyncPc).toHaveBeenCalledWith(
       mockLocalDeveloperCacheFilePath,
       JSON.stringify(testCacheFromPath, undefined, 2),
     );
@@ -141,7 +141,7 @@ describe('localDeveloperImageCache', () => {
 
     cacheInstance.saveCacheToFileSystem();
 
-    expect(mockWriteFileSyncPc).not.toBeCalled();
+    expect(mockWriteFileSyncPc).not.toHaveBeenCalled();
   });
 
   it('will remove to the current cache but not save to file system on calling removeCacheAttribute', async () => {
@@ -158,6 +158,6 @@ describe('localDeveloperImageCache', () => {
 
     expect(cacheInstance.currentDevCache).toEqual({ foo: undefined });
 
-    expect(mockWriteFileSyncPc).not.toBeCalled();
+    expect(mockWriteFileSyncPc).not.toHaveBeenCalled();
   });
 });

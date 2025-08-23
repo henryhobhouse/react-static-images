@@ -37,11 +37,11 @@ describe('originalImagePipeline', () => {
       pipeline: mockPipeline as any,
     });
 
-    expect(mockCopyFile).toBeCalledWith(
+    expect(mockCopyFile).toHaveBeenCalledWith(
       testImageCurrentFilePath,
       testImagePublicFilePath,
     );
-    expect(mockPipelinePng).not.toBeCalled();
+    expect(mockPipelinePng).not.toHaveBeenCalled();
   });
 
   it('will request to convert image to png with quality and high compression levels set by arguments if compress original setting is true', () => {
@@ -54,8 +54,8 @@ describe('originalImagePipeline', () => {
       pipeline: mockPipeline as any,
     });
 
-    expect(mockCopyFile).not.toBeCalled();
-    expect(mockPipelinePng).toBeCalledWith({
+    expect(mockCopyFile).not.toHaveBeenCalled();
+    expect(mockPipelinePng).toHaveBeenCalledWith({
       compressionLevel: testOptimisedImageCompressionLevel,
       quality: testOptimisedImageColourQuality,
     });
@@ -71,7 +71,7 @@ describe('originalImagePipeline', () => {
       pipeline: mockPipeline as any,
     });
 
-    expect(mockPipelineToFile).toBeCalledWith(testImagePublicFilePath);
+    expect(mockPipelineToFile).toHaveBeenCalledWith(testImagePublicFilePath);
   });
 
   it('will request to rethrow any error with human readable prefix stating it attempted to convert image if compress original setting is true', async () => {
@@ -89,7 +89,7 @@ describe('originalImagePipeline', () => {
       pipeline: mockPipeline as any,
     });
 
-    expect(mockThrownExceptionToError).toBeCalledWith(
+    expect(mockThrownExceptionToError).toHaveBeenCalledWith(
       new Error(testErrorMessage),
       `Error processing original image pipeline. Unable to convert and save image`,
     );
@@ -110,7 +110,7 @@ describe('originalImagePipeline', () => {
       pipeline: mockPipeline as any,
     });
 
-    expect(mockThrownExceptionToError).toBeCalledWith(
+    expect(mockThrownExceptionToError).toHaveBeenCalledWith(
       new Error(testErrorMessage),
       `Error processing original image pipeline. Unable to copy image`,
     );

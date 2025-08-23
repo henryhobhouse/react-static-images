@@ -45,41 +45,39 @@ describe('config validation', () => {
   it('will throw an error if config is null', () => {
     const undefinedParameter = undefined;
 
-    expect(() => validateUserConfig(undefinedParameter)).toThrowError(
-      exitMessage,
-    );
-    expect(mockErrorLogger).toBeCalledWith(
+    expect(() => validateUserConfig(undefinedParameter)).toThrow(exitMessage);
+    expect(mockErrorLogger).toHaveBeenCalledWith(
       `Your ${mockUserConfigFileName} config file is not exporting an object`,
     );
   });
 
   it('will throw an error if config is a number', () => {
-    expect(() => validateUserConfig(1)).toThrowError(exitMessage);
-    expect(mockErrorLogger).toBeCalledWith(
+    expect(() => validateUserConfig(1)).toThrow(exitMessage);
+    expect(mockErrorLogger).toHaveBeenCalledWith(
       `Your ${mockUserConfigFileName} config file is not exporting an object`,
     );
   });
 
   it('will throw an error if config is a string', () => {
-    expect(() => validateUserConfig('')).toThrowError(exitMessage);
-    expect(mockErrorLogger).toBeCalledWith(
+    expect(() => validateUserConfig('')).toThrow(exitMessage);
+    expect(mockErrorLogger).toHaveBeenCalledWith(
       `Your ${mockUserConfigFileName} config file is not exporting an object`,
     );
   });
 
   it('will throw an error if config is a array', () => {
-    expect(() => validateUserConfig([])).toThrowError(exitMessage);
-    expect(mockErrorLogger).toBeCalledWith(
+    expect(() => validateUserConfig([])).toThrow(exitMessage);
+    expect(mockErrorLogger).toHaveBeenCalledWith(
       `Your ${mockUserConfigFileName} config file is not exporting an object`,
     );
   });
 
   it('will throw an error if config has a non-valid key', () => {
     const invalidKey = 'foo';
-    expect(() => validateUserConfig({ [invalidKey]: 'bar' })).toThrowError(
+    expect(() => validateUserConfig({ [invalidKey]: 'bar' })).toThrow(
       exitMessage,
     );
-    expect(mockErrorLogger).toBeCalledWith(
+    expect(mockErrorLogger).toHaveBeenCalledWith(
       `You are using an invalid value in "${invalidKey}" in your ${mockUserConfigFileName} config file. Please check the documentation.`,
     );
   });

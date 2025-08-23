@@ -8,7 +8,6 @@ describe('CLI Progress', () => {
 
     const progressInstance = cliProgressBar.instantiateInstance();
 
-    // eslint-disable-next-line prettier/prettier
     expect(progressInstance instanceof SingleBar).toBeTruthy();
   });
 
@@ -27,7 +26,7 @@ describe('CLI Progress', () => {
 
     cliProgressBar.instantiateInstance();
 
-    expect(() => cliProgressBar.instantiateInstance()).toThrowError(
+    expect(() => cliProgressBar.instantiateInstance()).toThrow(
       'CLI progress has already been instantiated',
     );
   });
@@ -35,7 +34,7 @@ describe('CLI Progress', () => {
   it('will error if you try to get uninstantiated instance', async () => {
     const { cliProgressBar } = await import('./cli-progress-bar');
 
-    expect(() => cliProgressBar.getInstance()).toThrowError(
+    expect(() => cliProgressBar.getInstance()).toThrow(
       "CLI progress hasn't been instantiated yet",
     );
   });

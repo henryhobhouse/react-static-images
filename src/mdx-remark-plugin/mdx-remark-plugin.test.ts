@@ -34,9 +34,9 @@ describe('mdxRemarkPlugin', () => {
     const testMdast = { foo: 'bar' } as any;
     const mockFilePath = 'baz';
     mdxRemarkPlugin()(testMdast, { history: [mockFilePath] } as any);
-    expect(mockHydrateMdImageProps).toBeCalledTimes(1);
-    expect(mockHydrateMdImageProps).toBeCalledWith(mockFilePath);
-    expect(mockVisit).toBeCalledWith(
+    expect(mockHydrateMdImageProps).toHaveBeenCalledTimes(1);
+    expect(mockHydrateMdImageProps).toHaveBeenCalledWith(mockFilePath);
+    expect(mockVisit).toHaveBeenCalledWith(
       testMdast,
       'jsx',
       mockHydrateJsxCurriedReturn,
@@ -47,9 +47,9 @@ describe('mdxRemarkPlugin', () => {
     const testMdast = { foo: 'bar' } as any;
     const mockFilePath = 'baz';
     mdxRemarkPlugin()(testMdast, { history: [mockFilePath] } as any);
-    expect(mockHydrateJsxImageProps).toBeCalledTimes(1);
-    expect(mockHydrateJsxImageProps).toBeCalledWith(mockFilePath);
-    expect(mockVisit).toBeCalledWith(
+    expect(mockHydrateJsxImageProps).toHaveBeenCalledTimes(1);
+    expect(mockHydrateJsxImageProps).toHaveBeenCalledWith(mockFilePath);
+    expect(mockVisit).toHaveBeenCalledWith(
       testMdast,
       'image',
       mockHydrateMdImageCurriedReturn,

@@ -1,5 +1,11 @@
-/** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
-module.exports = {
+import type { Config } from 'jest';
+import { createDefaultPreset } from 'ts-jest';
+
+const defaultPreset = createDefaultPreset();
+
+const config: Config = {
+  ...defaultPreset,
+  clearMocks: true,
   collectCoverageFrom: ['src/**/*.{ts,tsx}'],
   coverageDirectory: './coverage',
   coveragePathIgnorePatterns: [
@@ -30,3 +36,6 @@ module.exports = {
   testPathIgnorePatterns: ['node_modules/', 'coverage/lcov-report'],
   verbose: true,
 };
+
+// eslint-disable-next-line import/no-default-export
+export default config;

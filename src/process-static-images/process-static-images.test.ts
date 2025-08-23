@@ -107,7 +107,7 @@ describe('processStaticImages', () => {
 
   it('will request to validate all directories used to store data from processing images', async () => {
     await processStaticImages();
-    expect(mockValidateOptimisedImageDirectories).toBeCalledWith({
+    expect(mockValidateOptimisedImageDirectories).toHaveBeenCalledWith({
       directoryPaths: [
         mockThumbnailDirectoryPath,
         mockStaticImageMetaDirectoryPath,
@@ -121,7 +121,7 @@ describe('processStaticImages', () => {
 
   it('will request to get all images meta data with no arguments', async () => {
     await processStaticImages();
-    expect(mockGetImageMetaData).toBeCalledWith();
+    expect(mockGetImageMetaData).toHaveBeenCalledWith();
   });
 
   it('will log if no images found and exit from the process', async () => {
@@ -155,8 +155,8 @@ describe('processStaticImages', () => {
       invalidCachedImages: [],
     }));
     await processStaticImages();
-    expect(mockProgressBar).toBeCalledWith({ etaBuffer: 10 });
-    expect(mockProgressBarStart).toBeCalledWith(2, 0, { speed: 'N/A' });
+    expect(mockProgressBar).toHaveBeenCalledWith({ etaBuffer: 10 });
+    expect(mockProgressBarStart).toHaveBeenCalledWith(2, 0, { speed: 'N/A' });
   });
 
   it('will request to optimise images', async () => {
@@ -173,7 +173,7 @@ describe('processStaticImages', () => {
       invalidCachedImages: [],
     }));
     await processStaticImages();
-    expect(mockOptimiseImages).toBeCalledWith({
+    expect(mockOptimiseImages).toHaveBeenCalledWith({
       imagesFileSystemMetaData: mockImageMetaDatas,
     });
   });
@@ -186,8 +186,8 @@ describe('processStaticImages', () => {
     }));
     await processStaticImages();
 
-    expect(mockProgressBarStop).toBeCalledWith();
-    expect(mockThrownExceptionToLoggerAsError).not.toBeCalled();
+    expect(mockProgressBarStop).toHaveBeenCalledWith();
+    expect(mockThrownExceptionToLoggerAsError).not.toHaveBeenCalled();
   });
 
   it('will log out a success message', async () => {
@@ -198,7 +198,7 @@ describe('processStaticImages', () => {
     }));
     await processStaticImages();
 
-    expect(mockLogLogger).toBeCalledWith(
+    expect(mockLogLogger).toHaveBeenCalledWith(
       'success',
       'All available images processed successfully.',
     );
@@ -215,7 +215,7 @@ describe('processStaticImages', () => {
 
     await processStaticImages();
 
-    expect(mockProgressBarStop).toBeCalledWith();
+    expect(mockProgressBarStop).toHaveBeenCalledWith();
   });
 
   it('will not request to stop the progress bar after exception is thrown before its been instantiated', async () => {
@@ -225,7 +225,7 @@ describe('processStaticImages', () => {
 
     await processStaticImages();
 
-    expect(mockProgressBarStop).not.toBeCalled();
+    expect(mockProgressBarStop).not.toHaveBeenCalled();
   });
 
   it('will request to log our error on exception been thrown', async () => {
@@ -240,7 +240,7 @@ describe('processStaticImages', () => {
 
     await processStaticImages();
 
-    expect(mockThrownExceptionToLoggerAsError).toBeCalledWith(
+    expect(mockThrownExceptionToLoggerAsError).toHaveBeenCalledWith(
       new VError(testErrorMessage),
       'Error processing Images',
     );
@@ -249,11 +249,11 @@ describe('processStaticImages', () => {
   it('will log out how many images were found and cached', async () => {
     await processStaticImages();
 
-    expect(mockInfoLogger).toBeCalledWith(
+    expect(mockInfoLogger).toHaveBeenCalledWith(
       `Found ${mockTotalImagesFound} images in accepted image format`,
     );
 
-    expect(mockInfoLogger).toBeCalledWith(
+    expect(mockInfoLogger).toHaveBeenCalledWith(
       `${mockTotalImagesCached} of those have valid cache present`,
     );
   });
@@ -261,7 +261,7 @@ describe('processStaticImages', () => {
   it('will log a warning if current config does not match cache', async () => {
     mockIsCurrentConfigMatchingCache.mockReturnValueOnce(false);
     await processStaticImages();
-    expect(mockWarnLogger).toBeCalledWith(
+    expect(mockWarnLogger).toHaveBeenCalledWith(
       'Config has been changed since last time. Clearing cache and re-processing using new config',
     );
   });
@@ -269,13 +269,13 @@ describe('processStaticImages', () => {
   it('will request to clear file system cache if current config does not match cache', async () => {
     mockIsCurrentConfigMatchingCache.mockReturnValueOnce(false);
     await processStaticImages();
-    expect(mockClearFileSystemCache).toBeCalledWith();
+    expect(mockClearFileSystemCache).toHaveBeenCalledWith();
   });
 
   it('will request to update local processed image cache if current config does not match cache', async () => {
     mockIsCurrentConfigMatchingCache.mockReturnValueOnce(false);
     await processStaticImages();
-    expect(mockUpdateImageMetaDataCache).toBeCalledWith();
+    expect(mockUpdateImageMetaDataCache).toHaveBeenCalledWith();
   });
 
   it('will request to save local developer cache on successfully processing images', async () => {
@@ -285,7 +285,7 @@ describe('processStaticImages', () => {
       invalidCachedImages: [],
     }));
     await processStaticImages();
-    expect(mockSaveLocalDevelopmentCache).toBeCalledWith();
+    expect(mockSaveLocalDevelopmentCache).toHaveBeenCalledWith();
   });
 
   it('will request to save image meta data cache on successfully processing images', async () => {
@@ -295,7 +295,7 @@ describe('processStaticImages', () => {
       invalidCachedImages: [],
     }));
     await processStaticImages();
-    expect(mockSaveImageMetaDataCache).toBeCalledWith();
+    expect(mockSaveImageMetaDataCache).toHaveBeenCalledWith();
   });
 
   it('will request to save config to cache on successfully processing images', async () => {
@@ -305,7 +305,7 @@ describe('processStaticImages', () => {
       invalidCachedImages: [],
     }));
     await processStaticImages();
-    expect(mockSaveConfigToCache).toBeCalledWith();
+    expect(mockSaveConfigToCache).toHaveBeenCalledWith();
   });
 
   it('will log out if get image meta data finds images in cache that are no longer used', async () => {
@@ -318,7 +318,7 @@ describe('processStaticImages', () => {
     });
     await processStaticImages();
 
-    expect(mockInfoLogger).toBeCalledWith(
+    expect(mockInfoLogger).toHaveBeenCalledWith(
       `Found ${testInvalidCachedImages.length} images in cache no longer used. Deleting from cache`,
     );
   });
@@ -333,6 +333,8 @@ describe('processStaticImages', () => {
     });
     await processStaticImages();
 
-    expect(mockRemoveInvalidImages).toBeCalledWith(testInvalidCachedImages);
+    expect(mockRemoveInvalidImages).toHaveBeenCalledWith(
+      testInvalidCachedImages,
+    );
   });
 });

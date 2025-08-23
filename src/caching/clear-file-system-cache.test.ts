@@ -22,16 +22,16 @@ jest.mock('./caching-constants', () => ({
 describe('clearFileSystemCache', () => {
   it('will call "del" to recursively delete localCacheDirectoryPath', async () => {
     await clearFileSystemCache();
-    expect(mockDel).toBeCalledWith(mockLocalCachePath);
+    expect(mockDel).toHaveBeenCalledWith(mockLocalCachePath);
   });
 
   it('will call "del" to recursively delete staticImageMetaDirectoryPath', async () => {
     await clearFileSystemCache();
-    expect(mockDel).toBeCalledWith(mockStaticImageMetaDirectoryPath);
+    expect(mockDel).toHaveBeenCalledWith(mockStaticImageMetaDirectoryPath);
   });
 
-  it('will call "del" to recursively delete rootPublicImageDirector', async () => {
+  it('will call "del" to recursively delete rootPublicImageDirectory', async () => {
     await clearFileSystemCache();
-    expect(mockDel).toBeCalledWith(mockRootPublicImageDirectory);
+    expect(mockDel).toHaveBeenCalledWith(mockRootPublicImageDirectory);
   });
 });

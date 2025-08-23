@@ -49,14 +49,14 @@ describe('hydrateJsxImageProps', () => {
   it('will request the directory name of the filepath', () => {
     const testFilePath = 'foo/';
     hydrateJsxImageProps(testFilePath)({ type: 'jsx', value: 'bar' });
-    expect(mockPathDirname).toBeCalledTimes(1);
-    expect(mockPathDirname).toBeCalledWith(testFilePath);
+    expect(mockPathDirname).toHaveBeenCalledTimes(1);
+    expect(mockPathDirname).toHaveBeenCalledWith(testFilePath);
   });
 
   it('will request to creat a JXS AST from the MDASTs node value', () => {
     const testValue = 'qwerty';
     hydrateJsxImageProps('foo/')({ type: 'jsx', value: testValue });
-    expect(mockJsxToSimpleAst).toBeCalledWith(testValue);
+    expect(mockJsxToSimpleAst).toHaveBeenCalledWith(testValue);
   });
 
   it('will exit early, and not mutate the node, if jsx is not an image type', () => {
@@ -68,9 +68,9 @@ describe('hydrateJsxImageProps', () => {
     });
     const testNode = { type: 'jsx', value: 'bar' } as const;
     hydrateJsxImageProps('foo/')(testNode);
-    expect(mockGetImageMetaDataByPath).not.toBeCalled();
+    expect(mockGetImageMetaDataByPath).not.toHaveBeenCalled();
     expect(testNode).toStrictEqual({ type: 'jsx', value: 'bar' });
-    expect(mockThrownExceptionToLoggerAsError).not.toBeCalled();
+    expect(mockThrownExceptionToLoggerAsError).not.toHaveBeenCalled();
   });
 
   it('will exit early if jsx has no "src" prop with truthy value', () => {
@@ -82,9 +82,9 @@ describe('hydrateJsxImageProps', () => {
     });
     const testNode = { type: 'jsx', value: 'bar' } as const;
     hydrateJsxImageProps('foo/')(testNode);
-    expect(mockGetImageMetaDataByPath).not.toBeCalled();
+    expect(mockGetImageMetaDataByPath).not.toHaveBeenCalled();
     expect(testNode).toStrictEqual({ type: 'jsx', value: 'bar' });
-    expect(mockThrownExceptionToLoggerAsError).not.toBeCalled();
+    expect(mockThrownExceptionToLoggerAsError).not.toHaveBeenCalled();
   });
 
   it('will request to get the image meta data', () => {
@@ -96,7 +96,7 @@ describe('hydrateJsxImageProps', () => {
       type: 'img',
     });
     hydrateJsxImageProps('foo/')({ type: 'jsx', value: 'bar' });
-    expect(mockGetImageMetaDataByPath).toBeCalledWith(
+    expect(mockGetImageMetaDataByPath).toHaveBeenCalledWith(
       imageSourceValue,
       mockFileDirectory,
     );
@@ -111,15 +111,15 @@ describe('hydrateJsxImageProps', () => {
       },
       type: 'img',
     });
-    // eslint-disable-next-line unicorn/no-useless-undefined
+
     mockGetImageMetaDataByPath.mockReturnValueOnce(undefined);
     const testNode = { type: 'jsx', value: 'bar' } as const;
     hydrateJsxImageProps(testFilePath)(testNode);
     expect(testNode).toStrictEqual({ type: 'jsx', value: 'bar' });
-    expect(mockErrorLogger).toBeCalledWith(
+    expect(mockErrorLogger).toHaveBeenCalledWith(
       `Cannot find processed image, within a JSX tag, in path "${imageSourceValue}" from "${testFilePath}"`,
     );
-    expect(mockThrownExceptionToLoggerAsError).not.toBeCalled();
+    expect(mockThrownExceptionToLoggerAsError).not.toHaveBeenCalled();
   });
 
   it('will update the node to include the hydrated props for the image', () => {
@@ -140,8 +140,8 @@ describe('hydrateJsxImageProps', () => {
     expect(testNode.value).toBe(
       `<img src="/${mockOptimisedPublicDirectory}/${mockOriginalImageDirectory}/${testHash}${testUniqueName}.png" height={${testHeight}} placeholderbase64="${testImageBase64}" width={${testWidth}} />`,
     );
-    expect(mockErrorLogger).not.toBeCalled();
-    expect(mockThrownExceptionToLoggerAsError).not.toBeCalled();
+    expect(mockErrorLogger).not.toHaveBeenCalled();
+    expect(mockThrownExceptionToLoggerAsError).not.toHaveBeenCalled();
   });
 
   it('will update the node with image type being per the original if not set to be compressed', async () => {
@@ -174,8 +174,8 @@ describe('hydrateJsxImageProps', () => {
     expect(testNode.value).toBe(
       `<img src="/${mockOptimisedPublicDirectory}/${mockOriginalImageDirectory}/${testHash}${testUniqueName}.${testImageType}" height={${testHeight}} placeholderbase64="${testImageBase64}" width={${testWidth}} />`,
     );
-    expect(mockErrorLogger).not.toBeCalled();
-    expect(mockThrownExceptionToLoggerAsError).not.toBeCalled();
+    expect(mockErrorLogger).not.toHaveBeenCalled();
+    expect(mockThrownExceptionToLoggerAsError).not.toHaveBeenCalled();
   });
 
   it('will update the node but maintain original, non-conflicting, props from the node', () => {
@@ -222,7 +222,7 @@ describe('hydrateJsxImageProps', () => {
     const testFilePath = 'jumbo/round';
     hydrateJsxImageProps(testFilePath)(testNode);
     expect(testNode).toStrictEqual({ type: 'jsx', value: 'bar' });
-    expect(mockThrownExceptionToLoggerAsError).toBeCalledWith(
+    expect(mockThrownExceptionToLoggerAsError).toHaveBeenCalledWith(
       new Error(testError),
       `Unable to hydrate properties for JSX tag "${testNode.value}" with path from "${testFilePath}"`,
     );

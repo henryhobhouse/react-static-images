@@ -41,14 +41,14 @@ describe('hydrateMdImageProps', () => {
   it('will request the directory name of the filepath', () => {
     const testFilePath = 'foo/';
     hydrateMdImageProps(testFilePath)({ type: 'image', url: 'bar' });
-    expect(mockPathDirname).toBeCalledTimes(1);
-    expect(mockPathDirname).toBeCalledWith(testFilePath);
+    expect(mockPathDirname).toHaveBeenCalledTimes(1);
+    expect(mockPathDirname).toHaveBeenCalledWith(testFilePath);
   });
 
   it('will request to get the image meta data', () => {
     const imageSourceValue = 'beetroot';
     hydrateMdImageProps('foo/')({ type: 'image', url: imageSourceValue });
-    expect(mockGetImageMetaDataByPath).toBeCalledWith(
+    expect(mockGetImageMetaDataByPath).toHaveBeenCalledWith(
       imageSourceValue,
       mockFileDirectory,
     );
@@ -57,15 +57,15 @@ describe('hydrateMdImageProps', () => {
   it('will exit early if no image metadata found and log error', () => {
     const testFilePath = 'qwerty';
     const imageSourceValue = 'beetroot';
-    // eslint-disable-next-line unicorn/no-useless-undefined
+
     mockGetImageMetaDataByPath.mockReturnValueOnce(undefined);
     const testNode = { type: 'image', url: imageSourceValue } as const;
     hydrateMdImageProps(testFilePath)(testNode);
     expect(testNode).toStrictEqual({ type: 'image', url: imageSourceValue });
-    expect(mockErrorLogger).toBeCalledWith(
+    expect(mockErrorLogger).toHaveBeenCalledWith(
       `Cannot find processed image, within a markdown image tag, with path "${imageSourceValue}" from "${testFilePath}"`,
     );
-    expect(mockThrownExceptionToLoggerAsError).not.toBeCalled();
+    expect(mockThrownExceptionToLoggerAsError).not.toHaveBeenCalled();
   });
 
   it('will transform the node to type JSX and include the hydrated props for the image', () => {
@@ -87,8 +87,8 @@ describe('hydrateMdImageProps', () => {
       `<img src="/${mockOptimisedPublicDirectory}/${mockOriginalImageDirectory}/${testHash}${testUniqueName}.png" placeholderbase64="${testImageBase64}" width={${testWidth}} height={${testHeight}} />`,
     );
     expect((testNode as unknown as JsxNode).type).toBe('jsx');
-    expect(mockErrorLogger).not.toBeCalled();
-    expect(mockThrownExceptionToLoggerAsError).not.toBeCalled();
+    expect(mockErrorLogger).not.toHaveBeenCalled();
+    expect(mockThrownExceptionToLoggerAsError).not.toHaveBeenCalled();
   });
 
   it('will transform the node to type JSX with image type being per the original if not set to be compressed', async () => {
@@ -122,8 +122,8 @@ describe('hydrateMdImageProps', () => {
       `<img src="/${mockOptimisedPublicDirectory}/${mockOriginalImageDirectory}/${testHash}${testUniqueName}.${testImageType}" placeholderbase64="${testImageBase64}" width={${testWidth}} height={${testHeight}} />`,
     );
     expect((testNode as unknown as JsxNode).type).toBe('jsx');
-    expect(mockErrorLogger).not.toBeCalled();
-    expect(mockThrownExceptionToLoggerAsError).not.toBeCalled();
+    expect(mockErrorLogger).not.toHaveBeenCalled();
+    expect(mockThrownExceptionToLoggerAsError).not.toHaveBeenCalled();
   });
 
   it('will add in title and alt tag from original node if present', () => {

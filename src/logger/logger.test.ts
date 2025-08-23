@@ -119,7 +119,7 @@ describe('logger', () => {
     logger.log({ level: 'info', message: 'blah blah blah', noConsole: true });
     logger.log({ level: 'warn', message: 'foo bar', noConsole: true });
 
-    expect(stdoutWriteMock).not.toBeCalled();
-    expect(stderrWriteMock).not.toBeCalled();
+    expect(stdoutWriteMock).not.toHaveBeenCalled();
+    expect(stderrWriteMock).not.toHaveBeenCalled();
   });
 });
