@@ -1,4 +1,4 @@
-import visit from 'unist-util-visit';
+import { visit } from 'unist-util-visit';
 
 import { hydrateJsxImageProps } from './hydrate-jsx-image-props';
 import { hydrateMdImageProps } from './hydrate-md-image-props';
@@ -9,7 +9,7 @@ jest.mock('unist-util-visit', () => {
 
   return {
     __esModule: true,
-    default: mockVisit,
+    visit: mockVisit,
   };
 });
 

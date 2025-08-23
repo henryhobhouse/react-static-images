@@ -2,6 +2,7 @@
   "name": "react-static-images",
   "version": "0.0.1",
   "description": "Ultra fast image processing for react",
+  "type": "module",
   "main": "dist/index.js",
   "scripts": {
     "test": "jest",
@@ -35,9 +36,9 @@
     "escodegen": "^2.1.0",
     "esm": "^3.2.25",
     "sharp": "^0.34.3",
-    "shorthash2": "^1.0.3",
+    "shorthash2": "^1.0.5",
     "simplified-jsx-to-ast": "^0.4.0",
-    "unist-util-visit": "2",
+    "unist-util-visit": "^5.0.0",
     "verror": "^1.10.1",
     "winston": "^3.17.0"
   },
@@ -50,7 +51,7 @@
     "@types/mdast": "^3.0.10",
     "@types/node": "22.17.2",
     "@types/sharp": "^0.32.0",
-    "@types/unist": "^2.0.6",
+    "@types/unist": "^3.0.3",
     "@types/verror": "^1.10.5",
     "@typescript-eslint/eslint-plugin": "^8.39.1",
     "@typescript-eslint/parser": "^8.39.1",

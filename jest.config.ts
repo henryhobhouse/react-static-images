@@ -11,6 +11,7 @@ const config: Config = {
     'constants.ts',
     'coverage/lcov-report',
   ],
+  extensionsToTreatAsEsm: ['.ts', '.tsx'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'json'],
   moduleNameMapper: {
     '.+\\.(css|styl|less|sass|scss)$': 'identity-obj-proxy',
@@ -19,7 +20,26 @@ const config: Config = {
   testEnvironment: 'node',
   testPathIgnorePatterns: ['node_modules/', 'coverage/lcov-report'],
   transform: {
-    '^.+\\.(t|j)sx?$': '@swc/jest',
+    '^.+\\.(t|j)sx?$': [
+      '@swc/jest',
+      {
+        jsc: {
+          parser: {
+            syntax: 'typescript',
+            tsx: true,
+          },
+          target: 'es2022',
+          transform: {
+            react: {
+              runtime: 'automatic',
+            },
+          },
+        },
+        module: {
+          type: 'es6',
+        },
+      },
+    ],
   },
   verbose: true,
 };
