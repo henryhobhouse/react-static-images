@@ -1,4 +1,4 @@
-import del from 'del';
+import { deleteAsync } from 'del';
 
 import { clearFileSystemCache } from './clear-file-system-cache';
 
@@ -6,8 +6,7 @@ jest.mock('del', () => {
   const mockDel = jest.fn().mockImplementation(() => Promise.resolve());
 
   return {
-    __esModule: true,
-    default: mockDel,
+    deleteAsync: mockDel,
   };
 });
 
@@ -29,7 +28,7 @@ jest.mock('./caching-constants', () => {
   };
 });
 
-const mockDel = del as jest.MockedFunction<typeof del>;
+const mockDel = deleteAsync as jest.MockedFunction<typeof deleteAsync>;
 
 const mockLocalCachePath = 'foo';
 const mockStaticImageMetaDirectoryPath = 'bar';
