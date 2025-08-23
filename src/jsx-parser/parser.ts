@@ -6,6 +6,14 @@ import { thrownExceptionToError } from '../utils/thrown-exception';
 import { getSimpleJsxAstNode } from './get-simple-jsx-ast-node';
 import type { JsxAstRoot, RootSimpleJsxAst } from './types';
 
+const isExpressionStatement = (
+  node: unknown,
+): node is JsxAstRoot['body'][number] => {
+  if (typeof node !== 'object' || node === null) return false;
+
+  return 'type' in node && node.type === 'ExpressionStatement';
+};
+
 /**
  * JSX to simple JSX AST
  *
@@ -31,9 +39,15 @@ export const jsxToSimpleAst = (input: string): RootSimpleJsxAst => {
       {
         ecmaVersion: 2020,
       },
-    ) as unknown as JsxAstRoot;
+    );
 
-    const rootNode = parsedJsx.body[0].expression;
+    const parsedJsxBody = parsedJsx.body[0];
+
+    if (!isExpressionStatement(parsedJsxBody)) {
+      throw new Error('Input is not a valid JSX expression');
+    }
+
+    const rootNode = parsedJsxBody.expression;
 
     return {
       ...getSimpleJsxAstNode(rootNode),

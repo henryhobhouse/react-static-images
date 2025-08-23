@@ -62,7 +62,7 @@ const loggerSingleton = createLogger({
         }),
         printf(
           (info) =>
-            `${info.timestamp} ${info.level}: ${info.message.replace(
+            `${info.timestamp} ${info.level}: ${String(info.message).replace(
               stringLineBreakRegex,
               '',
             )}`,

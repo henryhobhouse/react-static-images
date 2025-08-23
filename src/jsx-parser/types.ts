@@ -1,5 +1,7 @@
 import type { Node } from 'acorn';
 
+export type { ExpressionStatement } from 'acorn';
+
 export interface PropertyValue {
   type:
     | JsxExpressionType
@@ -34,10 +36,10 @@ export interface RootSimpleJsxAst extends SimpleJsxAst {
 export interface JsxAstRoot {
   type: 'Program';
   sourceType: string;
-  body: {
+  body: Array<{
     type: 'ExpressionStatement';
     expression: JSXExpression;
-  }[];
+  }>;
 }
 
 interface JsxAstNode extends Node {
