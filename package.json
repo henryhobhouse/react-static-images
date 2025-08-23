@@ -4,6 +4,35 @@
   "description": "Ultra fast image processing for react",
   "type": "module",
   "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "sideEffects": false,
+  "browser": {
+    "fs": false,
+    "path": false,
+    "crypto": false,
+    "util": false,
+    "os": false,
+    "process": false
+  },
+  "exports": {
+    ".": {
+      "node": {
+        "import": "./dist/index.js",
+        "require": "./dist/index.js"
+      },
+      "default": {
+        "import": "./dist/index.js",
+        "require": "./dist/index.js"
+      },
+      "types": "./dist/index.d.ts"
+    },
+    "./package.json": "./package.json"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "bundleDependencies": false,
   "scripts": {
     "test": "jest",
     "test-with-coverage": "jest --collectCoverage",
