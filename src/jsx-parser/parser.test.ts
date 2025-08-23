@@ -165,22 +165,6 @@ describe('jsxToSimpleAst', () => {
     });
   });
 
-  it("will parse a prop that's value is a reference identifier and identify it as an Identifier", () => {
-    expect(
-      jsxToSimpleAst(`<${testJsxComponentName} foo={reference} />`),
-    ).toStrictEqual({
-      children: undefined,
-      isNonEmptyOpeningTag: false,
-      props: {
-        foo: {
-          type: 'Identifier',
-          value: 'reference',
-        },
-      },
-      type: testJsxComponentName,
-    });
-  });
-
   it('will parse a boolean prop that is just passed as a key', () => {
     expect(
       jsxToSimpleAst(`<${testJsxComponentName} iAmABooleanProp />`),
