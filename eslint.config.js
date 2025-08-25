@@ -1,5 +1,6 @@
 import tsPlugin from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
+import { defineConfig, globalIgnores } from 'eslint/config';
 import importPlugin from 'eslint-plugin-import';
 import jestPlugin from 'eslint-plugin-jest';
 import jsonFormat from 'eslint-plugin-json-format';
@@ -10,8 +11,8 @@ import unicorn from 'eslint-plugin-unicorn';
 import globals from 'globals';
 
 // eslint-disable-next-line import/no-default-export
-export default [
-  { ignores: ['dist/', 'coverage/', 'bin/'] },
+export default defineConfig([
+  globalIgnores(['dist/', 'coverage/', 'bin/']),
 
   {
     files: ['**/*.{js,ts,tsx}'],
@@ -139,4 +140,4 @@ export default [
       'sort-keys-fix/sort-keys-fix': 'off',
     },
   },
-];
+]);
